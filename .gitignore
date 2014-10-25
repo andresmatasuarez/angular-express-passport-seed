@@ -1,0 +1,16 @@
+# SSL
+server/config/ssl/
+*.pem
+*.crt
+
+# Config data
+server/config/runtime.json
+server/config/local*
+
+# Grunt intermediate storage
+# (http://gruntjs.com/creating-plugins#storing-task-files)
+.tmp
+
+dist
+node_modules
+bower_components

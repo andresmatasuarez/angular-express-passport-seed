@@ -1,0 +1,11 @@
+div.modal-header
+  h3.modal-title Delete user
+
+div.modal-body
+  b Do you wish to delete user "{{ username }}"?
+  | #{' '}
+  | This operation cannot be undone.
+
+div.modal-footer
+  button.btn.btn-default(ng-click="$dismiss()") Cancel
+  button.btn.btn-danger(ng-click="$close()") Delete
