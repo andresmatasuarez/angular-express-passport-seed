@@ -28,6 +28,16 @@ exports.applyTo = function(app){
     app.use('/bower_components'       , express.static(path.join(__dirname, config.app.dependencies.frontend)));
   }
 
+  // URL rewrite for non-HTML5 browsers
+  // Just send the index.html for other files to support HTML5Mode
+  app.all(path.join(config.app.backoffice.base, '*'), function(req, res, next){
+    res.sendfile('index.html', { root: path.join(__dirname, config.app.backoffice.root) });
+  });
+
+  app.all(path.join(config.app.client.base, '*'), function(req, res, next){
+    res.sendfile('index.html', { root: path.join(__dirname, config.app.client.root) });
+  });
+
   // API
   app.use(apiRoute('auth'),  require('../routes/api/auth'));
   app.use(apiRoute('users'), require('../routes/api/users'));

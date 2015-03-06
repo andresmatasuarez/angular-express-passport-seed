@@ -14,6 +14,9 @@ app = angular.module 'dashboard', [
 
 app.config ($locationProvider, $urlRouterProvider, $stateProvider, cfpLoadingBarProvider, $breadcrumbProvider) ->
 
+  $locationProvider.html5Mode true
+  $locationProvider.hashPrefix '!'
+
   cfpLoadingBarProvider.includeSpinner = false
   cfpLoadingBarProvider.latencyThreshold = 1
 
