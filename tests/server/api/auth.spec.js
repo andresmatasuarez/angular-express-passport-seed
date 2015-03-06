@@ -3,15 +3,12 @@
 require('../../../server/run');
 
 var _           = require('lodash');
-var bb          = require('bluebird');
 var request     = require('supertest');
 var expect      = require('chai').expect;
 var App         = require('../../../server/app');
 var User        = require('../../../server/model/user');
 var UserSeed    = require('../../../seeds/user');
 var TestUtils   = require('../../../tests/utils');
-
-bb.promisifyAll(request);
 
 var server = request(App.server.https);
 

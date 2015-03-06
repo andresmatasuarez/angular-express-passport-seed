@@ -3,7 +3,6 @@
 require('../../../server/run');
 
 var _               = require('lodash');
-var bb              = require('bluebird');
 var mongoose        = require('mongoose');
 var request         = require('supertest');
 var expect          = require('chai').expect;
@@ -13,8 +12,6 @@ var UserSeed        = require('../../../seeds/user');
 var UserSettings    = require('../../../server/routes/api/settings').user;
 var TestUtils       = require('../../../tests/utils');
 var SuperAgentUtils = require('../superagent_utils');
-
-bb.promisifyAll(request);
 
 var server = request(App.server.https);
 var agent  = request.agent(App.server.https);

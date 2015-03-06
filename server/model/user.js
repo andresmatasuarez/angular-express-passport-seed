@@ -1,6 +1,5 @@
 'use strict';
 
-var _                     = require('lodash');
 var bb                    = require('bluebird');
 var mongoose              = require('mongoose');
 var validator             = require('validator');
@@ -30,6 +29,7 @@ UserSchema.path('email').validate(validator.isEmail, UserErrors.email.invalid);
 
 var userModel = mongoose.model('User', UserSchema);
 
+// Only because passport functions
 bb.promisifyAll(userModel);
 bb.promisifyAll(userModel.prototype);
 
