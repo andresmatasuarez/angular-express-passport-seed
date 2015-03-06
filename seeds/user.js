@@ -3,7 +3,7 @@
 var _      = require('lodash');
 var bb     = require('bluebird');
 var chance = require('chance').Chance();
-var logger = require('../server/utils/logger');
+var Log    = require('../server/utils/log');
 var User   = require('../server/model/user');
 
 var PASSWORD = 'test';
@@ -15,7 +15,7 @@ module.exports = {
         email: chance.email({ domain: 'test.com' })
       }, PASSWORD)
       .then(function(user){
-        logger.info(user.email + ' added with password: "' + PASSWORD + '".');
+        Log.info(user.email + ' added with password: "' + PASSWORD + '".');
         return user;
       });
     }));

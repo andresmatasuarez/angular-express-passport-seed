@@ -4,7 +4,7 @@ var _        = require('lodash');
 var bb       = require('bluebird');
 var config   = require('config');
 var mongoose = require('mongoose');
-var logger   = require('./logger');
+var Log      = require('./log');
 
 var uri = config.mongo.uri;
 
@@ -13,7 +13,7 @@ module.exports = {
     return new bb(function(resolve, reject){
 
       if (mongoose.connection.readyState === mongoose.Connection.STATES.connected){
-        logger.info('Connection to ' + uri + ' already opened.');
+        Log.info('Connection to ' + uri + ' already opened.');
         return resolve(uri);
       }
 
@@ -22,7 +22,7 @@ module.exports = {
       });
 
       mongoose.connection.once('open', function(){
-        logger.info('Successfully connected to: ' + uri);
+        Log.info('Successfully connected to: ' + uri);
         return resolve(uri);
       });
 
@@ -38,7 +38,7 @@ module.exports = {
       });
 
       mongoose.connection.once('disconnected', function(){
-        logger.info('Disconnected from ' + uri + '.');
+        Log.info('Disconnected from ' + uri + '.');
         return resolve(uri);
       });
 
