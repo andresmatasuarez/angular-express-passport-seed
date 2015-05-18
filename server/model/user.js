@@ -4,7 +4,7 @@ var bb                    = require('bluebird');
 var mongoose              = require('mongoose');
 var validator             = require('validator');
 var passportLocalMongoose = require('passport-local-mongoose');
-var UserErrors            = require('../routes/api/settings').user.errors;
+var UserErrors            = require('../settings').user.errors;
 
 var Schema = mongoose.Schema;
 

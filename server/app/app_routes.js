@@ -39,7 +39,8 @@ exports.applyTo = function(app){
   });
 
   // API
-  app.use(apiRoute('auth'),  require('../routes/api/auth'));
-  app.use(apiRoute('users'), require('../routes/api/users'));
+  app.use(apiRoute('settings'), require('../routes/api/settings'));
+  app.use(apiRoute('auth'),     require('../routes/api/auth'));
+  app.use(apiRoute('users'),    require('../routes/api/users'));
 
 };

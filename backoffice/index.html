@@ -50,6 +50,7 @@
       <script src="javascripts/controllers/users_profile_controller.js"></script>
       <script src="javascripts/directives/compare_to_model.js"></script>
       <script src="javascripts/directives/navbar.js"></script>
+      <script src="javascripts/init.js"></script>
       <script src="javascripts/services/api.js"></script>
       <script src="javascripts/services/auth_service.js"></script>
       <!-- endinjector -->
@@ -57,7 +58,7 @@
 
   </head>
 
-  <body ng-app="dashboard" ng-class="{ 'login-body': isState('login') }">
+  <body ng-class="{ 'login-body': isState('login') }">
 
     <navbar ng-hide="isState('login')"></navbar>
 

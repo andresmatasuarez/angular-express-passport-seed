@@ -9,7 +9,7 @@ var expect          = require('chai').expect;
 var App             = require('../../../server/app');
 var User            = require('../../../server/model/user');
 var UserSeed        = require('../../../seeds/user');
-var UserSettings    = require('../../../server/routes/api/settings').user;
+var UserSettings    = require('../../../server/settings').user;
 var TestUtils       = require('../../../tests/utils');
 var SuperAgentUtils = require('../superagent_utils');
 

@@ -4,12 +4,13 @@ var _            = require('lodash');
 var bb           = require('bluebird');
 var express      = require('express');
 var passport     = require('passport');
-var UserSettings = require('./settings').user;
 var User         = require('../../model/user');
 var Response     = require('../../utils/response');
 var Auth         = require('../../utils/auth');
 var RouteUtils   = require('../../utils/route_utils');
-var UserErrors   = require('../../routes/api/settings').user.errors;
+var UserSettings = require('../../settings').user;
+
+var UserErrors   = UserSettings.errors;
 
 var router = express.Router();
 
