@@ -5,11 +5,17 @@ form.form-horizontal(name="form" role="form" novalidate)
 
   .init(ng-init="extendForm(form)")
 
-  .form-group(ng-class="{ 'has-error': form.hasError('email') }")
+  .form-group(ng-if="editing")
+    .col-md-2.text-right
+      label.control-label Email address *
+    .col-md-4
+      p.form-control-static {{ model.email }}
+
+  .form-group(ng-if="!editing" ng-class="{ 'has-error': form.hasError('email') }")
     .col-md-2.text-right
       label.control-label(for="email") Email address *
     .col-md-4
-      input.form-control(type="email" name="email" ng-disabled="editing" ng-model="model.email" ng-model-options="{ updateOn: 'default blur', debounce: { default: 1000, blur: 0 } }" required)
+      input.form-control(type="email" name="email" ng-model="model.email" ng-model-options="{ updateOn: 'default blur', debounce: { default: 1000, blur: 0 } }" required)
     .col-md-6
       .help-block(ng-show="form.hasError('email')" ng-messages="form.email.$error")
         i.fa.fa-warning &nbsp;

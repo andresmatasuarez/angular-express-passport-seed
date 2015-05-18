@@ -8,9 +8,11 @@ app.controller 'UsersProfileController', ($scope, $state, API, user) ->
   action = if editing then _.partial(API.users.edit, user._id) else API.users.create
   $scope.editing = editing
 
+  # Initialize form model (to avoid ngIf child scopes creating their own 'model' property and thus, causing annoying bugs)
+  $scope.model = {}
+
   if editing
-    $scope.model =
-      email: user.email
+    $scope.model.email = user.email
 
   $scope.save = ->
     $scope.submitting = true
