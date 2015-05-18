@@ -2,7 +2,7 @@
 
 app = angular.module 'dashboard'
 
-INITIAL_PAGE = 1
+INITIAL_PAGE          = 1
 INITIAL_ROWS_PER_PAGE = 10
 
 app.controller 'UsersListController', ($scope, $q, $state, $modal, ngTableParams, API) ->
@@ -33,8 +33,8 @@ app.controller 'UsersListController', ($scope, $q, $state, $modal, ngTableParams
       remove(user._id)
 
   $scope.tableParams = new ngTableParams
-    page: INITIAL_PAGE
-    count: INITIAL_ROWS_PER_PAGE
+    page  : INITIAL_PAGE
+    count : INITIAL_ROWS_PER_PAGE
   ,
     # '$scope: $scope' line added to avoid
     # "TypeError: Cannot read property '$on' of null"
