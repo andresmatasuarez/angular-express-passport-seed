@@ -41,12 +41,10 @@ app.config ($locationProvider, $urlRouterProvider, $stateProvider, cfpLoadingBar
     templateUrl : 'partials/_login.html'
     controller  : 'LoginController'
     resolve     :
-      alreadyLogged: (AuthService, $q, $sessionStorage) ->
-        AuthService.isAuthenticated()
-        .finally ->
-          if _.isEmpty $sessionStorage.user
-            $q.when()
-          else
+      alreadyLogged: (AuthService, $q) ->
+        AuthService.alreadyLogged()
+        .then (alreadyLogged) ->
+          if alreadyLogged
             $q.reject
               alreadyLogged: true
 
@@ -92,7 +90,7 @@ app.config ($locationProvider, $urlRouterProvider, $stateProvider, cfpLoadingBar
       parent : 'users.list'
       label  : 'Edit'
 
-app.run ($rootScope, $state) ->
+app.run ($rootScope, $state, Restangular, $sessionStorage) ->
 
   # State utils
   $rootScope.isState = (name) ->
@@ -119,6 +117,8 @@ app.run ($rootScope, $state) ->
   $rootScope.$on '$stateChangeError', (event, toState, toParams, fromState, fromParams, error) ->
     if error.status == 401
       event.preventDefault()
+      delete $sessionStorage.token
+      delete $sessionStorage.user
       $state.go 'login'
 
     else if error.alreadyLogged

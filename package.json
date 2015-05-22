@@ -25,6 +25,7 @@
   },
   "homepage": "https://github.com/andresmatasuarez/angular-express-passport-seed",
   "dependencies": {
+    "bcrypt": "^0.8.3",
     "bluebird": "^2.3.11",
     "body-parser": "^1.9.1",
     "coffee-script": "^1.8.0",
@@ -33,6 +34,7 @@
     "express": "^4.10.0",
     "grunt": "^0.4.5",
     "grunt-concurrent": "^1.0.0",
+    "jsonwebtoken": "^5.0.1",
     "lodash": "^2.4.1",
     "mongoose": "~3.8.18",
     "morgan": "^1.4.1",

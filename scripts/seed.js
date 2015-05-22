@@ -3,8 +3,8 @@
 require('../server/run');
 
 var _        = require('lodash');
-var Log      = require('../server/utils/log');
 var UserSeed = require('../seeds/user');
+var Log      = require('../server/utils/log');
 var DB       = require('../server/utils/db');
 
 DB.connect()

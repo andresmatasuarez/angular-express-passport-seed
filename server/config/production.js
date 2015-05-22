@@ -4,6 +4,9 @@ var Environments = require('./environments');
 
 module.exports = {
   env: Environments.production,
+  server: {
+    token_secret: process.env.TOKEN_SECRET
+  },
   mongo: {
     options: {
       db: {
