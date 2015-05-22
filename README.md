@@ -1,13 +1,12 @@
 Seed AngularJS | ExpressJS | PassportJS
 =============================
 
-Web app seed including with some features:
+Some features included in this seed:
 * `AngularJS` Publicly-accessible web site.
-* `AngularJS` Authenticated admin dashboard site.
-* `ExpressJS` Authenticated API exposed.
+* `AngularJS` Admin dashboard.
+* `ExpressJS` API with cookie-based authentication.
 * All authentication over `HTTPS`.
 * `MongoDB` Persistent user model.
-* `JavaScript` on server.
 * `CoffeeScript`, `Jade` and `LESS` on client.
 * `Bootstrap` base styles.
 * `Grunt` task runner
