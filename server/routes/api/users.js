@@ -3,7 +3,7 @@
 var _            = require('lodash');
 var bb           = require('bluebird');
 var express      = require('express');
-var passport     = require('passport');
+// var passport     = require('passport');
 var User         = require('../../model/user');
 var Response     = require('../../utils/response');
 var Auth         = require('../../utils/auth');

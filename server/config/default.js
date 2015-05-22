@@ -25,7 +25,6 @@ module.exports = {
   server: {
     port           : process.env.PORT || 3000,
     logs           : false,
-    session_secret : 'screamingforvengeance',
     ssl            : {
       port        : process.env.SSL_PORT || 443,
       key         : 'server/config/ssl/key.pem',

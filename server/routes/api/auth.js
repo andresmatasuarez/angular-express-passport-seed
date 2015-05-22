@@ -2,7 +2,6 @@
 
 var _        = require('lodash');
 var express  = require('express');
-var passport = require('passport');
 var Response = require('../../utils/response');
 var Auth     = require('../../utils/auth');
 
@@ -16,7 +15,7 @@ router.get('/me', Auth.ensureAuthenticated, function(req, res){
   Response.Ok(res)(prepareToSendUser(req.user));
 });
 
-router.post('/login', passport.authenticate('local'), function(req, res){
+router.post('/login', function(req, res){
   Response.Ok(res)(prepareToSendUser(req.user));
 });
 
