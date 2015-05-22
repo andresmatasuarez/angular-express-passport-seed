@@ -30,7 +30,7 @@ app.config ($locationProvider, $urlRouterProvider, $stateProvider, cfpLoadingBar
     abstract      : true
     template      : '<div ui-view></div>'
     resolve       :
-      auth: (AuthService) -> AuthService.isAuthorized()
+      auth: (AuthService) -> AuthService.isAuthenticated()
     ncyBreadcrumb :
       skip : true
 
@@ -115,7 +115,7 @@ app.run ($rootScope, $state) ->
       [ err.data.message ]
 
   $rootScope.$on '$stateChangeError', (event, toState, toParams, fromState, fromParams, error) ->
-    if error.authenticated == false
+    if error.status == 401
       event.preventDefault()
       $state.go 'login'
 
