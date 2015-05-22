@@ -12,7 +12,9 @@ app = angular.module 'dashboard', [
   'ncy-angular-breadcrumb'
 ]
 
-app.config ($locationProvider, $urlRouterProvider, $stateProvider, cfpLoadingBarProvider, $breadcrumbProvider) ->
+app.config ($locationProvider, $urlRouterProvider, $stateProvider, cfpLoadingBarProvider, $breadcrumbProvider, $httpProvider) ->
+
+  $httpProvider.interceptors.push 'AuthInterceptor'
 
   $locationProvider.html5Mode true
   $locationProvider.hashPrefix '!'
