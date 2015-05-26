@@ -38,6 +38,8 @@
     "lodash": "^2.4.1",
     "mongoose": "~3.8.18",
     "morgan": "^1.4.1",
+    "node-uuid": "^1.4.3",
+    "redis": "^0.12.1",
     "validator": "^3.22.1",
     "winston": "^0.8.1"
   },

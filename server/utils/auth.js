@@ -1,10 +1,16 @@
 'use strict';
 
-var _        = require('lodash');
-var config   = require('config');
-var jwt      = require('jsonwebtoken');
-var Response = require('./response');
-var User     = require('../model/user');
+var _               = require('lodash');
+var config          = require('config');
+var Response        = require('./response');
+var JWTRedisService = require('../services/jwt_redis_service');
+var User            = require('../model/user');
+
+var jWTRedisService = new JWTRedisService(_.merge({
+  issuer     : config.server.auth.issues,
+  secret     : config.server.auth.token_secret,
+  expiration : config.server.auth.expiration
+}, config.redis));
 
 module.exports = {
 
@@ -22,38 +28,42 @@ module.exports = {
         if (!matches){
           return Response.Unauthorized(res)('Authentication failed.');
         }
-
-        var token = jwt.sign(user, config.server.token_secret, {
-          expiresInMinutes: 30
-        });
-
-        return Response.Ok(res)({ message: 'Authentication successful!', token: token });
-
+        return jWTRedisService.sign(user.toJSON());
       });
-
+    })
+    .then(function(token){
+      return Response.Ok(res)({ message: 'Authentication successful!', token: token });
     })
     .catch(Response.InternalServerError(res));
 
   },
 
   ensureAuthenticated: function(req, res, next){
-    // Check header or URL parameters or POST parameters for token
-    var token = req.headers.authorization || req.body.token || req.query.token || req.headers['x-access-token'];
-
-    if (!token){
-      return Response.Unauthorized(res)('No token provided.');
-    }
-
-    token = token.replace('Bearer ', '');
-
-    return jwt.verifyAsync(token, config.server.token_secret)
-    .then(function(decoded){
-      req.user = decoded;
+    return jWTRedisService.verify(req.token)
+    .spread(function(jti, user){
+      req.session = {
+        jti  : jti,
+        user : JSON.parse(user)
+      };
       next();
     })
-    .catch(function(err){
-      return Response.Unauthorized(res)('Failed to authenticate token.');
-    });
+    .catch(JWTRedisService.NoTokenProvidedError, JWTRedisService.UnauthorizedAccessError, Response.Unauthorized(res))
+    .catch(Response.InternalServerError(res));
+
+  },
+
+  logout: function(req, res, next){
+    if (_.isEmpty(req.token)){
+      return next();
+    }
+
+    return jWTRedisService.expire(req.token)
+    .then(function(reply){
+      delete req.token;
+      delete req.session;
+      next();
+    })
+    .catch(Response.InternalServerError(res));
 
   }
 

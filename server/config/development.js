@@ -12,5 +12,9 @@ module.exports = {
   },
   mongo: {
     uri: 'mongodb://localhost/seed_dev'
+  },
+  redis: {
+    host : 'localhost',
+    port : 6379
   }
 };

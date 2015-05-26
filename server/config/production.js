@@ -1,5 +1,6 @@
 'use strict';
 
+var url          = require('url');
 var Environments = require('./environments');
 
 module.exports = {
@@ -14,5 +15,10 @@ module.exports = {
       }
     },
     uri: process.env.MONGOHQ_URL || process.env.MONGOLAB_URI
+  },
+  redis: {
+    host : url.parse(process.env.REDISTOGO_URL).host,
+    port : url.parse(process.env.REDISTOGO_URL).port,
+    pass : url.parse(process.env.REDISTOGO_URL).auth.split(':')[1]
   }
 };

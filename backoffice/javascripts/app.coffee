@@ -90,11 +90,10 @@ app.config ($locationProvider, $urlRouterProvider, $stateProvider, cfpLoadingBar
       parent : 'users.list'
       label  : 'Edit'
 
-app.run ($rootScope, $state, Restangular, $sessionStorage) ->
+app.run ($rootScope, $state, AuthService) ->
 
   # State utils
-  $rootScope.isState = (name) ->
-    $state.is name
+  $rootScope.isState = (name) -> $state.is name
 
   $rootScope.goBack = ->
     prev = $rootScope.previousState
@@ -114,14 +113,12 @@ app.run ($rootScope, $state, Restangular, $sessionStorage) ->
     else
       [ err.data.message ]
 
-  $rootScope.$on '$stateChangeError', (event, toState, toParams, fromState, fromParams, error) ->
-    if error.status == 401
-      event.preventDefault()
-      delete $sessionStorage.token
-      delete $sessionStorage.user
-      $state.go 'login'
+  $rootScope.$on 'auth:unauthorized', (msg, data) ->
+    AuthService.deleteUserData()
+    $state.go 'login'
 
-    else if error.alreadyLogged
+  $rootScope.$on '$stateChangeError', (event, toState, toParams, fromState, fromParams, error) ->
+    if error.alreadyLogged
       event.preventDefault()
       $state.go 'home'
 
@@ -129,3 +126,6 @@ app.run ($rootScope, $state, Restangular, $sessionStorage) ->
   $rootScope.$on '$stateChangeSuccess', (ev, to, toParams, from, fromParams) ->
     $rootScope.previousState = from.name
     $rootScope.currentState  = to.name
+
+  $rootScope.$on '$stateChangeStart', (ev, to, toParams, from, fromParams) ->
+    console.log 'start'

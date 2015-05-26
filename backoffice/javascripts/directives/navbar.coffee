@@ -11,7 +11,7 @@ app.directive 'navbar', ($state, $sessionStorage, AuthService) ->
     $scope._ = _
     $scope.$storage = $sessionStorage
 
-    $scope.inspect = () ->
+    $scope.inspect = ->
       $state.go 'users.edit',
         id: $sessionStorage.user._id
 

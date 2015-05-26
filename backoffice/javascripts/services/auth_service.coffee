@@ -11,11 +11,13 @@ app.factory 'AuthService', ($q, $sessionStorage, Restangular, API) ->
       $sessionStorage.token = res.token
 
   logout: ->
-    # API.auth.logout()
-    $q.when()
-    .then ->
-      delete $sessionStorage.token
-      delete $sessionStorage.user
+    API.auth.logout()
+    .then =>
+      this.deleteUserData()
+
+  deleteUserData: ->
+    delete $sessionStorage.token
+    delete $sessionStorage.user
 
   fetchUserData: ->
     API.auth.me()
@@ -32,11 +34,9 @@ app.factory 'AuthService', ($q, $sessionStorage, Restangular, API) ->
     this.ensureUserData()
 
   alreadyLogged: ->
-    $q.when()
-    .then =>
-      if !$sessionStorage.token
-        return false
+    if !$sessionStorage.token
+      return $q.when(false)
 
-      this.ensureUserData()
-      .then -> true
+    this.ensureUserData()
+    .then -> true
 

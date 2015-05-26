@@ -25,13 +25,22 @@ module.exports = {
   server: {
     port             : process.env.PORT || 3000,
     logs             : false,
-    token_secret     : 'mercyfulfate',
-    salt_work_factor : 10,
     ssl              : {
       port           : process.env.SSL_PORT || 443,
       key            : 'server/config/ssl/key.pem',
       certificate    : 'server/config/ssl/certificate.crt',
       passphrase     : 'server/config/ssl/passphrase'
+    },
+    auth: {
+      issuer           : 'ExpressJS/AngularJS seed',
+      token_secret     : 'mercyfulfate',
+      expiration       : 30 * 60 * 1000,
+      salt_work_factor : 10
     }
+  },
+  redis: {
+    keyspace : 'session:',
+    host     : 'localhost',
+    port     : 6379
   }
 };

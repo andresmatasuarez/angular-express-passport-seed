@@ -3,98 +3,98 @@
 var _            = require('lodash');
 var BB           = require('bluebird');
 var util         = require('util');
-var redis        = require('redis');
 var uuid         = require('node-uuid');
 var jwt          = require('jsonwebtoken');
 var RedisService = require('../utils/redis_service');
 
-var MINUTE = 60 * 1000;
+var SECOND = 1000;
 
-var JWTRedisServiceError = function(message){
+var JWTRedisServiceError = function JWTRedisServiceError(message){
   this.name    = 'JWTRedisServiceError';
   this.message = message;
 };
 
-var UnauthorizedAccessError = function(message){
+var UnauthorizedAccessError = function UnauthorizedAccessError(message){
   this.name    = 'UnauthorizedAccessError';
-  this.message = message;
+  this.message = message || 'Token verification failed. User not authenticated or token expired.';
 };
 
-var NoTokenProvidedError = function(){
+var NoTokenProvidedError = function NoTokenProvidedError(message){
   this.name    = 'NoTokenProvidedError';
-  this.message = 'No token provided';
+  this.message = message || 'No token provided.';
 };
 
 util.inherits(JWTRedisServiceError,    Error);
 util.inherits(UnauthorizedAccessError, Error);
 util.inherits(NoTokenProvidedError,    Error);
 
-var JWTRedisService = function(config){
+var JWTRedisService = function JWTRedisService(config){
+  this.client = RedisService.createClient({
+    host : config.host,
+    port : config.port,
+    pass : config.pass
+  });
 
-  var client = RedisService.createClient(config);
+  this.issuer     = config.issuer;
+  this.secret     = config.secret;
+  this.keyspace   = config.keyspace;
+  this.expiration = config.expiration;
+};
 
-  return {
+JWTRedisService.prototype.sign = function(data){
+  var jti = uuid.v4();
 
-    sign: function(user){
-      var jti = uuid.v4();
+  var token = jwt.sign({ jti: jti }, this.secret, {
+    issuer           : this.issuer,
+    expiresInSeconds : this.expiration / SECOND
+  });
 
-      // Do not set 'expiresInMinutes' when signing as we are relying on Redis TTL policy to handle token validation.
-      var token = jwt.sign({ jti: jti }, config.secret, {
-        issuer           : config.issuer,
-        expiresInMinutes : config.expiration / MINUTE
-      });
-
-      return client.setexAsync(config.keyspace + jti, config.expiration / 1000, JSON.stringify(user.toJSON()))
-      .then(function(reply){
-        if (!reply){
-          throw new JWTRedisServiceError('Session could not be stored in Redis');
-        }
-      })
-      .thenReturn(token);
-    },
-
-    verify: function(token){
-      return BB.resolve()
-      .then(function(){
-        if (_.isEmpty(token)){
-          throw new NoTokenProvidedError();
-        }
-
-        return jwt.verifyAsync(token, config.secret)
-        .catch(function(err){
-          throw new UnauthorizedAccessError('Token verification failed.');
-        });
-      })
-      .then(function(decoded){
-        if (_.isEmpty(decoded.jti)){
-          throw new UnauthorizedAccessError('Token verification failed.');
-        }
-        return client.getAsync(config.keyspace + decoded.jti);
-      })
-      .then(function(user){
-        if (_.isEmpty(user)){
-          throw new UnauthorizedAccessError('User not authenticated or token expired.');
-        }
-        return user;
-      });
-    },
-
-    expire: function(token){
-      return jwt.verifyAsync(token, config.secret)
-      .catch(function(err){
-        throw new UnauthorizedAccessError('Token verification failed.');
-      })
-      .then(function(decoded){
-        if (_.isEmpty(decoded.jti)){
-          throw new UnauthorizedAccessError('Token verification failed.');
-        }
-
-        return client.delAsync(config.keyspace + decoded.jti);
-      });
+  return this.client.psetexAsync(this.keyspace + jti, this.expiration, JSON.stringify(data))
+  .then(function(reply){
+    if (!reply){
+      throw new JWTRedisServiceError('Session could not be stored in Redis');
     }
+  })
+  .thenReturn(token);
 
-  };
+};
 
+JWTRedisService.prototype.verify = function(token){
+  if (_.isEmpty(token)){
+    return BB.reject(new NoTokenProvidedError());
+  }
+
+  return jwt.verifyAsync(token, this.secret)
+  .catch(function(err){
+    throw new UnauthorizedAccessError();
+  })
+  .then(function(decoded){
+    if (_.isEmpty(decoded.jti)){
+      throw new UnauthorizedAccessError();
+    }
+    return this.client.getAsync(this.keyspace + decoded.jti)
+    .then(function(data){
+      if (_.isEmpty(data)){
+        throw new UnauthorizedAccessError();
+      }
+
+      return [ decoded.jti, data ];
+    });
+  }.bind(this));
+};
+
+JWTRedisService.prototype.expire = function(token){
+  if (_.isEmpty(token)){
+    return BB.resolve();
+  }
+
+  var data = jwt.decode(token, this.secret);
+
+  if (_.isEmpty(data) || _.isEmpty(data.jti)){
+    return BB.resolve();
+  }
+
+  return this.client.delAsync(this.keyspace + data.jti);
 };
 
 JWTRedisService.JWTRedisServiceError    = JWTRedisServiceError;
