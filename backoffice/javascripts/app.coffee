@@ -12,14 +12,22 @@ app = angular.module 'dashboard', [
   'ncy-angular-breadcrumb'
 ]
 
+resolveAuthenticationAndEmitIf = (eventToEmit, emitIfAuthenticated) ->
+  ($rootScope, $q, AuthService) ->
+    AuthService.isAuthenticated()
+    .then (authenticated) ->
+      if authenticated == emitIfAuthenticated
+        $rootScope.$broadcast "auth:#{eventToEmit}"
+        $q.reject()
+
 app.config ($locationProvider, $urlRouterProvider, $stateProvider, cfpLoadingBarProvider, $breadcrumbProvider, $httpProvider) ->
 
   $httpProvider.interceptors.push 'AuthInterceptor'
 
-  $locationProvider.html5Mode true
+  $locationProvider.html5Mode  true
   $locationProvider.hashPrefix '!'
 
-  cfpLoadingBarProvider.includeSpinner = false
+  cfpLoadingBarProvider.includeSpinner   = false
   cfpLoadingBarProvider.latencyThreshold = 1
 
   $breadcrumbProvider.setOptions
@@ -28,38 +36,37 @@ app.config ($locationProvider, $urlRouterProvider, $stateProvider, cfpLoadingBar
 
   $urlRouterProvider.otherwise '/'
 
-  $stateProvider.state 'auth',
-    abstract      : true
-    template      : '<div ui-view></div>'
-    resolve       :
-      auth: (AuthService) -> AuthService.isAuthenticated()
-    ncyBreadcrumb :
-      skip : true
-
   $stateProvider.state 'login',
     url         : '/login'
     templateUrl : 'partials/_login.html'
     controller  : 'LoginController'
     resolve     :
-      alreadyLogged: (AuthService, $q) ->
-        AuthService.alreadyLogged()
-        .then (alreadyLogged) ->
-          if alreadyLogged
-            $q.reject
-              alreadyLogged: true
+      auth: resolveAuthenticationAndEmitIf 'alreadylogged', true
+
+  $stateProvider.state 'dashboard',
+    abstract      : true
+    templateUrl   : 'partials/_dashboard.html'
+    resolve       :
+      auth: resolveAuthenticationAndEmitIf 'unauthorized', false
+    ncyBreadcrumb :
+      skip : true
 
   $stateProvider.state 'home',
-    parent        : 'auth'
+    parent        : 'dashboard'
     url           : '/'
     templateUrl   : 'partials/_home.html'
+    resolve       :
+      auth: resolveAuthenticationAndEmitIf 'unauthorized', false
     ncyBreadcrumb :
       label: 'Dashboard'
 
   $stateProvider.state 'users',
-    parent        : 'auth'
+    parent        : 'dashboard'
     abstract      : true
     url           : '/users'
     templateUrl   : 'partials/_breadcrumbs.html'
+    resolve       :
+      auth: resolveAuthenticationAndEmitIf 'unauthorized', false
     ncyBreadcrumb :
       skip: true
 
@@ -67,6 +74,8 @@ app.config ($locationProvider, $urlRouterProvider, $stateProvider, cfpLoadingBar
     url           : '/list'
     templateUrl   : 'partials/_users_list.html'
     controller    : 'UsersListController'
+    resolve       :
+      auth: resolveAuthenticationAndEmitIf 'unauthorized', false
     ncyBreadcrumb :
       label: 'Users'
 
@@ -75,6 +84,7 @@ app.config ($locationProvider, $urlRouterProvider, $stateProvider, cfpLoadingBar
     templateUrl   : 'partials/_users_profile.html'
     controller    : 'UsersProfileController'
     resolve       :
+      auth: resolveAuthenticationAndEmitIf 'unauthorized', false
       user: -> undefined
     ncyBreadcrumb :
       parent : 'users.list'
@@ -85,6 +95,7 @@ app.config ($locationProvider, $urlRouterProvider, $stateProvider, cfpLoadingBar
     templateUrl   : 'partials/_users_profile.html'
     controller    : 'UsersProfileController'
     resolve       :
+      auth: resolveAuthenticationAndEmitIf 'unauthorized', false
       user: ($stateParams, API) -> API.users.get($stateParams.id)
     ncyBreadcrumb :
       parent : 'users.list'
@@ -97,7 +108,19 @@ app.run ($rootScope, $state, AuthService) ->
 
   $rootScope.goBack = ->
     prev = $rootScope.previousState
-    $state.go if _.isEmpty prev then 'home' else prev
+
+    if prev
+      $state.go prev.name, prev.params
+    else
+      $state.go 'home'
+
+  $rootScope.goToNextState = ->
+    next = $rootScope.nextState
+
+    if next
+      $state.go next.name, next.params
+    else
+      $state.go 'home'
 
   # Form utils
   $rootScope.extendForm = (form) ->
@@ -117,15 +140,23 @@ app.run ($rootScope, $state, AuthService) ->
     AuthService.deleteUserData()
     $state.go 'login'
 
-  $rootScope.$on '$stateChangeError', (event, toState, toParams, fromState, fromParams, error) ->
-    if error.alreadyLogged
-      event.preventDefault()
-      $state.go 'home'
+  $rootScope.$on 'auth:alreadylogged', (msg, data) ->
+    prev = $rootScope.previousState
+    $state.go 'home'
 
   # Keep track of previous and current states.
   $rootScope.$on '$stateChangeSuccess', (ev, to, toParams, from, fromParams) ->
-    $rootScope.previousState = from.name
-    $rootScope.currentState  = to.name
+    $rootScope.previousState =
+      name   : from.name
+      params : fromParams
 
+    $rootScope.currentState =
+      name   : to.name
+      params : toParams
+
+  # Keep track of every state change
   $rootScope.$on '$stateChangeStart', (ev, to, toParams, from, fromParams) ->
-    console.log 'start'
+    if to.name != 'login'
+      $rootScope.nextState =
+        name   : to.name
+        params : toParams

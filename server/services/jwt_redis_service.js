@@ -10,16 +10,19 @@ var RedisService = require('../utils/redis_service');
 var SECOND = 1000;
 
 var JWTRedisServiceError = function JWTRedisServiceError(message){
+  Error.call(this);
   this.name    = 'JWTRedisServiceError';
   this.message = message;
 };
 
 var UnauthorizedAccessError = function UnauthorizedAccessError(message){
+  Error.call(this);
   this.name    = 'UnauthorizedAccessError';
   this.message = message || 'Token verification failed. User not authenticated or token expired.';
 };
 
 var NoTokenProvidedError = function NoTokenProvidedError(message){
+  Error.call(this);
   this.name    = 'NoTokenProvidedError';
   this.message = message || 'No token provided.';
 };

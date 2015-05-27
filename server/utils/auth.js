@@ -23,7 +23,7 @@ module.exports = {
         return Response.Unauthorized(res)('Authentication failed.');
       }
 
-      return user.comparePassword(req.body.password)
+      return user.verifyPassword(req.body.password)
       .then(function(matches){
         if (!matches){
           return Response.Unauthorized(res)('Authentication failed.');

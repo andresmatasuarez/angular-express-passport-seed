@@ -8,6 +8,7 @@ app.factory 'API', (Restangular) ->
   auth:
     me: ->
       api.one('auth', 'me').get()
+      .then Restangular.stripRestangular
 
     login: (email, password) ->
       body = $.param
@@ -18,6 +19,7 @@ app.factory 'API', (Restangular) ->
         'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
 
       api.one('auth', 'login').customPOST body, undefined, undefined, headers
+      .then Restangular.stripRestangular
 
     logout: ->
       api.one('auth', 'logout').post()

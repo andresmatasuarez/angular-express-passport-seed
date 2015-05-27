@@ -53,7 +53,7 @@ UserSchema.pre('save', function(next){
   .catch(next);
 });
 
-UserSchema.methods.comparePassword = function(candidatePassword){
+UserSchema.methods.verifyPassword = function(candidatePassword){
   return bcrypt.compareAsync(candidatePassword, this.password);
 };
 
