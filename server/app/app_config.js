@@ -1,14 +1,16 @@
 'use strict';
 
 var config      = require('config');
+var passport    = require('passport');
 var morgan      = require('morgan');
 var compression = require('compression');
 var bodyparser  = require('body-parser');
-var mongoose    = require('mongoose');
 var Middlewares = require('../middlewares');
 var User        = require('../model/user');
 
 exports.applyTo = function(app){
+
+  passport.use(User.createStrategy());
 
   app.enable('trust proxy');
 
@@ -19,6 +21,8 @@ exports.applyTo = function(app){
   app.use(compression());
   app.use(bodyparser.urlencoded({ extended: true }));
   app.use(bodyparser.json());
+
+  app.use(passport.initialize());
 
   app.use(Middlewares.TokenExtractor);
 

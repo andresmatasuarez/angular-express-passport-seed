@@ -12,11 +12,12 @@ module.exports = {
 
   seed: function(n){
     return BB.all(_.times(n, function(i){
-      return new User({
-        email    : chance.email({ domain: 'test.com' }),
-        password : PASSWORD
-      }).saveAsync()
-      .then(_.first)
+
+      var user = new User({
+        email: chance.email({ domain: 'test.com' })
+      });
+
+      return User.registerAsync(user, PASSWORD)
       .then(function(user){
         Log.info(user.email + ' added with password: "' + PASSWORD + '".');
         return user;

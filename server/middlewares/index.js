@@ -2,6 +2,7 @@
 
 module.exports = {
 
-  TokenExtractor: require('./token_extractor')
+  Auth           : require('./auth'),
+  TokenExtractor : require('./token_extractor')
 
 };
