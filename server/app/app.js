@@ -10,22 +10,25 @@ var AppConfig = require('./app_config');
 var AppErrors = require('./app_errors');
 var AppRoutes = require('./app_routes');
 
-var sslOptions = {
-  key  : fs.readFileSync(config.server.ssl.key),
-  cert : fs.readFileSync(config.server.ssl.certificate)
-};
-
-if (!_.isEmpty(config.server.ssl.passphrase)){
-  if (fs.existsSync(config.server.ssl.passphrase)){
-    sslOptions.passphrase = fs.readFileSync(config.server.ssl.passphrase).toString().trim();
-  }
-}
-
 // HTTP server object
 var serverHttp = express();
 
-// HTTPS server object
-var serverHttps = https.createServer(sslOptions, serverHttp);
+// SSL certificate
+if (config.env !== config.environments.production){
+  var sslOptions = {
+    key  : fs.readFileSync(config.server.ssl.key),
+    cert : fs.readFileSync(config.server.ssl.certificate)
+  };
+
+  if (!_.isEmpty(config.server.ssl.passphrase)){
+    if (fs.existsSync(config.server.ssl.passphrase)){
+      sslOptions.passphrase = fs.readFileSync(config.server.ssl.passphrase).toString().trim();
+    }
+  }
+
+  // HTTPS server object
+  var serverHttps = https.createServer(sslOptions, serverHttp);
+}
 
 // Setup singleton promise
 var setupPromise;

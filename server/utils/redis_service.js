@@ -11,7 +11,10 @@ module.exports = {
     var port = config.port || DEFAULT_REDIS_PORT;
     var host = config.host || DEFAULT_REDIS_HOST;
 
-    var client = redis.createClient(port, host);
+    var client = redis.createClient(port, host, {
+      // Added for deployment on Heroku
+      no_ready_check: true
+    });
 
     if (config.pass){
       client.auth(config.pass);

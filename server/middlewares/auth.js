@@ -8,6 +8,7 @@ var JWTRedisService = require('../services/jwt_redis_service');
 var jwtRedisService = new JWTRedisService({
   host       : config.redis.host,
   port       : config.redis.port,
+  pass       : config.redis.pass,
   issuer     : config.server.auth.issues,
   secret     : config.server.auth.token_secret,
   expiration : config.server.auth.expiration
@@ -30,7 +31,7 @@ module.exports = {
   },
 
   authenticate: function(req, res, next){
-    passport.authenticate('local', { session: false }, function(err, user, info){
+    passport.authenticate('local', function(err, user, info){
       if (err){
         return Response.InternalServerError(res)(err);
       }
@@ -39,7 +40,7 @@ module.exports = {
         return Response.Unauthorized(res)(info);
       }
 
-      req.login(user, function(err){
+      req.login(user, { session: false }, function(err){
         if (err){
           return Response.InternalServerError(res)(err);
         }

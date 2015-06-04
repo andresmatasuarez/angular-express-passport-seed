@@ -134,30 +134,36 @@ module.exports = function(grunt){
     }, {
       expand : true,
       dot    : true,
-      cwd    : '.tmp/<%= paths.client.root %>',
-      dest   : '<%= paths.dist.client %>',
-      src    : [ '**/*.html' ]
-    }, {
-      expand : true,
-      dot    : true,
       cwd    : '<%= paths.bo.root %>',
       dest   : '<%= paths.dist.bo %>',
       src    : [ 'index.html', 'assets/images/**/*' ]
     }, {
       expand : true,
-      dot    : true,
-      cwd    : '.tmp/<%= paths.bo.root %>',
-      dest   : '<%= paths.dist.bo %>',
-      src    : [ '**/*.html' ]
-    }, {
-      expand : true,
       dest   : '<%= paths.dist.root %>',
       src    : [ 'Procfile', 'package.json', 'server/**/*' ]
     }, {
-      // Font-awesome
+      // Font-awesome for client
       expand : true,
       cwd    : '<%= paths.bower_components %>/font-awesome',
       dest   : '<%= paths.dist.client %>',
+      src    : [ 'fonts/**/*' ]
+    }, {
+      // Font-awesome for backoffice
+      expand : true,
+      cwd    : '<%= paths.bower_components %>/font-awesome',
+      dest   : '<%= paths.dist.bo %>',
+      src    : [ 'fonts/**/*' ]
+    }, {
+      // Glyphicons for client
+      expand : true,
+      cwd    : '<%= paths.bower_components %>/bootstrap',
+      dest   : '<%= paths.dist.client %>',
+      src    : [ 'fonts/**/*' ]
+    }, {
+      // Glyphicons for backoffice
+      expand : true,
+      cwd    : '<%= paths.bower_components %>/bootstrap',
+      dest   : '<%= paths.dist.bo %>',
       src    : [ 'fonts/**/*' ]
     }]
   });

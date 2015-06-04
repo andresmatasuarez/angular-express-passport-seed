@@ -17,7 +17,7 @@ module.exports = {
     uri: process.env.MONGOHQ_URL || process.env.MONGOLAB_URI
   },
   redis: {
-    host : url.parse(process.env.REDISTOGO_URL).host,
+    host : url.parse(process.env.REDISTOGO_URL).hostname,
     port : url.parse(process.env.REDISTOGO_URL).port,
     pass : url.parse(process.env.REDISTOGO_URL).auth.split(':')[1]
   }

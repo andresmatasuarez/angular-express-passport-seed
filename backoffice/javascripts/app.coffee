@@ -13,12 +13,15 @@ app = angular.module 'dashboard', [
 ]
 
 resolveAuthenticationAndEmitIf = (eventToEmit, emitIfAuthenticated) ->
-  ($rootScope, $q, AuthService) ->
+  # Manual dependency injection annotations, as ngAnnotate is having problems
+  # detecting this, even with explicit comments
+  [ '$rootScope', '$q', 'AuthService', ($rootScope, $q, AuthService) ->
     AuthService.isAuthenticated()
     .then (authenticated) ->
       if authenticated == emitIfAuthenticated
         $rootScope.$broadcast "auth:#{eventToEmit}"
         $q.reject()
+  ]
 
 app.config ($locationProvider, $urlRouterProvider, $stateProvider, cfpLoadingBarProvider, $breadcrumbProvider, $httpProvider) ->
 
@@ -160,3 +163,7 @@ app.run ($rootScope, $state, AuthService) ->
       $rootScope.nextState =
         name   : to.name
         params : toParams
+
+  # TODO improve client-side error handling
+  $rootScope.$on '$stateChangeError', (ev, to, toParams, from, fromParams, error) ->
+    console.log('changeError', error, to, from);
