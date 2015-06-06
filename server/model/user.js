@@ -1,10 +1,13 @@
 'use strict';
 
-var bb                    = require('bluebird');
+var _                     = require('lodash');
+var BB                    = require('bluebird');
+var util                  = require('util');
+var config                = require('config');
 var mongoose              = require('mongoose');
 var validator             = require('validator');
 var passportLocalMongoose = require('passport-local-mongoose');
-var UserErrors            = require('../settings').user.errors;
+var UserSettings          = require('../settings').user;
 
 var Schema = mongoose.Schema;
 
@@ -12,25 +15,31 @@ var UserSchema = new Schema({
   email: {
     type      : String,
     lowercase : true
+    //unique    : UserErrors.email.unique,
   }
 });
 
+// passport-local-mongoose plugin
 UserSchema.plugin(passportLocalMongoose, {
   usernameField          : 'email',
-  missingUsernameError   : UserErrors.email.required,
-  missingPasswordError   : UserErrors.passwordMissing,
-  userExistsError        : UserErrors.email.unique,
-  incorrectPasswordError : UserErrors.incorrectPassword
+  missingUsernameError   : UserSettings.errors.email.required,
+  missingPasswordError   : UserSettings.errors.passwordMissing,
+  userExistsError        : UserSettings.errors.email.unique,
+  incorrectPasswordError : UserSettings.errors.incorrectPassword
 });
 
 // Validations
-UserSchema.path('email').required(true, UserErrors.email.required);
-UserSchema.path('email').validate(validator.isEmail, UserErrors.email.invalid);
+UserSchema.path('email')   .required(true, UserSettings.errors.email.required);
+UserSchema.path('email').validate(validator.isEmail, UserSettings.errors.email.invalid);
 
-var userModel = mongoose.model('User', UserSchema);
+var transform = function(doc, ret, options){
+  return _.pick(ret, UserSettings.paths);
+};
 
-// Only because passport functions
-bb.promisifyAll(userModel);
-bb.promisifyAll(userModel.prototype);
+UserSchema.set('toJSON',   { transform: transform });
+UserSchema.set('toObject', { transform: transform });
 
-module.exports = userModel;
+// Promisify passport-local-mongoose plugin statics
+BB.promisifyAll(UserSchema.statics);
+
+module.exports = mongoose.model('User', UserSchema);

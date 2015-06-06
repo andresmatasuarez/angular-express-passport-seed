@@ -1,28 +1,17 @@
 'use strict';
 
-var _        = require('lodash');
 var express  = require('express');
-var passport = require('passport');
 var Response = require('../../utils/response');
-var Auth     = require('../../utils/auth');
+var Auth     = require('../../middlewares').Auth;
 
 var router = express.Router();
 
-var prepareToSendUser = function(user){
-  return _.pick(user, [ '_id', 'email' ]);
-};
-
 router.get('/me', Auth.ensureAuthenticated, function(req, res){
-  Response.Ok(res)(prepareToSendUser(req.user));
+  Response.Ok(res)(req.session.user);
 });
 
-router.post('/login', passport.authenticate('local'), function(req, res){
-  Response.Ok(res)(prepareToSendUser(req.user));
-});
+router.post('/login', Auth.authenticate, Auth.login);
 
-router.post('/logout', function(req, res){
-  req.logout();
-  Response.NoContent(res)();
-});
+router.post('/logout', Auth.logout);
 
 module.exports = router;

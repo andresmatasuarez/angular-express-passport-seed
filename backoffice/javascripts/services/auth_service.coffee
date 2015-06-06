@@ -2,22 +2,30 @@
 
 app = angular.module 'dashboard'
 
-app.factory 'AuthService', ($q, $sessionStorage, Restangular, API) ->
+app.factory 'AuthService', ($q, $sessionStorage, API) ->
 
   login: (email, password) ->
-    API.auth.login(email, password)
-    .then Restangular.stripRestangular
-    .then (userInfo) ->
-      $sessionStorage.user = userInfo
+    API.auth.login email, password
+    .then (res) -> $sessionStorage.token = res.token
 
   logout: ->
-    API.auth.logout()
-    .then ->
-      delete $sessionStorage.user
+    API.auth.logout().then => this.deleteUserData()
+
+  deleteUserData: ->
+    delete $sessionStorage.token
+    delete $sessionStorage.user
+
+  fetchUserData: ->
+    API.auth.me().then (user) -> $sessionStorage.user = user
+
+  ensureUserData: ->
+    if $sessionStorage.user then $q.when() else this.fetchUserData()
 
   isAuthenticated: ->
-    API.auth.me()
-    .then (user) ->
-      $sessionStorage.user = user
-    .catch (err) ->
-      $sessionStorage.user = {}
+    if !$sessionStorage.token
+      return $q.when false
+
+    this.ensureUserData()
+    .then  -> true
+    .catch -> false
+

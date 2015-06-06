@@ -1,7 +1,7 @@
 'use strict';
 
 var config   = require('config');
-var response = require('../utils/response');
+var Response = require('../utils/response');
 
 exports.applyTo = function(app){
 
@@ -31,7 +31,7 @@ exports.applyTo = function(app){
 
       // respond with json
       } else if (req.accepts('json')){
-        return response.NotFound(res)(message);
+        return Response.NotFound(res)(message);
 
       // default: respond with plain text
       } else {

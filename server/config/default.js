@@ -23,14 +23,21 @@ module.exports = {
     }
   },
   server: {
-    port           : process.env.PORT || 3000,
-    logs           : false,
-    session_secret : 'screamingforvengeance',
-    ssl            : {
-      port        : process.env.SSL_PORT || 443,
-      key         : 'server/config/ssl/key.pem',
-      certificate : 'server/config/ssl/certificate.crt',
-      passphrase  : 'server/config/ssl/passphrase'
+    port: process.env.PORT || 3000,
+    logs: false,
+    ssl: {
+      port: process.env.SSL_PORT || 443
+    },
+    auth: {
+      issuer           : 'ExpressJS/AngularJS seed',
+      token_secret     : 'mercyfulfate',
+      expiration       : 30 * 60 * 1000,
+      salt_work_factor : 10
     }
+  },
+  redis: {
+    keyspace : 'session:',
+    host     : 'localhost',
+    port     : 6379
   }
 };

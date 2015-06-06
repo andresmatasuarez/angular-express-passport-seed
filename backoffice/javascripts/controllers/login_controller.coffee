@@ -2,13 +2,13 @@
 
 app = angular.module 'dashboard'
 
-app.controller 'LoginController', ($scope, $state, AuthService) ->
+app.controller 'LoginController', ($rootScope, $scope, $state, AuthService) ->
   $scope.model = {};
 
   $scope.login = ->
     $scope.submitting = true;
     AuthService.login($scope.model.email, $scope.model.password)
-    .then        -> $state.go 'home'
+    .then        -> $rootScope.goToNextState()
     .catch (err) -> $scope.responseErrors = $scope.cleanResponseErrors err
     .finally     -> delete $scope.submitting
 

@@ -3,10 +3,9 @@
 var _            = require('lodash');
 var bb           = require('bluebird');
 var express      = require('express');
-var passport     = require('passport');
 var User         = require('../../model/user');
 var Response     = require('../../utils/response');
-var Auth         = require('../../utils/auth');
+var Auth         = require('../../middlewares').Auth;
 var RouteUtils   = require('../../utils/route_utils');
 var UserSettings = require('../../settings').user;
 

@@ -1,7 +1,7 @@
 'use strict';
 
 var _      = require('lodash');
-var bb     = require('bluebird');
+var BB     = require('bluebird');
 var chance = require('chance').Chance();
 var Log    = require('../server/utils/log');
 var User   = require('../server/model/user');
@@ -9,15 +9,20 @@ var User   = require('../server/model/user');
 var PASSWORD = 'test';
 
 module.exports = {
+
   seed: function(n){
-    return bb.all(_.times(n, function(i){
-      return User.registerAsync({
+    return BB.all(_.times(n, function(i){
+
+      var user = new User({
         email: chance.email({ domain: 'test.com' })
-      }, PASSWORD)
+      });
+
+      return User.registerAsync(user, PASSWORD)
       .then(function(user){
         Log.info(user.email + ' added with password: "' + PASSWORD + '".');
         return user;
       });
     }));
   }
+
 };

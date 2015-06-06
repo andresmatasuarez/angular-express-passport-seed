@@ -52,6 +52,7 @@
       <script src="javascripts/directives/navbar.js"></script>
       <script src="javascripts/init.js"></script>
       <script src="javascripts/services/api.js"></script>
+      <script src="javascripts/services/auth_interceptor.js"></script>
       <script src="javascripts/services/auth_service.js"></script>
       <!-- endinjector -->
     <!-- endbuild -->
@@ -60,11 +61,7 @@
 
   <body ng-class="{ 'login-body': isState('login') }">
 
-    <navbar ng-hide="isState('login')"></navbar>
-
-    <div class="container">
-      <div class="row" ui-view></div>
-    </div>
+    <div class="row" ui-view></div>
 
   </body>
 
