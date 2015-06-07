@@ -8,7 +8,7 @@ app = angular.module 'dashboard', [
   'angular-loading-bar'
   'ngAnimate'
   'ngMessages'
-  'ngTable'
+  'ngTableAsync'
   'ncy-angular-breadcrumb'
 ]
 

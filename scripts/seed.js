@@ -19,5 +19,6 @@ DB.connect()
   process.exit(0);
 })
 .catch(function(err){
+  console.log(JSON.stringify(err));
   process.exit(1);
 });

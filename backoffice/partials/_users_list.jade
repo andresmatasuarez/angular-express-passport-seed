@@ -5,35 +5,20 @@
     | New user
   h1 Users
 
-.users-list.container(ng-show="tableParams.total()")
-  .table-content.row
-    .panel.panel-default
-      table.table.ng-table.ng-table-responsive(ng-table="tableParams")
-        thead
-          tr
-            th _id
-            th Email
-            th Actions
-        tbody
-          tr(ng-repeat='user in $data')
-            td {{ user._id }}
-            td {{ user.email }}
-            td
-              button.btn.btn-default.btn-xs(type='button' ng-click="inspect(user)")
-                span.glyphicon.glyphicon-eye-open
-                | #{' '}Inspect
-
-              | #{' '}
-
-              button.btn.btn-danger.btn-xs(type='button' ng-click="confirmDeletion(user)")
-                span.glyphicon.glyphicon-trash
-                | #{' '}Delete
-
-      .loadingTable.text-center(ng-show="loadingTable")
-        i.fa.fa-spin.fa-4x.fa-spinner
-
-
-  .text-center(ng-table-pagination="tableParams" template-url="'partials/_pager.html'")
-
-.col-md-6.col-md-offset-3.text-muted.text-center(ng-show="!tableParams.total()")
-  h2 No available results to show
+ng-table-async.users-list(options="tableOptions")
+  nta-column(header="'_id'"   content="item._id")
+  nta-column(header="'Email'" content="item.email")
+  nta-column(header="'Actions'")
+    nta-action(
+      label   = "'View/Edit'"
+      perform = "inspect"
+      size    = "xs"
+      icon    = "glyphicon glyphicon-eye-open"
+    )
+    nta-action(
+      label   = "'Remove'"
+      perform = "remove"
+      size    = "xs"
+      icon    = "glyphicon glyphicon-trash"
+      style   = "danger"
+    )
