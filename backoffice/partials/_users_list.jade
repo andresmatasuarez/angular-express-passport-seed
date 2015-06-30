@@ -10,15 +10,16 @@ ng-table-async.users-list(options="tableOptions")
   nta-column(header="'Email'" content="item.email")
   nta-column(header="'Actions'")
     nta-action(
-      label   = "'View/Edit'"
-      perform = "inspect"
-      size    = "xs"
-      icon    = "glyphicon glyphicon-eye-open"
+      label  = "View/Edit"
+      action = "inspect"
+      size   = "xs"
+      icon   = "glyphicon glyphicon-eye-open"
     )
+    | &nbsp;
     nta-action(
-      label   = "'Remove'"
-      perform = "remove"
-      size    = "xs"
-      icon    = "glyphicon glyphicon-trash"
-      style   = "danger"
+      label  = "Remove"
+      action = "remove"
+      size   = "xs"
+      icon   = "glyphicon glyphicon-trash"
+      style  = "danger"
     )

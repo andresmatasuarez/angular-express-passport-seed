@@ -6,7 +6,6 @@ app = angular.module 'dashboard', [
   'restangular'
   'ngStorage'
   'angular-loading-bar'
-  'ngAnimate'
   'ngMessages'
   'ngTableAsync'
   'ncy-angular-breadcrumb'
@@ -27,7 +26,7 @@ app.config ($locationProvider, $urlRouterProvider, $stateProvider, cfpLoadingBar
 
   $httpProvider.interceptors.push 'AuthInterceptor'
 
-  $locationProvider.html5Mode  true
+  $locationProvider.html5Mode true
   $locationProvider.hashPrefix '!'
 
   cfpLoadingBarProvider.includeSpinner   = false
