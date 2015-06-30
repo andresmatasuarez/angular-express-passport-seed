@@ -140,7 +140,12 @@ module.exports = function(grunt){
     }, {
       expand : true,
       dest   : '<%= paths.dist.root %>',
-      src    : [ 'Procfile', 'package.json', 'server/**/*' ]
+      src    : [
+        'Procfile',
+        'package.json',
+        'server/**/*',
+        '!<%= paths.server.src %>/config/ssl/**/*'
+      ]
     }, {
       // Font-awesome for client
       expand : true,

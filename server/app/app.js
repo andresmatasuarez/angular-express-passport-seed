@@ -10,28 +10,23 @@ var AppConfig = require('./app_config');
 var AppErrors = require('./app_errors');
 var AppRoutes = require('./app_routes');
 
-// HTTP server object
-var serverHttp = express();
+var serverHttp = express(); // HTTP server object
+var serverHttps;            // HTTPS server object
+var setupPromise;           // Setup singleton promise
 
 // SSL certificate
-if (config.env !== config.environments.production){
+if (config.env === config.environments.development || config.env === config.environments.test){
   var sslOptions = {
     key  : fs.readFileSync(config.server.ssl.key),
     cert : fs.readFileSync(config.server.ssl.certificate)
   };
 
   if (!_.isEmpty(config.server.ssl.passphrase)){
-    if (fs.existsSync(config.server.ssl.passphrase)){
-      sslOptions.passphrase = fs.readFileSync(config.server.ssl.passphrase).toString().trim();
-    }
+    sslOptions.passphrase = config.server.ssl.passphrase;
   }
 
-  // HTTPS server object
-  var serverHttps = https.createServer(sslOptions, serverHttp);
+  serverHttps = https.createServer(sslOptions, serverHttp);
 }
-
-// Setup singleton promise
-var setupPromise;
 
 // Promise that is resolved when app has been successfully setup and rejected otherwise.
 function _setup(){

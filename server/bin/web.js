@@ -13,7 +13,7 @@ App.setup()
     Log.info('HTTP server listening on port ' + config.server.port);
   });
 
-  if (config.env !== config.environments.production){
+  if (config.env === config.environments.development || config.env === config.environments.test){
     App.server.https.listen(config.server.ssl.port, function(){
       Log.info('HTTPS server listening on port ' + config.server.ssl.port);
     });

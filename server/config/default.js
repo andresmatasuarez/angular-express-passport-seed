@@ -26,7 +26,10 @@ module.exports = {
     port: process.env.PORT || 3000,
     logs: false,
     ssl: {
-      port: process.env.SSL_PORT || 443
+      port        : process.env.SSL_PORT || 443,
+      key         : 'server/config/ssl/key.pem',
+      certificate : 'server/config/ssl/certificate.crt',
+      passphrase  : process.env.SSL_PASSPHRASE
     },
     auth: {
       issuer           : 'ExpressJS/AngularJS seed',
