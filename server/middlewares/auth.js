@@ -69,7 +69,7 @@ module.exports = {
 
   logout: function(req, res, next){
     if (!req.token){
-      return next();
+      return Response.NoContent(res)();
     }
 
     return jwtRedisService.expire(req.token)
