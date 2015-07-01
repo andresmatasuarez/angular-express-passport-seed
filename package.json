@@ -34,7 +34,6 @@
     "grunt": "^0.4.5",
     "grunt-concurrent": "^1.0.0",
     "jsonwebtoken": "^5.0.1",
-    "lodash": "^2.4.1",
     "mongoose": "~3.8.18",
     "morgan": "^1.4.1",
     "node-uuid": "^1.4.3",
@@ -43,7 +42,8 @@
     "passport-local-mongoose": "^1.0.0",
     "redis": "^0.12.1",
     "validator": "^3.22.1",
-    "winston": "^0.8.1"
+    "winston": "^0.8.1",
+    "lodash": "^3.10.0"
   },
   "devDependencies": {
     "chai": "^1.10.0",
