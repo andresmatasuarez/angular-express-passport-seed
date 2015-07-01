@@ -41,5 +41,6 @@ UserSchema.set('toObject', { transform: transform });
 
 // Promisify passport-local-mongoose plugin statics
 BB.promisifyAll(UserSchema.statics);
+BB.promisifyAll(UserSchema.methods);
 
 module.exports = mongoose.model('User', UserSchema);
