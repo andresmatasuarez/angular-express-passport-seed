@@ -16,17 +16,17 @@ var SuperAgentUtils = require('../superagent_utils');
 var server = request(App.server.https);
 var agent  = request.agent(App.server.https);
 
-var AgentUtils = new SuperAgentUtils(agent);
+var agentUtils = new SuperAgentUtils(agent);
 
 var performLogin = function(user, password){
   return server
   .post('/api/auth/login')
   .send({
-    email: user.email,
-    password: password
+    email    : user.email,
+    password : password
   })
   .endAsync()
-  .then(AgentUtils.saveCookies);
+  .then(agentUtils.saveJWT.bind(agentUtils));
 };
 
 describe('/api/users', function(){
@@ -55,7 +55,7 @@ describe('/api/users', function(){
     });
 
     it('/ should return user list', function(done){
-      AgentUtils.withCookies(server.get('/api/users'))
+      agentUtils.withJWT(server.get('/api/users'))
       .expect(200)
       .expect('Content-Type', /json/)
       .endAsync()
@@ -67,7 +67,7 @@ describe('/api/users', function(){
     });
 
     it('?skip=4 should return user list skipping the first four users', function(done){
-      AgentUtils.withCookies(server.get('/api/users?skip=4'))
+      agentUtils.withJWT(server.get('/api/users?skip=4'))
       .expect(200)
       .expect('Content-Type', /json/)
       .endAsync()
@@ -79,7 +79,7 @@ describe('/api/users', function(){
     });
 
     it('?skip=invalid_skip_param should return user list without skipping anything', function(done){
-      AgentUtils.withCookies(server.get('/api/users?skip=invalid_skip_param'))
+      agentUtils.withJWT(server.get('/api/users?skip=invalid_skip_param'))
       .expect(200)
       .expect('Content-Type', /json/)
       .endAsync()
@@ -91,7 +91,7 @@ describe('/api/users', function(){
     });
 
     it('?limit=4 should return the first four users', function(done){
-      AgentUtils.withCookies(server.get('/api/users?limit=4'))
+      agentUtils.withJWT(server.get('/api/users?limit=4'))
       .expect(200)
       .expect('Content-Type', /json/)
       .endAsync()
@@ -103,7 +103,7 @@ describe('/api/users', function(){
     });
 
     it('?limit=invalid_limit_param should return all users', function(done){
-      AgentUtils.withCookies(server.get('/api/users?limit=invalid_limit_param'))
+      agentUtils.withJWT(server.get('/api/users?limit=invalid_limit_param'))
       .expect(200)
       .expect('Content-Type', /json/)
       .endAsync()
@@ -116,7 +116,7 @@ describe('/api/users', function(){
 
     it('/:id should return user with _id = :id', function(done){
       var user = _.first(seededUsers);
-      AgentUtils.withCookies(server.get('/api/users/' + user._id))
+      agentUtils.withJWT(server.get('/api/users/' + user._id))
       .expect(200)
       .expect('Content-Type', /json/)
       .endAsync()
@@ -129,7 +129,7 @@ describe('/api/users', function(){
     });
 
     it('/total should return total user list size', function(done){
-      AgentUtils.withCookies(server.get('/api/users/total'))
+      agentUtils.withJWT(server.get('/api/users/total'))
       .expect(200)
       .expect('Content-Type', /json/)
       .endAsync()
@@ -141,7 +141,7 @@ describe('/api/users', function(){
     });
 
     it('/:not_found_id should respond with 404', function(done){
-      AgentUtils.withCookies(server.get('/api/users/' + mongoose.Types.ObjectId()))
+      agentUtils.withJWT(server.get('/api/users/' + mongoose.Types.ObjectId()))
       .expect(404)
       .expect('Content-Type', /json/)
       .endAsync()
@@ -154,7 +154,7 @@ describe('/api/users', function(){
     });
 
     it('/:invalid_id should respond with 400', function(done){
-      AgentUtils.withCookies(server.get('/api/users/powerfromhell'))
+      agentUtils.withJWT(server.get('/api/users/powerfromhell'))
       .expect(400)
       .expect('Content-Type', /json/)
       .endAsync()
@@ -185,7 +185,7 @@ describe('/api/users', function(){
     });
 
     it('/ should create a new user', function(done){
-      AgentUtils.withCookies(server.post('/api/users'))
+      agentUtils.withJWT(server.post('/api/users'))
       .send({
         email: 'rudimentary@peni.com',
         password: 'rudimentarypassword'
@@ -205,7 +205,7 @@ describe('/api/users', function(){
     });
 
     it('/ should fail creation of a user with an already-existing email', function(done){
-      AgentUtils.withCookies(server.post('/api/users'))
+      agentUtils.withJWT(server.post('/api/users'))
       .send({
         email: 'rudimentary@peni.com',
         password: 'rudimentarypassword'
@@ -224,7 +224,7 @@ describe('/api/users', function(){
     });
 
     it('/ (no email) should fail', function(done){
-      AgentUtils.withCookies(server.post('/api/users'))
+      agentUtils.withJWT(server.post('/api/users'))
       .send({
         password: 'rudimentarypassword'
       })
@@ -241,7 +241,7 @@ describe('/api/users', function(){
     });
 
     it('/ (no password) should fail', function(done){
-      AgentUtils.withCookies(server.post('/api/users'))
+      agentUtils.withJWT(server.post('/api/users'))
       .send({
         email: 'musta@paraati.com'
       })
