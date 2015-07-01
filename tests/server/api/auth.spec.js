@@ -2,13 +2,13 @@
 
 require('../../../server/run');
 
-var _           = require('lodash');
-var request     = require('supertest');
-var expect      = require('chai').expect;
-var App         = require('../../../server/app');
-var User        = require('../../../server/model/user');
-var UserSeed    = require('../../../seeds/user');
-var TestUtils   = require('../../../tests/utils');
+var _         = require('lodash');
+var request   = require('supertest');
+var expect    = require('chai').expect;
+var App       = require('../../../server/app');
+var User      = require('../../../server/model/user');
+var UserSeed  = require('../../../seeds/user');
+var TestUtils = require('../../../tests/utils');
 
 var server = request(App.server.https);
 
@@ -39,7 +39,8 @@ describe('/api/auth', function(){
     .expect('Content-Type', /json/)
     .endAsync()
     .then(function(res){
-      expect(res.body).to.be.empty;
+      expect(res.body).not.to.be.empty;
+      expect(res.body.message).to.be.equals('No token provided.');
       done();
     })
     .catch(done);
