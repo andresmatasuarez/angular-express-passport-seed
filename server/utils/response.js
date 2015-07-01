@@ -2,27 +2,29 @@
 
 var _ = require('lodash');
 
-var _isSerializableAndObject = function (data) {
+var _isSerializableAndObject = function(data){
   return typeof data === 'object';
 };
 
-var _isSerializableAndNotObject = function (data) {
+var _isSerializableAndNotObject = function(data){
   return _.contains(['string', 'number', 'boolean'], typeof data);
 };
 
-var _payload = function(data) {
-  if (_isSerializableAndObject(data)) {
+var _payload = function(data){
+  if (_.isError(data)){
+    return { error: data.toString() };
+  } else if (_isSerializableAndObject(data)){
     return data;
-  } else if (_isSerializableAndNotObject(data)) {
+  } else if (_isSerializableAndNotObject(data)){
     return { message: data };
   } else {
     return {};
   }
 };
 
-var _newResponse = function(statusCode) {
-  return function (httpResponse) {
-    return function(data) {
+var _newResponse = function(statusCode){
+  return function(httpResponse){
+    return function(data){
       httpResponse.status(statusCode);
       httpResponse.type('application/json');
       httpResponse.json(_payload(data));
@@ -95,9 +97,9 @@ Response.NetworkAuthenticationRequired = _newResponse(511);
 
 // special combinations
 
-Response.OkOrNotFound = function (httpResponse) {
-  return function(data) {
-    if (data === null) {
+Response.OkOrNotFound = function(httpResponse){
+  return function(data){
+    if (data === null){
       Response.NotFound(httpResponse)(data);
     } else {
       Response.Ok(httpResponse)(data);
@@ -105,10 +107,10 @@ Response.OkOrNotFound = function (httpResponse) {
   };
 };
 
-Response.NotFoundOr = function(otherResponse) {
-  return function (httpResponse) {
-    return function(data) {
-      if (data === null) {
+Response.NotFoundOr = function(otherResponse){
+  return function(httpResponse){
+    return function(data){
+      if (data === null){
         Response.NotFound(httpResponse)(data);
       } else {
         otherResponse(httpResponse)(data);
@@ -117,10 +119,10 @@ Response.NotFoundOr = function(otherResponse) {
   };
 };
 
-Response.ReturnError = function(cases) {
-  return function (httpResponse) {
-    return function (error) {
-      if (cases[error.name]) {
+Response.ReturnError = function(cases){
+  return function(httpResponse){
+    return function(error){
+      if (cases[error.name]){
         cases[error.name](httpResponse)(error);
       } else {
         Response.InternalServerError(httpResponse)(error);
