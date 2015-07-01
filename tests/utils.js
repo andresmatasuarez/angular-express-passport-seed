@@ -4,6 +4,8 @@ var _        = require('lodash');
 var expect   = require('chai').expect;
 var mongoose = require('mongoose');
 
+var DEFAULT_SEEDING_TIMEOUT_PER_DOCUMENT = 1000;
+
 exports.prepareSeededObjects = function(seeded, paths, sortBy){
   var op = _(seeded)
   .map(function(item){
@@ -20,7 +22,8 @@ exports.prepareSeededObjects = function(seeded, paths, sortBy){
 };
 
 exports.seedingTimeout = function(testSuite, quantityToSeed, timeoutPerDocument){
-  testSuite.timeout(quantityToSeed * (timeoutPerDocument || 1000));
+  timeoutPerDocument = timeoutPerDocument || DEFAULT_SEEDING_TIMEOUT_PER_DOCUMENT;
+  testSuite.timeout(quantityToSeed * timeoutPerDocument);
 };
 
 exports.assertUnorderedArrays = function(anArray, anotherArray){
