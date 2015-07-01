@@ -25,4 +25,8 @@ SuperAgentUtils.prototype.saveJWT = function(res){
   return res;
 };
 
+SuperAgentUtils.prototype.resetJWT = function(){
+  this.jwt = undefined;
+};
+
 module.exports = SuperAgentUtils;
