@@ -33,7 +33,6 @@ describe('/api/users', function(){
 
   describe('GET', function(){
 
-    // Increase default timeout to let user seed do its work.
     var usersToSeed = 10;
     TestUtils.seedingTimeout(this, usersToSeed);
 
@@ -49,6 +48,14 @@ describe('/api/users', function(){
         return performLogin(_.first(seeded), 'test');
       })
       .then(function(res){
+        done();
+      })
+      .catch(done);
+    });
+
+    after(function(done){
+      User.removeAsync()
+      .then(function(){
         done();
       })
       .catch(done);
@@ -72,7 +79,7 @@ describe('/api/users', function(){
       .expect('Content-Type', /json/)
       .endAsync()
       .then(function(res){
-        expect(res.body).to.be.eql(_.rest(seededUsers, 4));
+        expect(res.body).to.be.eql(_.slice(seededUsers, 4));
         done();
       })
       .catch(done);
@@ -96,7 +103,7 @@ describe('/api/users', function(){
       .expect('Content-Type', /json/)
       .endAsync()
       .then(function(res){
-        expect(res.body).to.be.eql(_.first(seededUsers, 4));
+        expect(res.body).to.be.eql(_.slice(seededUsers, 0, 4));
         done();
       })
       .catch(done);
@@ -170,10 +177,13 @@ describe('/api/users', function(){
 
   describe('POST', function(){
 
+    var usersToSeed = 1;
+    TestUtils.seedingTimeout(this, usersToSeed, 3000);
+
     before(function(done){
       App.setup()
       .thenReturn(User.removeAsync())
-      .thenReturn(UserSeed.seed(1))
+      .thenReturn(UserSeed.seed(usersToSeed))
       .then(_.partialRight(TestUtils.prepareSeededObjects, UserSettings.paths, function(item){ return item.email; }))
       .then(function(seeded){
         return performLogin(_.first(seeded), 'test');
@@ -184,11 +194,20 @@ describe('/api/users', function(){
       .catch(done);
     });
 
+    after(function(done){
+      User.removeAsync()
+      .then(function(){
+        done();
+      })
+      .catch(done);
+    });
+
+
     it('/ should create a new user', function(done){
       agentUtils.withJWT(server.post('/api/users'))
       .send({
-        email: 'rudimentary@peni.com',
-        password: 'rudimentarypassword'
+        email    : 'rudimentary@peni.com',
+        password : 'rudimentarypassword'
       })
       .expect(200)
       .expect('Content-Type', /json/)
