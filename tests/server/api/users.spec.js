@@ -229,7 +229,7 @@ describe('/api/users', function(){
         email: 'rudimentary@peni.com',
         password: 'rudimentarypassword'
       })
-      .expect(500)
+      .expect(400)
       .expect('Content-Type', /json/)
       .endAsync()
       .then(function(res){
@@ -247,7 +247,7 @@ describe('/api/users', function(){
       .send({
         password: 'rudimentarypassword'
       })
-      .expect(500)
+      .expect(400)
       .expect('Content-Type', /json/)
       .endAsync()
       .then(function(res){
@@ -264,7 +264,7 @@ describe('/api/users', function(){
       .send({
         email: 'musta@paraati.com'
       })
-      .expect(500)
+      .expect(400)
       .expect('Content-Type', /json/)
       .endAsync()
       .then(function(res){

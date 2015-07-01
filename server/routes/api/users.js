@@ -1,13 +1,14 @@
 'use strict';
 
-var _            = require('lodash');
-var bb           = require('bluebird');
-var express      = require('express');
-var User         = require('../../model/user');
-var Response     = require('../../utils/response');
-var Auth         = require('../../middlewares').Auth;
-var RouteUtils   = require('../../utils/route_utils');
-var UserSettings = require('../../settings').user;
+var _               = require('lodash');
+var bb              = require('bluebird');
+var express         = require('express');
+var BadRequestError = require('passport-local-mongoose/lib/badrequesterror');
+var User            = require('../../model/user');
+var Response        = require('../../utils/response');
+var Auth            = require('../../middlewares').Auth;
+var RouteUtils      = require('../../utils/route_utils');
+var UserSettings    = require('../../settings').user;
 
 var UserErrors   = UserSettings.errors;
 
@@ -53,6 +54,7 @@ router.get('/:id', Auth.ensureAuthenticated, RouteUtils.validateId({ error: User
 router.post('/', Auth.ensureAuthenticated, function(req, res){
   User.registerAsync(new User({ email : req.body.email }), req.body.password)
   .then(Response.Ok(res))
+  .catch(BadRequestError, Response.BadRequest(res))
   .catch(Response.InternalServerError(res));
 });
 
