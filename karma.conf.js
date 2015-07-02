@@ -18,18 +18,18 @@ module.exports = function(config) {
     files: [
       //bower:js
       'bower_components/jquery/dist/jquery.js',
-      'bower_components/angular/angular.js',
       'bower_components/bootstrap/dist/js/bootstrap.js',
+      'bower_components/angular/angular.js',
       'bower_components/angular-ui-router/release/angular-ui-router.js',
       'bower_components/lodash/dist/lodash.compat.js',
       'bower_components/restangular/dist/restangular.js',
       'bower_components/ngstorage/ngStorage.js',
       'bower_components/angular-loading-bar/build/loading-bar.js',
-      'bower_components/angular-animate/angular-animate.js',
-      'bower_components/ng-table/ng-table.js',
-      'bower_components/angular-bootstrap/ui-bootstrap-tpls.js',
       'bower_components/angular-breadcrumb/release/angular-breadcrumb.js',
+      'bower_components/angular-bootstrap/ui-bootstrap-tpls.js',
       'bower_components/angular-messages/angular-messages.js',
+      'bower_components/ng-table/dist/ng-table.min.js',
+      'bower_components/ng-table-async/dist/ng-table-async-tpls.js',
       'bower_components/angular-mocks/angular-mocks.js',
       //endbower
 

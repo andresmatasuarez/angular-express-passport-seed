@@ -43,6 +43,7 @@ module.exports = function(grunt){
 
   grunt.config('wiredep.karma', {
     src: 'karma.conf.js',
+    ignorePath:  /\.\.\//,
     fileTypes: {
       js: {
         block: /(([\s\t]*)\/\/\s*bower:*(\S*))(\n|\r|.)*?(\/\/\s*endbower)/gi,

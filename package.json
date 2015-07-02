@@ -44,7 +44,8 @@
     "validator": "^3.22.1",
     "winston": "^0.8.1",
     "lodash": "^3.10.0",
-    "serve-favicon": "^2.3.0"
+    "serve-favicon": "^2.3.0",
+    "grunt-wiredep": "^2.0.0"
   },
   "devDependencies": {
     "chai": "^1.10.0",
