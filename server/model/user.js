@@ -7,7 +7,7 @@ var config                = require('config');
 var mongoose              = require('mongoose');
 var validator             = require('validator');
 var passportLocalMongoose = require('passport-local-mongoose');
-var UserSettings          = require('../settings').user;
+var UserSettings          = require('../settings').User;
 
 var Schema = mongoose.Schema;
 

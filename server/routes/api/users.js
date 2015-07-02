@@ -8,7 +8,7 @@ var User            = require('../../model/user');
 var Response        = require('../../utils/response');
 var Auth            = require('../../middlewares').Auth;
 var RouteUtils      = require('../../utils/route_utils');
-var UserSettings    = require('../../settings').user;
+var UserSettings    = require('../../settings').User;
 
 var UserErrors   = UserSettings.errors;
 

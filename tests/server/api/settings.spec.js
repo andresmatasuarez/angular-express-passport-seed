@@ -10,13 +10,13 @@ describe('API settings', function(){
 
     it('Exposed paths should be "_id" and "email"', function(){
       var userPaths = [ '_id', 'email' ];
-      expect(_.difference(APISettings.user.paths, userPaths)).to.be.empty;
-      expect(_.difference(userPaths, APISettings.user.paths)).to.be.empty;
+      expect(_.difference(APISettings.User.paths, userPaths)).to.be.empty;
+      expect(_.difference(userPaths, APISettings.User.paths)).to.be.empty;
     });
 
     it('List should be sorted in ascending order by "email"', function(){
-      expect(APISettings.user.sort).to.have.keys([ 'email' ]);
-      expect(APISettings.user.sort.email).and.equal('asc');
+      expect(APISettings.User.sort).to.have.keys([ 'email' ]);
+      expect(APISettings.User.sort.email).and.equal('asc');
     });
 
   });

@@ -1,6 +1,6 @@
 'use strict';
 
-exports.user = {
+module.exports = {
   paths  : [ '_id', 'email' ],
   sort   : {
     email: 'asc'
