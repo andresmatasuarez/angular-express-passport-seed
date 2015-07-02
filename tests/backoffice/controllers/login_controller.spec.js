@@ -1,38 +1,22 @@
 'use strict';
 
-var NOT_AUTHORIZED = '403 Not Authorized';
-
 describe('Controller: LoginController', function(){
 
-  var $scope, $q;
-  var stateSpy, authServiceSpy;
-  var login = {
-    username        : 'username',
-    password        : 'password',
-    invalidPassword : 'invalidPassword'
-  };
+  var $scope, $q, $rootScope, $controller, AuthService;
 
   beforeEach(module('dashboard'));
-  beforeEach(module('stateMock'));
+  beforeEach(module('dashboardTemplates'));
 
-  beforeEach(inject(function(_$rootScope_, $controller, _$q_){
-    $scope = _$rootScope_.$new();
-    $q = _$q_;
-
-    stateSpy = {
-      go: sinon.spy()
-    };
-
-    authServiceSpy = {
-      login: sinon.spy(function(){
-        return $scope.model.password === 'password' ? $q.when() : $q.reject(NOT_AUTHORIZED);
-      })
-    };
+  beforeEach(inject(function($injector){
+    $controller = $injector.get('$controller');
+    $rootScope  = $injector.get('$rootScope');
+    $q          = $injector.get('$q');
+    $scope      = $rootScope.$new();
+    AuthService = {};
 
     $controller('LoginController', {
       $scope      : $scope,
-      $state      : stateSpy,
-      AuthService : authServiceSpy
+      AuthService : AuthService
     });
   }));
 
@@ -43,39 +27,31 @@ describe('Controller: LoginController', function(){
 
   describe('$scope.login', function(){
 
-    it('should set $scope.submitting to true before performing any operation', function(done){
-      authServiceSpy.login = sinon.spy(function(){
+    var login = {
+      username        : 'username',
+      password        : 'password',
+      invalidPassword : 'invalidPassword'
+    };
+
+    it('should set update $scope.submitting before and after completion', function(done){
+      sinon.stub($rootScope, 'goToNextState');
+
+      AuthService.login = sinon.spy(function(){
         expect(!!$scope.submitting).to.be.true;
         return $q.when();
       });
 
+      $scope.model.email    = login.username;
+      $scope.model.password = login.password;
       $scope.login()
       .then(function(){
+        expect(AuthService.login).to.have.been.calledOnce;
+        expect(AuthService.login).to.have.been.calledWithExactly(login.username, login.password);
+        expect($rootScope.goToNextState).to.have.been.calledOnce;
         expect(!!$scope.submitting).to.be.false;
-        done();
-      });
-
-      $scope.$apply();
-    });
-
-    it('should call AuthService.login method with model.email and model.password credentials', function(){
-      $scope.model.email = login.username;
-      $scope.model.password = login.password;
-
-      $scope.login();
-      $scope.$apply();
-      expect(authServiceSpy.login).to.have.been.calledOnce;
-      expect(authServiceSpy.login).to.have.been.calledWithExactly(login.username, login.password);
-    });
-
-    it('should go to "home" state on successful login', function(done){
-      $scope.model.email = login.username;
-      $scope.model.password = login.password;
-
-      $scope.login()
+      })
       .then(function(){
-        expect(stateSpy.go).to.have.been.calledOnce;
-        expect(stateSpy.go).to.have.been.calledWithExactly('home');
+        $rootScope.goToNextState.restore();
         done();
       });
 
@@ -83,13 +59,22 @@ describe('Controller: LoginController', function(){
     });
 
     it('should expose errors under $scope.responseErrors on unsuccessful login', function(done){
-      $scope.model.email = login.username;
-      $scope.model.password = login.invalidPassword;
 
+      var NOT_AUTHORIZED = '403 Not Authorized';
+
+      AuthService.login = sinon.spy(function(){
+        expect(!!$scope.submitting).to.be.true;
+        return $q.reject(NOT_AUTHORIZED);
+      });
+
+      $scope.model.email    = login.username;
+      $scope.model.password = login.invalidPassword;
       $scope.login()
       .then(function(){
         expect($scope.responseErrors).to.be.eql([ NOT_AUTHORIZED ]);
-        expect(stateSpy.go.callCount).to.be.eql(0);
+        expect(!!$scope.submitting).to.be.false;
+      })
+      .then(function(){
         done();
       });
 

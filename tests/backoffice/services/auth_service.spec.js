@@ -1,32 +1,35 @@
 'use strict';
 
-var USER = { _id: '123456789012345678901234', email: 'test@test.com' };
-var PASSWORD = '123456';
+var USER             = { _id: '123456789012345678901234', email: 'test@test.com' };
+var TOKEN            = 'this_is_a_jwt_token';
+var PASSWORD         = '123456';
 var INVALID_PASSWORD = '666';
 
 describe('Service: AuthService', function(){
 
-  var helperUtils;
   var APISpy = {};
 
-  beforeEach(angular.mock.module('dashboard'));
+  beforeEach(module('dashboard'));
   beforeEach(module('dashboardTemplates'));
-  beforeEach(module('helpers'));
 
   beforeEach(module(function($provide){
     $provide.value('API', APISpy);
   }));
 
-  beforeEach(inject(function($q, _HelperUtils_){
-    helperUtils = _HelperUtils_;
+  beforeEach(inject(function($injector){
+    var $q = $injector.get('$q');
+
     APISpy.auth = {
       me: sinon.spy(function(){
         return $q.when(USER);
       }),
       login: sinon.spy(function(email, password){
         return password === PASSWORD ? $q.when({
-          _id: USER._id,
-          email: email
+          token: TOKEN,
+          user: {
+            _id: USER._id,
+            email: email
+          }
         }) : $q.reject();
       })
     };
@@ -38,36 +41,36 @@ describe('Service: AuthService', function(){
 
   describe('login', function(){
 
-    var AuthService, $sessionStorage, $q;
+    var AuthService, $sessionStorage, $q, $rootScope, HelperUtils;
 
-    beforeEach(inject(function(_AuthService_, _$sessionStorage_, _$q_){
-      AuthService = _AuthService_;
-      $sessionStorage = _$sessionStorage_;
-      $q = _$q_;
+    beforeEach(inject(function($injector){
+      AuthService     = $injector.get('AuthService');
+      $sessionStorage = $injector.get('$sessionStorage');
+      $q              = $injector.get('$q');
+      $rootScope      = $injector.get('$rootScope');
+
       delete $sessionStorage.user;
     }));
 
-    it('should set logged user _id and email in SessionStorage on success', function(done){
-      AuthService.login(USER.email, PASSWORD)
-      .then(function(logged){
-        expect(APISpy.auth.login).to.have.been.calledWithExactly(USER.email, PASSWORD);
-        expect($sessionStorage.user).to.be.eql(USER);
-        done();
-      });
-
-      helperUtils.digest();
-    });
-
-    it('should not set anything in SessionStorage on error', function(done){
+    it('should set logged user _id and email in SessionStorage on success', function(){
       expect($sessionStorage.user).to.be.undefined;
 
-      AuthService.login(USER.email, INVALID_PASSWORD)
-      .catch(function(err){
-        expect($sessionStorage.user).to.be.undefined;
-        done();
-      });
+      var result;
+      AuthService.login(USER.email, PASSWORD).then(function(r){ result = r; });
 
-      helperUtils.digest();
+      $rootScope.$apply();
+      expect(APISpy.auth.login).to.have.been.calledWithExactly(USER.email, PASSWORD);
+      expect($sessionStorage.token).to.be.eql(TOKEN);
+    });
+
+    it('should not set anything in SessionStorage on error', function(){
+      expect($sessionStorage.user).to.be.undefined;
+
+      var error;
+      AuthService.login(USER.email, INVALID_PASSWORD).catch(function(err){ error = err; });
+
+      $rootScope.$apply();
+      expect($sessionStorage.token).to.be.undefined;
     });
 
   });

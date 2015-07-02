@@ -80,11 +80,11 @@
     "karma-html2js-preprocessor": "^0.1.0",
     "karma-mocha": "^0.1.10",
     "karma-mocha-reporter": "^0.3.1",
-    "karma-ng-jade2js-preprocessor": "^0.1.5",
     "karma-sinon-chai": "^0.2.0",
     "mocha": "^2.0.1",
     "supertest": "^0.14.0",
     "time-grunt": "^1.0.0",
-    "usemin-patterns": "^0.1.4"
+    "usemin-patterns": "^0.1.4",
+    "karma-ng-jade2js-preprocessor": "^0.2.0"
   }
 }
