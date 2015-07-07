@@ -8,13 +8,12 @@ module.exports = {
     logs: true,
     ssl: {
       port: 3001
+    },
+    auth: {
+      token_secret: 'mercyfulfate'
     }
   },
   mongo: {
     uri: 'mongodb://localhost/seed_dev'
-  },
-  redis: {
-    host : 'localhost',
-    port : 6379
   }
 };

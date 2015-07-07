@@ -1,7 +1,10 @@
 'use strict';
 
+var url          = require('url');
+var Environments = require('./environments');
+
 module.exports = {
-  environments: require('./environments'),
+  environments: Environments,
   app: {
     client: {
       root   : '../../client',
@@ -32,15 +35,18 @@ module.exports = {
       passphrase  : process.env.SSL_PASSPHRASE
     },
     auth: {
-      issuer           : 'ExpressJS/AngularJS seed',
-      token_secret     : 'mercyfulfate',
-      expiration       : 30 * 60 * 1000,
-      salt_work_factor : 10
+      issuer       : 'ExpressJS/AngularJS seed',
+      token_secret : process.env.TOKEN_SECRET,
+      expiration   : 30 * 60 * 1000
     }
+  },
+  mongo: {
+    uri: process.env.MONGO_URL
   },
   redis: {
     keyspace : 'session:',
-    host     : 'localhost',
-    port     : 6379
+    host     : process.env.REDIS_URL ? url.parse(process.env.REDIS_URL).hostname           : undefined,
+    port     : process.env.REDIS_URL ? url.parse(process.env.REDIS_URL).port               : undefined,
+    pass     : process.env.REDIS_URL ? url.parse(process.env.REDIS_URL).auth.split(':')[1] : undefined
   }
 };
