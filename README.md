@@ -65,7 +65,6 @@ Don't forget to add the `ssl.passphrase` entry with the passphrase you set.
   2. [JSHint](http://jshint.com/). Supported editors [plugins](http://jshint.com/install/)
 
 * Start web server: `grunt serve`
-* Start subscription worker: `node server/bin/worker.js`
 
 ## Production environments
 * Build project: `grunt build`
