@@ -1,8 +1,10 @@
 'use strict'
 
-app = angular.module 'dashboard'
+angular   = require 'angular'
+Dashboard = require '../app'
 
-app.factory 'AuthService', ($q, $sessionStorage, API) ->
+angular.module Dashboard
+.factory 'AuthService', ($q, $sessionStorage, API) ->
 
   login: (email, password) ->
     API.auth.login email, password

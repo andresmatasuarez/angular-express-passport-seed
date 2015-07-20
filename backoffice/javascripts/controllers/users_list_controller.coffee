@@ -22,5 +22,5 @@ app.controller 'UsersListController', ($scope, $q, $state, API) ->
       remove:
         method : (user) -> API.users.delete user._id
         dialog :
-          templateUrl : 'partials/_delete_user_confirm.html'
+          templateUrl : require '../partials/_delete_user_confirm.jade'
           params      : (item) -> username: item.email

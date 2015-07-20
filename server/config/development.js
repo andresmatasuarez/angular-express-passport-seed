@@ -4,6 +4,14 @@ var Environments = require('./environments');
 
 module.exports = {
   env: Environments.development,
+  app: {
+    client: {
+      root   : '../../.tmp'
+    },
+    backoffice: {
+      root   : '../../.tmp'
+    }
+  },
   server: {
     logs: true,
     ssl: {

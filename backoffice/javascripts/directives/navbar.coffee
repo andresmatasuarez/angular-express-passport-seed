@@ -6,7 +6,7 @@ app.directive 'navbar', ($state, $sessionStorage, AuthService) ->
   restrict    : 'E'
   replace     : true
   scope       : {}
-  templateUrl : 'partials/directives/_navbar.html'
+  templateUrl : require '../partials/directives/_navbar.jade'
   link        : ($scope, element, attrs) ->
     $scope._ = _
     $scope.$storage = $sessionStorage

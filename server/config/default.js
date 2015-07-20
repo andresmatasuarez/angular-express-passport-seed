@@ -7,13 +7,15 @@ module.exports = {
   environments: Environments,
   app: {
     client: {
-      root   : '../../client',
+      root   : '../../assets',
+      index  : 'web.html',
       tmp    : '../../.tmp/client',
       module : 'web',
       base   : '/web/'
     },
     backoffice: {
-      root   : '../../backoffice',
+      root   : '../../assets',
+      index  : 'dashboard.html',
       tmp    : '../../.tmp/backoffice',
       module : 'dashboard',
       base   : '/dashboard/'
@@ -29,6 +31,7 @@ module.exports = {
     port: process.env.PORT || 3000,
     logs: false,
     ssl: {
+      enable      : true,
       port        : process.env.SSL_PORT || 443,
       key         : 'server/config/ssl/key.pem',
       certificate : 'server/config/ssl/certificate.crt',

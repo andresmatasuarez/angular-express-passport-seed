@@ -14,8 +14,8 @@ var serverHttp = express(); // HTTP server object
 var serverHttps;            // HTTPS server object
 var setupPromise;           // Setup singleton promise
 
-// SSL certificate
-if (config.env === config.environments.development || config.env === config.environments.test){
+// SSL support
+if (config.server && config.server.ssl && config.server.ssl.enable){
   var sslOptions = {
     key  : fs.readFileSync(config.server.ssl.key),
     cert : fs.readFileSync(config.server.ssl.certificate)

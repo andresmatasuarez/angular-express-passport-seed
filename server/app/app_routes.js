@@ -21,21 +21,14 @@ exports.applyTo = function(app){
   app.use(config.app.client.base    , express.static(path.join(__dirname, config.app.client.root)));
   app.use(config.app.backoffice.base, express.static(path.join(__dirname, config.app.backoffice.root)));
 
-  if(config.env !== config.environments.production){
-    app.use(require('connect-livereload')());
-    app.use(config.app.client.base    , express.static(path.join(__dirname, config.app.client.tmp)));
-    app.use(config.app.backoffice.base, express.static(path.join(__dirname, config.app.backoffice.tmp)));
-    app.use('/bower_components'       , express.static(path.join(__dirname, config.app.dependencies.frontend)));
-  }
-
   // URL rewrite for non-HTML5 browsers
   // Just send the index.html for other files to support HTML5Mode
   app.all(config.app.backoffice.base + '*', function(req, res, next){
-    res.sendfile('index.html', { root: path.join(__dirname, config.app.backoffice.root) });
+    res.sendFile(config.app.backoffice.index, { root: path.join(__dirname, config.app.backoffice.root) });
   });
 
   app.all(config.app.client.base + '*', function(req, res, next){
-    res.sendfile('index.html', { root: path.join(__dirname, config.app.client.root) });
+    res.sendFile(config.app.client.index, { root: path.join(__dirname, config.app.client.root) });
   });
 
   // API

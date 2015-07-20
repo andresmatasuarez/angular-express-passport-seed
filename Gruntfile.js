@@ -8,10 +8,11 @@ module.exports = function(grunt){
 
   // Load grunt tasks automatically when needed.
   jit(grunt, {
-    injector      : 'grunt-asset-injector',
-    useminPrepare : 'grunt-usemin',
-    express       : 'grunt-express-server',
-    ngtemplates   : 'grunt-angular-templates'
+    injector             : 'grunt-asset-injector',
+    useminPrepare        : 'grunt-usemin',
+    express              : 'grunt-express-server',
+    ngtemplates          : 'grunt-angular-templates',
+    'webpack-dev-server' : 'grunt-webpack',
   });
 
   // Time how long tasks take. Can help when optimizing build times.
@@ -37,6 +38,7 @@ module.exports = function(grunt){
         root   : 'dist',
         client : 'dist/client',
         bo     : 'dist/backoffice',
+        assets : 'dist/assets',
         server : 'dist/server'
       },
       tests: {

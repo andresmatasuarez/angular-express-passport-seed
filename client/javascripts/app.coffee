@@ -1,5 +1,7 @@
 'use strict'
 
+angular = require 'angular'
+
 app = angular.module 'web', []
 
 app.config ($locationProvider) ->
@@ -7,3 +9,5 @@ app.config ($locationProvider) ->
   $locationProvider.hashPrefix '!'
 
 app.run()
+
+module.exports = app

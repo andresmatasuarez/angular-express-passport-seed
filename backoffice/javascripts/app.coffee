@@ -1,5 +1,26 @@
 'use strict'
 
+require 'expose?_!lodash'
+require 'expose?angular!angular'
+
+require 'angular-bootstrap'
+require 'angular-breadcrumb'
+require 'angular-messages'
+require 'angular-ui-router'
+require 'ngstorage'
+require 'restangular'
+require 'angular-loading-bar'
+
+# Fix this ugly bit of code
+require 'ng-table-async/node_modules/ng-table/dist/ng-table'
+require 'ng-table-async'
+
+require './modules/auth_interceptor'
+
+angular = require 'angular'
+
+module.exports = 'dashboard'
+
 app = angular.module 'dashboard', [
   'ui.router'
   'ui.bootstrap'
@@ -9,7 +30,11 @@ app = angular.module 'dashboard', [
   'ngMessages'
   'ngTableAsync'
   'ncy-angular-breadcrumb'
+  'auth-interceptor'
 ]
+
+require './services/auth_service'
+require './services/api'
 
 resolveAuthenticationAndEmitIf = (eventToEmit, emitIfAuthenticated) ->
   # Manual dependency injection annotations, as ngAnnotate is having problems
@@ -40,14 +65,14 @@ app.config ($locationProvider, $urlRouterProvider, $stateProvider, cfpLoadingBar
 
   $stateProvider.state 'login',
     url         : '/login'
-    templateUrl : 'partials/_login.html'
+    templateUrl : require '../partials/_login.jade'
     controller  : 'LoginController'
     resolve     :
       auth: resolveAuthenticationAndEmitIf 'alreadylogged', true
 
   $stateProvider.state 'dashboard',
     abstract      : true
-    templateUrl   : 'partials/_dashboard.html'
+    templateUrl   : require '../partials/_dashboard.jade'
     resolve       :
       auth: resolveAuthenticationAndEmitIf 'unauthorized', false
     ncyBreadcrumb :
@@ -56,7 +81,7 @@ app.config ($locationProvider, $urlRouterProvider, $stateProvider, cfpLoadingBar
   $stateProvider.state 'home',
     parent        : 'dashboard'
     url           : '/'
-    templateUrl   : 'partials/_home.html'
+    templateUrl   : require '../partials/_home.jade'
     resolve       :
       auth: resolveAuthenticationAndEmitIf 'unauthorized', false
     ncyBreadcrumb :
@@ -66,7 +91,7 @@ app.config ($locationProvider, $urlRouterProvider, $stateProvider, cfpLoadingBar
     parent        : 'dashboard'
     abstract      : true
     url           : '/users'
-    templateUrl   : 'partials/_breadcrumbs.html'
+    templateUrl   : require '../partials/_breadcrumbs.jade'
     resolve       :
       auth: resolveAuthenticationAndEmitIf 'unauthorized', false
     ncyBreadcrumb :
@@ -74,7 +99,7 @@ app.config ($locationProvider, $urlRouterProvider, $stateProvider, cfpLoadingBar
 
   $stateProvider.state 'users.list',
     url           : '/list'
-    templateUrl   : 'partials/_users_list.html'
+    templateUrl   : require '../partials/_users_list.jade'
     controller    : 'UsersListController'
     resolve       :
       auth: resolveAuthenticationAndEmitIf 'unauthorized', false
@@ -83,7 +108,7 @@ app.config ($locationProvider, $urlRouterProvider, $stateProvider, cfpLoadingBar
 
   $stateProvider.state 'users.add',
     url           : '/add'
-    templateUrl   : 'partials/_users_profile.html'
+    templateUrl   : require '../partials/_users_profile.jade'
     controller    : 'UsersProfileController'
     resolve       :
       auth: resolveAuthenticationAndEmitIf 'unauthorized', false
@@ -94,7 +119,7 @@ app.config ($locationProvider, $urlRouterProvider, $stateProvider, cfpLoadingBar
 
   $stateProvider.state 'users.edit',
     url           : '/edit/:id'
-    templateUrl   : 'partials/_users_profile.html'
+    templateUrl   : require '../partials/_users_profile.jade'
     controller    : 'UsersProfileController'
     resolve       :
       auth: resolveAuthenticationAndEmitIf 'unauthorized', false
@@ -103,7 +128,11 @@ app.config ($locationProvider, $urlRouterProvider, $stateProvider, cfpLoadingBar
       parent : 'users.list'
       label  : 'Edit'
 
-app.run ($rootScope, $state, AuthService) ->
+app.run ($rootScope, $state, AuthService, $templateCache) ->
+
+  console.log($templateCache.get('partials/_login.jade'));
+  console.log(require('../partials/_login.jade'));
+  console.log(0, app);
 
   # State utils
   $rootScope.isState = (name) -> $state.is name
