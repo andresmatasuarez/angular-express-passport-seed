@@ -17,6 +17,14 @@ require 'ng-table-async'
 
 require './modules/auth_interceptor'
 
+# Templates
+templateLogin        = require '../partials/_login.jade'
+templateDashboard    = require '../partials/_dashboard.jade'
+templateHome         = require '../partials/_home.jade'
+templateBreadcrumbs  = require '../partials/_breadcrumbs.jade'
+templateUsersList    = require '../partials/_users_list.jade'
+templateUsersProfile = require '../partials/_users_profile.jade'
+
 angular = require 'angular'
 
 module.exports = 'dashboard'
@@ -65,14 +73,14 @@ app.config ($locationProvider, $urlRouterProvider, $stateProvider, cfpLoadingBar
 
   $stateProvider.state 'login',
     url         : '/login'
-    templateUrl : require '../partials/_login.jade'
+    templateUrl : templateLogin
     controller  : 'LoginController'
     resolve     :
       auth: resolveAuthenticationAndEmitIf 'alreadylogged', true
 
   $stateProvider.state 'dashboard',
     abstract      : true
-    templateUrl   : require '../partials/_dashboard.jade'
+    templateUrl   : templateDashboard
     resolve       :
       auth: resolveAuthenticationAndEmitIf 'unauthorized', false
     ncyBreadcrumb :
@@ -81,7 +89,7 @@ app.config ($locationProvider, $urlRouterProvider, $stateProvider, cfpLoadingBar
   $stateProvider.state 'home',
     parent        : 'dashboard'
     url           : '/'
-    templateUrl   : require '../partials/_home.jade'
+    templateUrl   : templateHome
     resolve       :
       auth: resolveAuthenticationAndEmitIf 'unauthorized', false
     ncyBreadcrumb :
@@ -91,7 +99,7 @@ app.config ($locationProvider, $urlRouterProvider, $stateProvider, cfpLoadingBar
     parent        : 'dashboard'
     abstract      : true
     url           : '/users'
-    templateUrl   : require '../partials/_breadcrumbs.jade'
+    templateUrl   : templateBreadcrumbs
     resolve       :
       auth: resolveAuthenticationAndEmitIf 'unauthorized', false
     ncyBreadcrumb :
@@ -99,7 +107,7 @@ app.config ($locationProvider, $urlRouterProvider, $stateProvider, cfpLoadingBar
 
   $stateProvider.state 'users.list',
     url           : '/list'
-    templateUrl   : require '../partials/_users_list.jade'
+    templateUrl   : templateUsersList
     controller    : 'UsersListController'
     resolve       :
       auth: resolveAuthenticationAndEmitIf 'unauthorized', false
@@ -108,7 +116,7 @@ app.config ($locationProvider, $urlRouterProvider, $stateProvider, cfpLoadingBar
 
   $stateProvider.state 'users.add',
     url           : '/add'
-    templateUrl   : require '../partials/_users_profile.jade'
+    templateUrl   : templateUsersProfile
     controller    : 'UsersProfileController'
     resolve       :
       auth: resolveAuthenticationAndEmitIf 'unauthorized', false
@@ -119,7 +127,7 @@ app.config ($locationProvider, $urlRouterProvider, $stateProvider, cfpLoadingBar
 
   $stateProvider.state 'users.edit',
     url           : '/edit/:id'
-    templateUrl   : require '../partials/_users_profile.jade'
+    templateUrl   : templateUsersProfile
     controller    : 'UsersProfileController'
     resolve       :
       auth: resolveAuthenticationAndEmitIf 'unauthorized', false
@@ -129,10 +137,6 @@ app.config ($locationProvider, $urlRouterProvider, $stateProvider, cfpLoadingBar
       label  : 'Edit'
 
 app.run ($rootScope, $state, AuthService, $templateCache) ->
-
-  console.log($templateCache.get('partials/_login.jade'));
-  console.log(require('../partials/_login.jade'));
-  console.log(0, app);
 
   # State utils
   $rootScope.isState = (name) -> $state.is name

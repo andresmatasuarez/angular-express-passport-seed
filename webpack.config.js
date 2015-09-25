@@ -46,7 +46,7 @@ module.exports = {
       //   ./partials/_partial.jade --> Matches
       //   ./partials/partial.jade  --> Matches not
       { test: /^\.?\/?(.+\/)*[^_]+\.jade$/, loader: 'html!jade-html' },
-      { test: /^\.?\/?(.+\/)*_.+\.jade$/,   loader: 'ngtemplate?module=dashboard&relativeTo=' + __dirname + '/backoffice/!html!jade-html' },
+      { test: /^\.?\/?(.+\/)*_.+\.jade$/,   loader: 'ngtemplate?relativeTo=' + __dirname + '/backoffice/!html!jade-html' },
 
       // Inline base64 URLs for <=8k images, direct URLs for the rest
       {
