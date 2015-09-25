@@ -1,9 +1,6 @@
 'use strict'
 
-angular = require 'angular'
-
-angular.module 'dashboard'
-.factory 'API', (Restangular) ->
+module.exports = (Restangular) ->
   api  = Restangular.all 'api'
 
   auth:

@@ -1,8 +1,6 @@
 'use strict'
 
-app = angular.module 'dashboard'
-
-app.controller 'LoginController', ($rootScope, $scope, $state, AuthService) ->
+module.exports = ($rootScope, $scope, $state, AuthService) ->
   $scope.model = {};
 
   $scope.login = ->

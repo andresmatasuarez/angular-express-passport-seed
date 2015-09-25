@@ -1,8 +1,8 @@
 'use strict'
 
-app = angular.module 'dashboard'
+deleteUserConfirmTemplate = require '../../partials/_delete_user_confirm.jade'
 
-app.controller 'UsersListController', ($scope, $q, $state, API) ->
+module.exports = ($scope, $q, $state, API) ->
 
   $scope.addUser = ->
     $state.go 'users.add'
@@ -22,5 +22,5 @@ app.controller 'UsersListController', ($scope, $q, $state, API) ->
       remove:
         method : (user) -> API.users.delete user._id
         dialog :
-          templateUrl : require '../partials/_delete_user_confirm.jade'
+          templateUrl : deleteUserConfirmTemplate
           params      : (item) -> username: item.email

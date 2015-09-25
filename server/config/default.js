@@ -1,11 +1,24 @@
 'use strict';
 
 var url          = require('url');
+var path         = require('path');
 var Environments = require('./environments');
+
+var aYear = 31556952000;
+var projectRoot = path.normalize(path.join(__dirname, '../../'));
 
 module.exports = {
   environments: Environments,
+  root: projectRoot,
   app: {
+    assets: {
+      path     : path.join(projectRoot, './bundle'),
+      mappings : path.join(projectRoot, './bundle/webpack-assets.json'),
+      max_age  : aYear
+    },
+    views: {
+      path: path.join(projectRoot, './server/views')
+    },
     client: {
       root   : '../../assets',
       index  : 'web.html',

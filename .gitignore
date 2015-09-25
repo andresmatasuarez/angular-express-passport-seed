@@ -11,10 +11,16 @@ server/config/ssl/
 # (http://gruntjs.com/creating-plugins#storing-task-files)
 .tmp
 
+# Grunt build output directory
+dist
+
+# Webpack generated output directory
+bundle
+
 node_modules
 bower_components
-dist
 dump.rdb
 .sass-cache
 *.heapsnapshot
 *.log
+

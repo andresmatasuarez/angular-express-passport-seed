@@ -1,12 +1,6 @@
 'use strict'
 
-angular   = require 'angular'
-ngstorage = require 'ngstorage'
-
-module.exports = 'auth-interceptor'
-
-angular.module 'auth-interceptor', [ 'ngStorage' ]
-.factory 'AuthInterceptor', ($rootScope, $q, $sessionStorage) ->
+module.exports = ($rootScope, $q, $sessionStorage) ->
 
   request: (config) ->
     config.headers = config.headers || {}

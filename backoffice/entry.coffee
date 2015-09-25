@@ -12,7 +12,6 @@ Dashboard = require './javascripts/app'
 angular.element(document).ready ->
 
   app          = angular.module Dashboard
-  console.log(-1, app);
   initInjector = angular.injector [ 'ng' ]
   $http        = initInjector.get '$http'
 
@@ -23,7 +22,16 @@ angular.element(document).ready ->
   .then (res) -> app.constant 'Settings', res.data
 
   # Bootstrap app.
-  .then -> angular.bootstrap document, [ 'dashboard' ]
+  .then ->
+
+    document.body.innerHTML += """
+      <div class="main" ng-class="{ 'login-body': isState('login') }">
+        <div class="row" ui-view>
+        </div>
+      </div>
+    """
+
+    angular.bootstrap document, [ 'dashboard' ]
 
   # TODO handle error.
   .catch (err) -> console.error err

@@ -1,5 +1,7 @@
 'use strict';
 
+var AssetsWebpackPlugin = require('assets-webpack-plugin');
+
 var FILE_LOADER_NAME = 'name=[name].[hash].[ext]';
 
 var HTML_TEMPLATE = [
@@ -26,10 +28,10 @@ var resolvePath = function(p){
 module.exports = {
   entry: {
     web       : resolvePath('client/main'),
-    dashboard : resolvePath('backoffice/main')
+    dashboard : resolvePath('backoffice/entry')
   },
   output: {
-    path     : resolvePath('.tmp'),
+    path     : resolvePath('./bundle'),
     filename : '[name].[hash].bundle.js'
   },
   module: {
@@ -89,6 +91,8 @@ module.exports = {
     new webpack.optimize.CommonsChunkPlugin({
       name      : 'commons',
       minChunks : 2
-    })
+    }),
+
+    new AssetsWebpackPlugin({ path: './bundle' })
   ]
 };

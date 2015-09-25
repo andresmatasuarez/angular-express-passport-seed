@@ -16,6 +16,9 @@ exports.applyTo = function(app){
 
   app.enable('trust proxy');
 
+  app.set('view engine', 'jade');
+  app.set("views", config.app.views.path);
+
   if(config.env !== config.environments.test){
     app.use(morgan('dev'));
   }

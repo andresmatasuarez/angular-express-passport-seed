@@ -5,6 +5,9 @@ var Environments = require('./environments');
 module.exports = {
   env: Environments.development,
   app: {
+    assets: {
+      max_age: 0
+    },
     client: {
       root   : '../../.tmp'
     },

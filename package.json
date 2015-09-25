@@ -60,6 +60,7 @@
     "winston": "^0.8.1"
   },
   "devDependencies": {
+    "assets-webpack-plugin": "^2.2.3",
     "chai": "^1.10.0",
     "chance": "^0.6.1",
     "coffee-loader": "^0.7.2",

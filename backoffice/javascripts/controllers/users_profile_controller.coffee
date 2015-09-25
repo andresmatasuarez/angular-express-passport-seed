@@ -1,8 +1,6 @@
 'use strict'
 
-app = angular.module 'dashboard'
-
-app.controller 'UsersProfileController', ($scope, $state, API, user) ->
+module.exports = ($scope, $state, API, user) ->
 
   editing = !_.isEmpty user
   action = if editing then _.partial(API.users.edit, user._id) else API.users.create
