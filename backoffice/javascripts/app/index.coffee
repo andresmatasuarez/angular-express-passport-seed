@@ -1,8 +1,5 @@
 'use strict'
 
-require 'expose?_!lodash'
-require 'expose?angular!angular'
-
 require 'angular-bootstrap'
 require 'angular-breadcrumb'
 require 'angular-messages'
@@ -15,12 +12,30 @@ require 'angular-loading-bar'
 require 'ng-table-async/node_modules/ng-table/dist/ng-table'
 require 'ng-table-async'
 
+angular = require 'angular'
+
+# Modules
 authInterceptor = require '../modules/auth_interceptor'
 api             = require '../modules/api'
 
-angular = require 'angular'
+# Services
+authService = require '../services/auth_service'
 
-app = angular.module 'dashboard', [
+# Controllers
+loginController        = require '../controllers/login_controller'
+usersListController    = require '../controllers/users_list_controller'
+usersProfileController = require '../controllers/users_profile_controller'
+
+# Directives
+navbar         = require '../directives/navbar'
+compareToModel = require '../directives/compare_to_model'
+
+# App
+appRun    = require './app_run'
+appConfig = require './app_config'
+
+angular
+.module 'dashboard', [
   'ui.router'
   'ui.bootstrap'
   'restangular'
@@ -32,25 +47,14 @@ app = angular.module 'dashboard', [
   authInterceptor
   api
 ]
+.controller 'LoginController',        loginController
+.controller 'UsersListController',    usersListController
+.controller 'UsersProfileController', usersProfileController
+.factory    'AuthService',            authService
+.directive  'navbar',                 navbar
+.directive  'compareToModel',         compareToModel
 
-# Services
-authService = require '../services/auth_service'
-
-# Controllers
-loginController        = require '../controllers/login_controller'
-usersListController    = require '../controllers/users_list_controller'
-usersProfileController = require '../controllers/users_profile_controller'
-
-app.controller 'LoginController',        loginController
-app.controller 'UsersProfileController', usersListController
-app.controller 'UsersProfileController', usersProfileController
-
-app.factory 'AuthService', authService
-
-appRun    = require './app_run'
-appConfig = require './app_config'
-
-app.config appConfig
-app.run appRun
+.config appConfig
+.run appRun
 
 module.exports = 'dashboard'

@@ -1,7 +1,9 @@
 'use strict'
 
+$ = require 'jquery'
+
 module.exports = (Restangular) ->
-  api  = Restangular.all 'api'
+  api = Restangular.all 'api'
 
   auth:
     me: ->

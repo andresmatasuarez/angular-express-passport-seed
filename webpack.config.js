@@ -2,7 +2,8 @@
 
 var AssetsWebpackPlugin = require('assets-webpack-plugin');
 
-var FILE_LOADER_NAME = 'name=[name].[hash].[ext]';
+var FILE_LOADER_NAME = 'name=/[name].[hash].[ext]';
+var FONT_LOADER_NAME = 'name=/[name].[ext]';
 
 var HTML_TEMPLATE = [
   '<!DOCTYPE html>',
@@ -60,8 +61,8 @@ module.exports = {
       },
 
       // Fonts
-      { test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,      loader: 'url?' + FILE_LOADER_NAME + '&limit=10000&minetype=application/font-woff' },
-      { test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: 'file?' + FILE_LOADER_NAME }
+      { test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,      loader: 'url?' + FONT_LOADER_NAME + '&limit=10000&minetype=application/font-woff' },
+      { test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: 'file?' + FONT_LOADER_NAME }
     ]
   },
   resolve: {

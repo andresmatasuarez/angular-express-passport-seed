@@ -1,6 +1,5 @@
 'use strict'
 
-# Templates
 templateLogin        = require '../../partials/_login.jade'
 templateDashboard    = require '../../partials/_dashboard.jade'
 templateHome         = require '../../partials/_home.jade'
