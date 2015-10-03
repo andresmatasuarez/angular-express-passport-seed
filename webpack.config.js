@@ -1,26 +1,11 @@
 'use strict';
 
-var AssetsWebpackPlugin = require('assets-webpack-plugin');
-
 var FILE_LOADER_NAME = 'name=/[name].[hash].[ext]';
 var FONT_LOADER_NAME = 'name=/[name].[ext]';
 
-var HTML_TEMPLATE = [
-  '<!DOCTYPE html>',
-  '<html>',
-    '<head>',
-      '<meta charset="utf-8">',
-      '<base href="{%= o.htmlWebpackPlugin.options.base %}">',
-      '<title>{%= o.htmlWebpackPlugin.options.title %}</title>',
-    '</head>',
-    '<body>',
-    '</body>',
-  '</html>'
-].join('\n');
-
-var path              = require('path');
-var webpack           = require('webpack');
-var HtmlWebpackPlugin = require('html-webpack-plugin');
+var path                = require('path');
+var webpack             = require('webpack');
+var AssetsWebpackPlugin = require('assets-webpack-plugin');
 
 var resolvePath = function(p){
   return path.resolve(__dirname, p);
@@ -70,26 +55,7 @@ module.exports = {
     modulesDirectories : [ 'node_modules' ]
   },
   plugins: [
-    new HtmlWebpackPlugin({
-      title           : 'Angular Express seed | Web',
-      filename        : 'web.html',
-      base            : '/web/',
-      templateContent : HTML_TEMPLATE,
-      chunks          : [ 'commons', 'web' ],
-      inject          : true,
-      hash            : true
-    }),
-
-    new HtmlWebpackPlugin({
-      title           : 'Angular Express seed | Dashboard',
-      filename        : 'dashboard.html',
-      base            : '/dashboard/',
-      templateContent : HTML_TEMPLATE,
-      chunks          : [ 'commons', 'dashboard' ],
-      inject          : true
-    }),
-
-    new webpack.optimize.CommonsChunkPlugin({
+      new webpack.optimize.CommonsChunkPlugin({
       name      : 'commons',
       minChunks : 2
     }),
