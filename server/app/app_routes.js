@@ -15,15 +15,17 @@ var apiRoute = function(resource){
 var serveBundledIndex = function(page, bundleMappingsPath){
   return function(req, res, next){
     fs.readFileAsync(bundleMappingsPath)
-    .then(function(data){
+    .then(JSON.parse)
+    .then(function(mappings){
       res.render('index', {
-        page     : page,
-        mappings : JSON.parse(data)
+        settings : config.app[page],
+        scripts  : {
+          commons : mappings.commons.js,
+          app     : mappings[page].js
+        }
       });
     })
-    .catch(function(err){
-      next(err);
-    });
+    .catch(next);
   };
 };
 

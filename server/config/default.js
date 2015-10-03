@@ -19,6 +19,14 @@ module.exports = {
     views: {
       path: path.join(projectRoot, './server/views')
     },
+    web: {
+      base: 'web',
+      title: 'Web'
+    },
+    dashboard: {
+      base: 'dashboard',
+      title: 'Dashboard'
+    },
     client: {
       root   : '../../assets',
       index  : 'web.html',

@@ -2,34 +2,28 @@
 
 require './stylesheets/app.less'
 
-angular   = require 'angular'
-Dashboard = require './javascripts/app'
+angular      = require 'angular'
+mainTemplate = require './main.jade'
+dashboard    = require './javascripts/app'
 
 # Great source on how to bootstrap an AngularJS app manually:
 # https://blog.mariusschulz.com/2014/10/22/asynchronously-bootstrapping-angularjs-applications-with-server-side-data
 angular.element(document).ready ->
-
-  app          = angular.module Dashboard
   initInjector = angular.injector [ 'ng' ]
   $http        = initInjector.get '$http'
 
-  # Fetch config data
+  # Fetch settings
   $http.get '/api/settings'
+  .then (res) ->
+    angular
+    .module dashboard
+    .constant 'Settings', res.data
 
-  # Include data in app
-  .then (res) -> app.constant 'Settings', res.data
+    # Prepend main template to body
+    document.body.innerHTML = mainTemplate + document.body.innerHTML
 
-  # Bootstrap app.
-  .then ->
-
-    document.body.innerHTML += """
-      <div class="main" ng-class="{ 'login-body': isState('login') }">
-        <div class="row" ui-view>
-        </div>
-      </div>
-    """
-
-    angular.bootstrap document, [ 'dashboard' ]
+    # Bootstrap app
+    angular.bootstrap document, [ dashboard ]
 
   # TODO handle error.
   .catch (err) -> console.error err
