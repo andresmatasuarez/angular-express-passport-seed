@@ -14,7 +14,7 @@ var resolvePath = function(p){
 module.exports = {
   entry: {
     web       : resolvePath('client/main'),
-    dashboard : resolvePath('backoffice/entry')
+    dashboard : resolvePath('dashboard/entry')
   },
   output: {
     path     : resolvePath('./bundle'),
@@ -34,7 +34,7 @@ module.exports = {
       //   ./partials/_partial.jade --> Matches
       //   ./partials/partial.jade  --> Matches not
       { test: /^\.?\/?(.+\/)*[^_]+\.jade$/, loader: 'html!jade-html' },
-      { test: /^\.?\/?(.+\/)*_.+\.jade$/,   loader: 'ngtemplate?relativeTo=' + __dirname + '/backoffice/!html!jade-html' },
+      { test: /^\.?\/?(.+\/)*_.+\.jade$/,   loader: 'ngtemplate?relativeTo=' + __dirname + '/dashboard/!html!jade-html' },
 
       // Inline base64 URLs for <=8k images, direct URLs for the rest
       {

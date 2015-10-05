@@ -11,7 +11,7 @@ module.exports = {
     client: {
       root   : '../../.tmp'
     },
-    backoffice: {
+    dashboard: {
       root   : '../../.tmp'
     }
   },

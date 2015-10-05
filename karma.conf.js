@@ -32,12 +32,12 @@ module.exports = function(config){
       'bower_components/angular-mocks/angular-mocks.js',
       //endbower
 
-      'tests/backoffice/helpers.js',
-      'tests/backoffice/**/*.mock.js',
-      'tests/backoffice/**/*.spec.js',
-      'backoffice/**/*.coffee',
-      'backoffice/**/*.jade',
-      'backoffice/index.html'
+      'tests/dashboard/helpers.js',
+      'tests/dashboard/**/*.mock.js',
+      'tests/dashboard/**/*.spec.js',
+      'dashboard/**/*.coffee',
+      'dashboard/**/*.jade',
+      'dashboard/index.html'
     ],
 
     // list of files to exclude
@@ -46,14 +46,14 @@ module.exports = function(config){
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      'backoffice/**/*.jade'   : 'ng-jade2js',
-      'backoffice/**/*.html'   : 'html2js',
-      'backoffice/**/*.coffee' : 'coffee'
+      'dashboard/**/*.jade'   : 'ng-jade2js',
+      'dashboard/**/*.html'   : 'html2js',
+      'dashboard/**/*.coffee' : 'coffee'
     },
 
     ngJade2JsPreprocessor: {
       moduleName  : 'dashboardTemplates',
-      stripPrefix : 'backoffice/'
+      stripPrefix : 'dashboard/'
     },
 
     reporters: [ 'mocha' ],
