@@ -8,7 +8,7 @@ module.exports = {
     assets: {
       max_age: 0
     },
-    client: {
+    web: {
       root   : '../../.tmp'
     },
     dashboard: {

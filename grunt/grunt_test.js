@@ -6,9 +6,9 @@ module.exports = function(grunt){
 
   grunt.config('jshint', {
     options: { reporter: jshintStylish },
-    client: {
-      options : { jshintrc: '<%= paths.client.root %>/.jshintrc' },
-      src     : [ '<%= paths.client.root %>/**/*.js' ]
+    web: {
+      options : { jshintrc: '<%= paths.web.root %>/.jshintrc' },
+      src     : [ '<%= paths.web.root %>/**/*.js' ]
     },
     dashboard: {
       options : { jshintrc: '<%= paths.dashboard.root %>/.jshintrc' },

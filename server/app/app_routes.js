@@ -51,8 +51,8 @@ exports.applyTo = function(app){
   //   res.sendFile(config.app.dashboard.index, { root: path.join(__dirname, config.app.dashboard.root) });
   // });
 
-  // app.all(config.app.client.base + '*', function(req, res, next){
-  //   res.sendFile(config.app.client.index, { root: path.join(__dirname, config.app.client.root) });
+  // app.all(config.app.web.base + '*', function(req, res, next){
+  //   res.sendFile(config.app.web.index, { root: path.join(__dirname, config.app.web.root) });
   // });
 
   // API

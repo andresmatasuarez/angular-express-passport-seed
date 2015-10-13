@@ -2,12 +2,12 @@
 
 angular = require 'angular'
 
-app = angular.module 'web', []
-
-app.config ($locationProvider) ->
+angular
+.module 'web', []
+.config ($locationProvider) ->
   $locationProvider.html5Mode true
   $locationProvider.hashPrefix '!'
 
-app.run()
+.run()
 
-module.exports = app
+module.exports = 'web'

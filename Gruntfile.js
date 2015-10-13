@@ -23,26 +23,26 @@ module.exports = function(grunt){
 
     paths: {
       bower_components: 'bower_components',
-      client: {
-        root   : 'client',
-        assets : 'client/assets'
+      web: {
+        root   : 'web',
+        assets : 'web/assets'
       },
       dashboard: {
         root   : 'dashboard',
         assets : 'dashboard/assets'
       },
       server: {
-        root   : 'server'
+        root: 'server'
       },
       dist: {
         root      : 'dist',
-        client    : 'dist/client',
+        web       : 'dist/web',
         dashboard : 'dist/dashboard',
         assets    : 'dist/assets',
         server    : 'dist/server'
       },
       tests: {
-        client    : 'tests/client',
+        web       : 'tests/web',
         dashboard : 'tests/dashboard',
         server    : 'tests/server'
       }

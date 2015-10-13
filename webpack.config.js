@@ -13,7 +13,7 @@ var resolvePath = function(p){
 
 module.exports = {
   entry: {
-    web       : resolvePath('client/main'),
+    web       : resolvePath('web/entry'),
     dashboard : resolvePath('dashboard/entry')
   },
   output: {
