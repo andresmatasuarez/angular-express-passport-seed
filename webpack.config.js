@@ -28,13 +28,15 @@ module.exports = {
 
       // ngtemplate loader only for path whose filename begins with "_"
       // Examples:
-      //   _partial.jade            --> Matches
-      //   /_partial.jade           --> Matches
-      //   ./_partial.jade          --> Matches
-      //   ./partials/_partial.jade --> Matches
-      //   ./partials/partial.jade  --> Matches not
-      { test: /^\.?\/?(.+\/)*[^_]+\.jade$/, loader: 'html!jade-html' },
-      { test: /^\.?\/?(.+\/)*_.+\.jade$/,   loader: 'ngtemplate?relativeTo=' + __dirname + '/dashboard/!html!jade-html' },
+      //   _partial.jade                 --> Matches
+      //   /_partial.jade                --> Matches
+      //   ./_partial.jade               --> Matches
+      //   ./partials/_partial.jade      --> Matches
+      //   ../../partials/_partial.jade  --> Matches
+      //   /../../partials/_partial.jade --> Matches
+      //   ./partials/partial.jade       --> Matches not
+      { test: /^\.{0,2}\/?(.+\/)*[^_]+\.jade$/, loader: 'html!jade-html' },
+      { test: /^\.{0,2}\/?(.+\/)*_.+\.jade$/,   loader: 'ngtemplate?relativeTo=' + __dirname + '/dashboard/!html!jade-html' },
 
       // Inline base64 URLs for <=8k images, direct URLs for the rest
       {
