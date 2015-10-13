@@ -37,27 +37,10 @@ module.exports = function(grunt){
     }
   });
 
-  grunt.config('wiredep.karma', {
-    src: 'karma.conf.js',
-    ignorePath:  /\.\.\//,
-    fileTypes: {
-      js: {
-        block: /(([\s\t]*)\/\/\s*bower:*(\S*))(\n|\r|.)*?(\/\/\s*endbower)/gi,
-        detect: {
-          js: /'(.*\.js)'/gi
-        },
-        replace: {
-          js: '\'{{filePath}}\','
-        }
-      }
-    },
-    devDependencies: true
-  });
-
   grunt.registerTask('test', function(target){
     switch(target){
       case 'server'    : return grunt.task.run([ 'env:test',    'jshint:serverTests',    'mochaTest' ]);
-      case 'dashboard' : return grunt.task.run([ 'env:test',    'jshint:dashboardTests', 'wiredep:karma', 'karma' ]);
+      case 'dashboard' : return grunt.task.run([ 'env:test',    'jshint:dashboardTests', 'karma' ]);
       default          : return grunt.task.run([ 'test:server', 'test:dashboard' ]);
     }
   });
