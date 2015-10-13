@@ -27,7 +27,7 @@ module.exports = function(grunt){
         root   : 'client',
         assets : 'client/assets'
       },
-      bo: {
+      dashboard: {
         root   : 'dashboard',
         assets : 'dashboard/assets'
       },
@@ -35,16 +35,16 @@ module.exports = function(grunt){
         root   : 'server'
       },
       dist: {
-        root   : 'dist',
-        client : 'dist/client',
-        bo     : 'dist/dashboard',
-        assets : 'dist/assets',
-        server : 'dist/server'
+        root      : 'dist',
+        client    : 'dist/client',
+        dashboard : 'dist/dashboard',
+        assets    : 'dist/assets',
+        server    : 'dist/server'
       },
       tests: {
-        client : 'tests/client',
-        bo     : 'tests/dashboard',
-        server : 'tests/server'
+        client    : 'tests/client',
+        dashboard : 'tests/dashboard',
+        server    : 'tests/server'
       }
     },
 

@@ -70,4 +70,4 @@ Don't forget to add the `ssl.passphrase` entry with the passphrase you set.
 * Build project: `grunt build`
 
 # Test
-`grunt test:[ server | bo ]`
+`grunt test:[ server | dashboard ]`

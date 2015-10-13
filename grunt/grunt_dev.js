@@ -22,7 +22,7 @@ module.exports = function(grunt){
 
   grunt.config('watch', {
     assets: {
-      files   : [ '{<%= paths.client.root %>,<%= paths.bo.root %>}/**/*.{coffee,less,jade}' ],
+      files   : [ '{<%= paths.client.root %>,<%= paths.dashboard.root %>}/**/*.{coffee,less,jade}' ],
       tasks   : [ 'build:dev' ],
       options : { spawn: false }
     },
