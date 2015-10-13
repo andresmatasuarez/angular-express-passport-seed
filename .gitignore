@@ -18,7 +18,6 @@ dist
 bundle
 
 node_modules
-bower_components
 dump.rdb
 .sass-cache
 *.heapsnapshot

@@ -33,9 +33,6 @@ module.exports = {
     },
     api: {
       base: '/api'
-    },
-    dependencies: {
-      frontend: '../../bower_components'
     }
   },
   server: {

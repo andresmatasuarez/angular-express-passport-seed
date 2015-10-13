@@ -6,7 +6,7 @@ module.exports = function(grunt){
 
   grunt.config('express.dev', {
     options: {
-      script : '<%= paths.server.root %>/bin/web.js',
+      script : '<%= paths.dev.server %>/bin/web.js',
       debug  : true
     }
   });
@@ -14,7 +14,7 @@ module.exports = function(grunt){
   grunt.config('clean.dev', {
     files: [{
       dot : true,
-      src : [ '.tmp' ]
+      src : [ 'bundle' ]
     }]
   });
 
@@ -22,7 +22,7 @@ module.exports = function(grunt){
 
   grunt.config('watch', {
     assets: {
-      files   : [ '{<%= paths.web.root %>,<%= paths.dashboard.root %>}/**/*.{coffee,less,jade}' ],
+      files   : [ '<%= paths.dev.assets %>/**/*.{coffee,less,jade}' ],
       tasks   : [ 'build:dev' ],
       options : { spawn: false }
     },
@@ -31,7 +31,7 @@ module.exports = function(grunt){
       options : { reload: true }
     },
     express: {
-      files   : [ '<%= paths.server.root %>/**/*.{js,json}' ],
+      files   : [ '<%= paths.dev.server %>/**/*.{js,json}' ],
       tasks   : [ 'express:dev', 'wait' ],
       options : {
         nospawn : true // for grunt-contrib-watch v0.5.0+, "nospawn: true" for lower versions. Without this option specified express won't be reloaded

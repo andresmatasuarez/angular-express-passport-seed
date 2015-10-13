@@ -22,22 +22,12 @@ module.exports = function(grunt){
   grunt.initConfig({
 
     paths: {
-      bower_components: 'bower_components',
-      web: {
-        root   : 'web',
-        assets : 'web/assets'
-      },
-      dashboard: {
-        root   : 'dashboard',
-        assets : 'dashboard/assets'
-      },
-      server: {
-        root: 'server'
+      dev: {
+        assets: 'client',
+        server: 'server'
       },
       dist: {
         root      : 'dist',
-        web       : 'dist/web',
-        dashboard : 'dist/dashboard',
         assets    : 'dist/assets',
         server    : 'dist/server'
       },
@@ -55,6 +45,9 @@ module.exports = function(grunt){
 
   });
 
+  // Load tasks
+  grunt.loadTasks('grunt');
+
   // Used for delaying livereload until after server has restarted
   grunt.registerTask('wait', function () {
     grunt.log.ok('Waiting for server reload...');
@@ -70,8 +63,6 @@ module.exports = function(grunt){
   grunt.registerTask('express-keepalive', 'Keep grunt running', function(){
     this.async();
   });
-
-  grunt.loadTasks('grunt');
 
   grunt.registerTask('build', [ 'build:dist' ]);
   grunt.registerTask('serve', [ 'serve:dev' ]);

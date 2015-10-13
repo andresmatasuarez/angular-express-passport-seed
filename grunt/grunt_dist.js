@@ -27,7 +27,7 @@ module.exports = function(grunt){
   grunt.config('clean.dist', {
     files: [{
       dot: true,
-      src: [ '.tmp', '<%= paths.dist.root %>' ]
+      src: [ '<%= paths.dist.root %>' ]
     }]
   });
 
@@ -39,7 +39,7 @@ module.exports = function(grunt){
         'Procfile',
         'package.json',
         'server/**/*',
-        '!<%= paths.server.src %>/config/ssl/**/*'
+        '!<%= paths.dev.server %>/config/ssl/**/*'
       ]
     }]
   });

@@ -6,13 +6,9 @@ module.exports = function(grunt){
 
   grunt.config('jshint', {
     options: { reporter: jshintStylish },
-    web: {
-      options : { jshintrc: '<%= paths.web.root %>/.jshintrc' },
-      src     : [ '<%= paths.web.root %>/**/*.js' ]
-    },
-    dashboard: {
-      options : { jshintrc: '<%= paths.dashboard.root %>/.jshintrc' },
-      src     : [ '<%= paths.dashboard.root %>/**/*.js' ]
+    assets: {
+      options : { jshintrc: '<%= paths.dev.assets %>/.jshintrc' },
+      src     : [ '<%= paths.dev.assets %>/**/*.js' ]
     },
     boTests: {
       options : { jshintrc: '<%= paths.tests.dashboard %>/.jshintrc' },
@@ -20,7 +16,7 @@ module.exports = function(grunt){
     },
     server: {
       options : { jshintrc: '.jshintrc' },
-      src     : [ '<%= paths.server.root %>/**/*.js' ]
+      src     : [ '<%= paths.dev.server %>/**/*.js' ]
     },
     serverTests: {
       options : { jshintrc: '<%= paths.tests.server %>/.jshintrc' },

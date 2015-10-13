@@ -15,22 +15,7 @@ module.exports = function(config){
 
     // list of files / patterns to load in the browser
     files: [
-      //bower:js
-      'bower_components/jquery/dist/jquery.js',
-      'bower_components/bootstrap/dist/js/bootstrap.js',
-      'bower_components/angular/angular.js',
-      'bower_components/angular-ui-router/release/angular-ui-router.js',
-      'bower_components/lodash/dist/lodash.compat.js',
-      'bower_components/restangular/dist/restangular.js',
-      'bower_components/ngstorage/ngStorage.js',
-      'bower_components/angular-loading-bar/build/loading-bar.js',
-      'bower_components/angular-breadcrumb/release/angular-breadcrumb.js',
-      'bower_components/angular-bootstrap/ui-bootstrap-tpls.js',
-      'bower_components/angular-messages/angular-messages.js',
-      'bower_components/ng-table/dist/ng-table.min.js',
-      'bower_components/ng-table-async/dist/ng-table-async-tpls.js',
-      'bower_components/angular-mocks/angular-mocks.js',
-      //endbower
+      // TODO: add client bundle
 
       'tests/dashboard/helpers.js',
       'tests/dashboard/**/*.mock.js',

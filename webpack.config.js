@@ -6,7 +6,6 @@ var FONT_LOADER_NAME = 'name=/[name].[ext]';
 var path                = require('path');
 var webpack             = require('webpack');
 var AssetsWebpackPlugin = require('assets-webpack-plugin');
-var CleanWebpackPlugin  = require('clean-webpack-plugin');
 
 var resolvePath = function(p){
   return path.resolve(__dirname, p);
@@ -14,8 +13,8 @@ var resolvePath = function(p){
 
 module.exports = {
   entry: {
-    web       : resolvePath('web/entry'),
-    dashboard : resolvePath('dashboard/entry')
+    web       : resolvePath('client/web/entry'),
+    dashboard : resolvePath('client/dashboard/entry')
   },
   output: {
     path     : resolvePath('./bundle'),
@@ -61,7 +60,6 @@ module.exports = {
       minChunks : 2
     }),
 
-    new AssetsWebpackPlugin({ path: './bundle' }),
-    new CleanWebpackPlugin([ 'bundle' ])
+    new AssetsWebpackPlugin({ path: './bundle' })
   ]
 };
