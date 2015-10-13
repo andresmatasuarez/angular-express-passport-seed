@@ -6,6 +6,7 @@ var FONT_LOADER_NAME = 'name=/[name].[ext]';
 var path                = require('path');
 var webpack             = require('webpack');
 var AssetsWebpackPlugin = require('assets-webpack-plugin');
+var CleanWebpackPlugin  = require('clean-webpack-plugin');
 
 var resolvePath = function(p){
   return path.resolve(__dirname, p);
@@ -55,11 +56,12 @@ module.exports = {
     modulesDirectories : [ 'node_modules' ]
   },
   plugins: [
-      new webpack.optimize.CommonsChunkPlugin({
+    new webpack.optimize.CommonsChunkPlugin({
       name      : 'commons',
       minChunks : 2
     }),
 
-    new AssetsWebpackPlugin({ path: './bundle' })
+    new AssetsWebpackPlugin({ path: './bundle' }),
+    new CleanWebpackPlugin([ 'bundle' ])
   ]
 };
