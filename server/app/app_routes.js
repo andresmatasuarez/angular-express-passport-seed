@@ -4,6 +4,7 @@ var config     = require('config');
 var path       = require('path');
 var express    = require('express');
 var fs         = require('fs');
+var favicon    = require('serve-favicon');
 var RouteUtils = require('../utils/route_utils');
 
 var enforceSSL = RouteUtils.enforceSSL({ port: config.server.ssl.port });
@@ -30,6 +31,15 @@ var serveBundledIndex = function(page, bundleMappingsPath){
 };
 
 exports.applyTo = function(app){
+
+  if (config.app.favicon){
+    app.use(favicon(path.join(__dirname, config.app.favicon)));
+  } else {
+    app.use('favicon.ico', function(req, res){
+      res.status(200);
+      res.type('image/x-icon');
+    });
+  }
 
   // Secured content
   app.use(config.app.dashboard.base, enforceSSL);
