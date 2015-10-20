@@ -21,13 +21,13 @@ module.exports = {
     },
     dashboard: {
       title  : 'Dashboard',
-      root   : '../../assets',
+      root   : '../../assets', // TODO review when reviewing HTML5 support
       index  : 'dashboard.html',
       base   : '/dashboard/'
     },
     web: {
       title  : 'Web',
-      root   : '../../assets',
+      root   : '../../assets', // TODO review when reviewing HTML5 support
       index  : 'web.html',
       base   : '/web/'
     },

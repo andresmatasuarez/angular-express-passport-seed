@@ -9,10 +9,10 @@ module.exports = {
       max_age: 0
     },
     web: {
-      root   : '../../.tmp'
+      root: '../../.tmp' // TODO review when reviewing HTML5 support
     },
     dashboard: {
-      root   : '../../.tmp'
+      root: '../../.tmp' // TODO review when reviewing HTML5 support
     }
   },
   server: {
