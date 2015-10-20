@@ -24,14 +24,13 @@ module.exports = function(grunt){
         server: 'server'
       },
       dist: {
-        root      : 'dist',
-        assets    : 'dist/assets',
-        server    : 'dist/server'
+        root   : 'dist',
+        assets : 'dist/assets',
+        server : 'dist/server'
       },
       tests: {
-        web       : 'tests/web',
-        dashboard : 'tests/dashboard',
-        server    : 'tests/server'
+        client : 'tests/client',
+        server : 'tests/server'
       }
     },
 

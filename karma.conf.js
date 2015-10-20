@@ -17,12 +17,12 @@ module.exports = function(config){
     files: [
       // TODO: add client bundle
 
-      'tests/dashboard/helpers.js',
-      'tests/dashboard/**/*.mock.js',
-      'tests/dashboard/**/*.spec.js',
-      'dashboard/**/*.coffee',
-      'dashboard/**/*.jade',
-      'dashboard/index.html'
+      'tests/client/dashboard/helpers.js',
+      'tests/client/dashboard/**/*.mock.js',
+      'tests/client/dashboard/**/*.spec.js',
+      'client/dashboard/**/*.coffee',
+      'client/dashboard/**/*.jade',
+      'client/dashboard/index.html'
     ],
 
     // list of files to exclude
@@ -31,14 +31,14 @@ module.exports = function(config){
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      'dashboard/**/*.jade'   : 'ng-jade2js',
-      'dashboard/**/*.html'   : 'html2js',
-      'dashboard/**/*.coffee' : 'coffee'
+      'client/dashboard/**/*.jade'   : 'ng-jade2js',
+      'client/dashboard/**/*.html'   : 'html2js',
+      'client/dashboard/**/*.coffee' : 'coffee'
     },
 
     ngJade2JsPreprocessor: {
       moduleName  : 'dashboardTemplates',
-      stripPrefix : 'dashboard/'
+      stripPrefix : 'client/dashboard/'
     },
 
     reporters: [ 'mocha' ],

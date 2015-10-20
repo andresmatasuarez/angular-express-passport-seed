@@ -10,9 +10,9 @@ module.exports = function(grunt){
       options : { jshintrc: '<%= paths.dev.assets %>/.jshintrc' },
       src     : [ '<%= paths.dev.assets %>/**/*.js' ]
     },
-    boTests: {
-      options : { jshintrc: '<%= paths.tests.dashboard %>/.jshintrc' },
-      src     : [ '<%= paths.tests.dashboard %>/**/*.spec.js' ]
+    clientTests: {
+      options : { jshintrc: '<%= paths.tests.client %>/.jshintrc' },
+      src     : [ '<%= paths.tests.client %>/**/*.spec.js' ]
     },
     server: {
       options : { jshintrc: '.jshintrc' },
@@ -39,9 +39,9 @@ module.exports = function(grunt){
 
   grunt.registerTask('test', function(target){
     switch(target){
-      case 'server'    : return grunt.task.run([ 'env:test',    'jshint:serverTests',    'mochaTest' ]);
-      case 'dashboard' : return grunt.task.run([ 'env:test',    'jshint:dashboardTests', 'karma' ]);
-      default          : return grunt.task.run([ 'test:server', 'test:dashboard' ]);
+      case 'server' : return grunt.task.run([ 'env:test',    'jshint:serverTests', 'mochaTest' ]);
+      case 'client' : return grunt.task.run([ 'env:test',    'jshint:clientTests', 'karma' ]);
+      default       : return grunt.task.run([ 'test:server', 'test:client' ]);
     }
   });
 
