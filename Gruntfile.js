@@ -8,11 +8,8 @@ module.exports = function(grunt){
 
   // Load grunt tasks automatically when needed.
   jit(grunt, {
-    injector      : 'grunt-asset-injector',
-    useminPrepare : 'grunt-usemin',
-    express       : 'grunt-express-server',
-    ngtemplates   : 'grunt-angular-templates',
-    webpack       : 'grunt-webpack-without-server'
+    express : 'grunt-express-server',
+    webpack : 'grunt-webpack-without-server'
   });
 
   // Time how long tasks take. Can help when optimizing build times.
