@@ -2,9 +2,9 @@ Seed AngularJS | ExpressJS | PassportJS
 =============================
 
 Some features included in this seed:
-* `AngularJS` Publicly-accessible web site.
+* `AngularJS` public web site.
 * `AngularJS` Admin dashboard.
-* `ExpressJS` API with cookie-based authentication.
+* `ExpressJS` API with JWT-based authentication.
 * All authentication over `HTTPS`.
 * `MongoDB` Persistent user model.
 * `CoffeeScript`, `Jade` and `LESS` on client.
@@ -16,6 +16,7 @@ Some ideas taken from [DaftMonk/generator-angular-fullstack](https://github.com/
 
 # Prerequisites
 * [MongoDB](http://www.mongodb.org/)
+* [Redis](http://http://redis.io/)
 * [NVM](https://github.com/creationix/nvm)
 
 ## Installation
