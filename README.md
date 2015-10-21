@@ -9,7 +9,6 @@ Some features included in this seed:
 * `MongoDB` Persistent user model.
 * `CoffeeScript`, `Jade` and `LESS` on client.
 * `Bootstrap` base styles.
-* `Grunt` task runner
 * `Mocha` for server tests.
 * `Karma` for client tests.
 
@@ -19,15 +18,12 @@ Some ideas taken from [DaftMonk/generator-angular-fullstack](https://github.com/
 * [MongoDB](http://www.mongodb.org/)
 * [NVM](https://github.com/creationix/nvm)
 
-## Pre-installation
-1. `cd` into project folder
-* `nvm install`
-* `sudo npm install -g grunt-cli bower`
-
 ## Installation
+### Pre
+* `nvm install` from project root directory
+
 ### Dependencies
 * `npm install`
-* `bower install`
 
 ### SSL certificate for local HTTPS server
 1. Create default certificate directory:<br />
@@ -56,7 +52,7 @@ Create a local config file under `server/config` and add the `ssl.passphrase` en
 Don't forget to add the `ssl.passphrase` entry with the passphrase you set.
 
 * As an alternative, you can also set the SSL_PASSPHRASE environment variable when running the app:<br />
-`SSL_PASSPHRASE=%PASSPHRASE% grunt serve`
+`SSL_PASSPHRASE=%PASSPHRASE% npm start`
 
 ## Development
 * Consistent coding style is ensured using:
@@ -64,10 +60,10 @@ Don't forget to add the `ssl.passphrase` entry with the passphrase you set.
   1. [EditorConfig](http://editorconfig.org/). Supported editors [plugins](http://editorconfig.org/#download)
   2. [JSHint](http://jshint.com/). Supported editors [plugins](http://jshint.com/install/)
 
-* Start web server: `grunt serve`
+* Start web server: `npm start`
 
 ## Production environments
-* Build project: `grunt build`
+* Build project: `npm build`
 
 # Test
-`grunt test:[ server | dashboard ]`
+`npm test`
