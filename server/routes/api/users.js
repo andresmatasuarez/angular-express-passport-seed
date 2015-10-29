@@ -1,7 +1,7 @@
 'use strict';
 
 var _               = require('lodash');
-var bb              = require('bluebird');
+var Bluebird        = require('bluebird');
 var express         = require('express');
 var BadRequestError = require('passport-local-mongoose/lib/badrequesterror');
 var User            = require('../../model/user');
@@ -62,7 +62,7 @@ router.put('/:id', Auth.ensureAuthenticated, RouteUtils.fetchByIdAndPopulateRequ
   error: UserSettings.errors.notFound
 }), function(req, res){
 
-  var editionPromise = bb.resolve();
+  var editionPromise = Bluebird.resolve();
   if (req.body.newPassword){
     if (!_.isEqual(req.body.newPassword, req.body.confirmPassword)){
       return Response.BadRequest(res)(UserErrors.passwordsNotConfirmed);

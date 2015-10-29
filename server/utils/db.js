@@ -1,7 +1,7 @@
 'use strict';
 
 var _        = require('lodash');
-var bb       = require('bluebird');
+var Bluebird = require('bluebird');
 var config   = require('config');
 var mongoose = require('mongoose');
 var Log      = require('./log');
@@ -10,7 +10,7 @@ var uri = config.mongo.uri;
 
 module.exports = {
   connect: function(){
-    return new bb(function(resolve, reject){
+    return new Bluebird(function(resolve, reject){
 
       if (mongoose.connection.readyState === mongoose.Connection.STATES.connected){
         Log.info('Connection to ' + uri + ' already opened.');
@@ -32,7 +32,7 @@ module.exports = {
   },
 
   disconnect: function(){
-    return new bb(function(resolve, reject){
+    return new Bluebird(function(resolve, reject){
       mongoose.connection.once('error', function(err){
         return reject(err);
       });

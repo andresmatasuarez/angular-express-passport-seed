@@ -1,7 +1,7 @@
 'use strict';
 
 var _            = require('lodash');
-var BB           = require('bluebird');
+var Bluebird     = require('bluebird');
 var util         = require('util');
 var uuid         = require('node-uuid');
 var jwt          = require('jsonwebtoken');
@@ -64,7 +64,7 @@ JWTRedisService.prototype.sign = function(data){
 
 JWTRedisService.prototype.verify = function(token){
   if (_.isEmpty(token)){
-    return BB.reject(new NoTokenProvidedError());
+    return Bluebird.reject(new NoTokenProvidedError());
   }
 
   return jwt.verifyAsync(token, this.secret)
@@ -88,13 +88,13 @@ JWTRedisService.prototype.verify = function(token){
 
 JWTRedisService.prototype.expire = function(token){
   if (_.isEmpty(token)){
-    return BB.resolve();
+    return Bluebird.resolve();
   }
 
   var data = jwt.decode(token, this.secret);
 
   if (_.isEmpty(data) || _.isEmpty(data.jti)){
-    return BB.resolve();
+    return Bluebird.resolve();
   }
 
   return this.client.delAsync(this.keyspace + data.jti);

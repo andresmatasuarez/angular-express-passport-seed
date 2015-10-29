@@ -1,20 +1,20 @@
 'use strict';
 
-var config     = require('config');
-var BB         = require('bluebird');
-var mongoose   = require('mongoose');
-var jwt        = require('jsonwebtoken');
-var redis      = require('redis');
-var fs         = require('fs');
+var config   = require('config');
+var Bluebird = require('bluebird');
+var mongoose = require('mongoose');
+var jwt      = require('jsonwebtoken');
+var redis    = require('redis');
+var fs       = require('fs');
 
-BB.promisifyAll(mongoose.Model);
-BB.promisifyAll(mongoose.Model.prototype);
-BB.promisifyAll(mongoose.Query.prototype);
+Bluebird.promisifyAll(mongoose.Model);
+Bluebird.promisifyAll(mongoose.Model.prototype);
+Bluebird.promisifyAll(mongoose.Query.prototype);
 
-BB.promisifyAll(jwt);
-BB.promisifyAll(redis.RedisClient.prototype);
-BB.promisifyAll(fs);
+Bluebird.promisifyAll(jwt);
+Bluebird.promisifyAll(redis.RedisClient.prototype);
+Bluebird.promisifyAll(fs);
 
 if (config.env === config.environments.test){
-  BB.promisifyAll(require('supertest'));
+  Bluebird.promisifyAll(require('supertest'));
 }
