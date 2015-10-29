@@ -21,7 +21,7 @@ Some ideas taken from [DaftMonk/generator-angular-fullstack](https://github.com/
 
 ## Installation
 ### Pre
-* `nvm install` from project root directory
+* `nvm install` within project root directory
 
 ### Dependencies
 * `npm install`
@@ -62,9 +62,10 @@ Don't forget to add the `ssl.passphrase` entry with the passphrase you set.
   2. [JSHint](http://jshint.com/). Supported editors [plugins](http://jshint.com/install/)
 
 * Start web server: `npm start`
+* Seed database: `npm run seed`
 
 ## Production environments
-* Build project: `npm build`
+* Build project: `npm run dist`
 
 # Test
 `npm test`
