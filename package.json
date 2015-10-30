@@ -69,6 +69,8 @@
     "coffee-loader": "^0.7.2",
     "css-loader": "^0.15.5",
     "errorhandler": "^1.2.2",
+    "eslint": "^1.7.3",
+    "eslint-config-flowics": "0.0.3",
     "expose-loader": "^0.7.0",
     "file-loader": "^0.8.4",
     "grunt": "^0.4.5",

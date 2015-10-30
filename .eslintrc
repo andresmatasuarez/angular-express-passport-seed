@@ -1,0 +1,15 @@
+root: true
+
+extends: flowics
+
+ecmaFeatures:
+  modules: false
+
+rules:
+  camelcase: 0  # revert later
+  func-names: 0 # revert later
+  no-var: 0 # revert later
+  array-bracket-spacing: 0 # revert later
+
+  # Own override
+
