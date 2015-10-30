@@ -2,7 +2,7 @@
 
 const express  = require('express');
 const Response = require('simple-response');
-const Auth     = require('../../middlewares').Auth;
+const Auth     = require('../middlewares').Auth;
 
 const router = express.Router();
 

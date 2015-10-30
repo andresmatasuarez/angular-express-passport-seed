@@ -5,10 +5,10 @@ const Bluebird        = require('bluebird');
 const express         = require('express');
 const Response        = require('simple-response');
 const BadRequestError = require('passport-local-mongoose/lib/badrequesterror');
-const User            = require('../../model/user');
-const Auth            = require('../../middlewares').Auth;
-const RouteUtils      = require('../../utils/route_utils');
-const UserSettings    = require('../../settings').User;
+const User            = require('../model/user');
+const Auth            = require('../middlewares').Auth;
+const RouteUtils      = require('../utils/route_utils');
+const UserSettings    = require('../settings').User;
 
 const UserErrors   = UserSettings.errors;
 

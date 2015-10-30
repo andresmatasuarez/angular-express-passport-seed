@@ -6,7 +6,7 @@ const express    = require('express');
 const fs         = require('fs');
 const favicon    = require('serve-favicon');
 const RouteUtils = require('../utils/route_utils');
-const api        = require('../routes/api');
+const api        = require('../api');
 
 const enforceSSL = RouteUtils.enforceSSL({ port: config.server.ssl.port });
 

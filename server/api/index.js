@@ -2,7 +2,7 @@
 
 const config = require('config');
 const express = require('express');
-const RouteUtils = require('../../utils/route_utils');
+const RouteUtils = require('../utils/route_utils');
 
 module.exports = function() {
 
