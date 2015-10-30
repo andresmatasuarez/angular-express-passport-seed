@@ -1,14 +1,14 @@
 'use strict';
 
-var _         = require('lodash');
-var config    = require('config');
-var fs        = require('fs');
-var https     = require('https');
-var express   = require('express');
-var db        = require('../utils/db');
-var AppConfig = require('./app_config');
-var AppErrors = require('./app_errors');
-var AppRoutes = require('./app_routes');
+var _          = require('lodash');
+var config     = require('config');
+var fs         = require('fs');
+var https      = require('https');
+var express    = require('express');
+var Mongootils = require('mongootils');
+var AppConfig  = require('./app_config');
+var AppErrors  = require('./app_errors');
+var AppRoutes  = require('./app_routes');
 
 var serverHttp = express(); // HTTP server object
 var serverHttps;            // HTTPS server object
@@ -31,8 +31,9 @@ if (config.server && config.server.ssl && config.server.ssl.enable){
 // Promise that is resolved when app has been successfully setup and rejected otherwise.
 function _setup(){
   if (!setupPromise){
-    setupPromise = db.connect()
-    .then(function(){
+    setupPromise = new Mongootils(config.mongo.uri, config.mongo.options)
+    .connect()
+    .then(function(db){
       AppConfig.applyTo(serverHttp);
       AppRoutes.applyTo(serverHttp);
       AppErrors.applyTo(serverHttp);

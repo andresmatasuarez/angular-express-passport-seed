@@ -2,13 +2,17 @@
 
 require('../server/run');
 
-var _        = require('lodash');
-var UserSeed = require('../seeds/user');
-var Log      = require('../server/utils/log');
-var DB       = require('../server/utils/db');
+var _          = require('lodash');
+var config     = require('config');
+var Mongootils = require('mongootils');
+var UserSeed   = require('../seeds/user');
+var Log        = require('../server/utils/log');
 
-DB.connect()
-.thenReturn(UserSeed.seed(process.argv[2]))
+new Mongootils(config.mongo.uri, config.mongo.options)
+.connect()
+.then(() => {
+  return UserSeed.seed(process.argv[2]);
+})
 .then(function(result){
   Log.info('Finished seeding. Seeded users:');
   _(result)
