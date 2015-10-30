@@ -6,12 +6,9 @@ const express    = require('express');
 const fs         = require('fs');
 const favicon    = require('serve-favicon');
 const RouteUtils = require('../utils/route_utils');
+const api        = require('../routes/api');
 
 const enforceSSL = RouteUtils.enforceSSL({ port: config.server.ssl.port });
-
-function apiRoute(resource) {
-  return path.join(config.app.api.base, resource).replace(/\\/g, '/');
-}
 
 function serveBundledIndex(page, bundleMappingsPath) {
   return function(req, res, next) {
@@ -43,7 +40,6 @@ exports.applyTo = function(app) {
 
   // Secured content
   app.use(config.app.dashboard.base, enforceSSL);
-  app.use(config.app.api.base,       enforceSSL);
 
   // Serve assets
   app.use('/', express.static(config.app.assets.path, {
@@ -66,8 +62,6 @@ exports.applyTo = function(app) {
   // });
 
   // API
-  app.use(apiRoute('settings'), require('../routes/api/settings'));
-  app.use(apiRoute('auth'),     require('../routes/api/auth'));
-  app.use(apiRoute('users'),    require('../routes/api/users'));
+  app.use(config.app.api.base, api());
 
 };
