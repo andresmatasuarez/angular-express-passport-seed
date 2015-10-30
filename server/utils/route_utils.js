@@ -4,8 +4,7 @@
 
 var _         = require('lodash');
 var mongoose  = require('mongoose');
-var url       = require('url');
-var Response  = require('./response');
+var Response  = require('simple-response');
 
 var _objectAccessor = function(object, accessor){
   var keys = accessor.split('.');

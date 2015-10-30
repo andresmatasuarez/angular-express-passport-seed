@@ -3,7 +3,7 @@
 var _        = require('lodash');
 var config   = require('config');
 var express  = require('express');
-var Response = require('../../utils/response');
+var Response = require('simple-response');
 var Settings = require('../../settings');
 
 var router = express.Router();

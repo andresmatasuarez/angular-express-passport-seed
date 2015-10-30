@@ -1,7 +1,7 @@
 'use strict';
 
 var config   = require('config');
-var Response = require('../utils/response');
+var Response = require('simple-response');
 
 exports.applyTo = function(app){
 

@@ -1,7 +1,7 @@
 'use strict';
 
 var express  = require('express');
-var Response = require('../../utils/response');
+var Response = require('simple-response');
 var Auth     = require('../../middlewares').Auth;
 
 var router = express.Router();

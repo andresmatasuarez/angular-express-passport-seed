@@ -2,7 +2,7 @@
 
 var config          = require('config');
 var passport        = require('passport');
-var Response        = require('../utils/response');
+var Response        = require('simple-response');
 var JWTRedisService = require('../services/jwt_redis_service');
 
 var jwtRedisService = new JWTRedisService({
