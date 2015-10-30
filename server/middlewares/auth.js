@@ -1,11 +1,11 @@
 'use strict';
 
-var config          = require('config');
-var passport        = require('passport');
-var Response        = require('simple-response');
-var JWTRedisService = require('../services/jwt_redis_service');
+const config          = require('config');
+const passport        = require('passport');
+const Response        = require('simple-response');
+const JWTRedisService = require('../services/jwt_redis_service');
 
-var jwtRedisService = new JWTRedisService({
+const jwtRedisService = new JWTRedisService({
   host       : config.redis.host,
   port       : config.redis.port,
   pass       : config.redis.pass,
@@ -16,12 +16,12 @@ var jwtRedisService = new JWTRedisService({
 
 module.exports = {
 
-  ensureAuthenticated: function(req, res, next){
+  ensureAuthenticated(req, res, next) {
     return jwtRedisService.verify(req.token)
-    .spread(function(jti, user){
+    .spread((jti, user) => {
       req.session = {
-        jti  : jti,
-        user : JSON.parse(user)
+        jti,
+        user: JSON.parse(user)
       };
       next();
     })
@@ -30,19 +30,19 @@ module.exports = {
 
   },
 
-  authenticate: function(req, res, next){
-    passport.authenticate('local', function(err, user, info){
-      if (err){
+  authenticate(req, res, next) {
+    passport.authenticate('local', (err, user, info) => {
+      if (err) {
         return Response.InternalServerError(res)(err);
       }
 
-      if (!user){
+      if (!user) {
         return Response.Unauthorized(res)(info);
       }
 
-      req.login(user, { session: false }, function(err){
-        if (err){
-          return Response.InternalServerError(res)(err);
+      req.login(user, { session: false }, err2 => {
+        if (err2) {
+          return Response.InternalServerError(res)(err2);
         }
 
         next();
@@ -52,14 +52,14 @@ module.exports = {
     })(req, res, next);
   },
 
-  login: function(req, res, next){
-    var user = req.user.toJSON();
+  login(req, res) {
+    const user = req.user.toJSON();
     return jwtRedisService.sign(user)
-    .then(function(token){
+    .then((token) => {
       return {
-        message : 'Authentication successful!',
-        token   : token,
-        user    : user
+        message: 'Authentication successful!',
+        token,
+        user
       };
     })
     .then(Response.Ok(res))
@@ -67,13 +67,13 @@ module.exports = {
 
   },
 
-  logout: function(req, res, next){
-    if (!req.token){
+  logout(req, res) {
+    if (!req.token) {
       return Response.NoContent(res)();
     }
 
     return jwtRedisService.expire(req.token)
-    .then(function(reply){
+    .then(() => {
       delete req.token;
       delete req.session;
       delete req.user;

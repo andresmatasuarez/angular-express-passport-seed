@@ -1,12 +1,12 @@
 'use strict';
 
-var express  = require('express');
-var Response = require('simple-response');
-var Auth     = require('../../middlewares').Auth;
+const express  = require('express');
+const Response = require('simple-response');
+const Auth     = require('../../middlewares').Auth;
 
-var router = express.Router();
+const router = express.Router();
 
-router.get('/me', Auth.ensureAuthenticated, function(req, res){
+router.get('/me', Auth.ensureAuthenticated, (req, res) => {
   Response.Ok(res)(req.session.user);
 });
 

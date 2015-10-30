@@ -6,23 +6,22 @@ var _         = require('lodash');
 var mongoose  = require('mongoose');
 var Response  = require('simple-response');
 
-var _objectAccessor = function(object, accessor){
+function objectAccessor(object, accessor) {
   var keys = accessor.split('.');
   var result = object;
 
   while (keys.length > 0) {
     var key = keys.shift();
-    if (typeof result[key] !== 'undefined') {
-      result = result[key];
-    }
-    else {
+    if (typeof result[key] === 'undefined') {
       result = null;
       break;
+    } else {
+      result = result[key];
     }
   }
 
   return result;
-};
+}
 
 module.exports = {
 
@@ -35,17 +34,17 @@ module.exports = {
    * @param {function} [options.callback(req, res, next, error)=Sends a Bad Request response with error message] - Callback that is called in case of invalid ID.
    * @returns If ID is invalid, options.callback is called with error message. Else, control is passed to the next middleware.
    */
-  validateId: function(options){
+  validateId(options) {
     options = _.merge({
       param    : 'id',
       error    : 'Invalid ID',
-      callback : function(req, res, next, error){
+      callback(req, res, next, error) {
         Response.BadRequest(res)(error);
       }
     }, options);
 
-    return function(req, res, next){
-      if (!mongoose.Types.ObjectId.isValid(req.params[options.param])){
+    return function(req, res, next) {
+      if (!mongoose.Types.ObjectId.isValid(req.params[options.param])) {
         return options.callback(req, res, next, options.error);
       }
       next();
@@ -64,21 +63,21 @@ module.exports = {
    * @param {function} [options.callback(req, res, next, error)=Sends a Not Found response with error message] - Callback that is called in case of finding no document.
    * @returns If no document is found, options.callback is called with error message. Else, control is passed to the next middleware.
    */
-  fetchByIdAndPopulateRequest: function(modelName, populateTo, options){
+  fetchByIdAndPopulateRequest(modelName, populateTo, options) {
     options = _.merge({
       param    : 'id',
       fields   : null,
       error    : 'Resource not found',
-      callback : function(req, res, next, error){
+      callback(req, res, next, error) {
         Response.NotFound(res)(error);
       }
     }, options);
 
-    return function(req, res, next){
+    return function(req, res, next) {
       mongoose.model(modelName)
       .findByIdAsync(req.params[options.param], options.fields)
-      .then(function(doc){
-        if (_.isEmpty(doc)){
+      .then(function(doc) {
+        if (_.isEmpty(doc)) {
           return options.callback(req, res, next, options.error);
         }
         req[populateTo] = doc;
@@ -94,9 +93,9 @@ module.exports = {
    * @param {function} callback - Callback to execute on processed errors.
    * @returns Function that takes an error as argument and executes callback with processed errors.
    */
-  validationErrorCleaner: function(callback){
-    return function(err){
-      return callback(_.map(_.keys(err.errors), function(field){
+  validationErrorCleaner(callback) {
+    return function(err) {
+      return callback(_.map(_.keys(err.errors), function(field) {
         return err.errors[field].message;
       }));
     };
@@ -111,13 +110,13 @@ module.exports = {
    * @param {function} [options.property='invalid'] - Property in error messages object that points to the custom message.
    * @returns Function that takes an error as argument and executes callback with processed CastError.
    */
-  castErrorMapper: function(errors, callback, options){
+  castErrorMapper(errors, callback, options) {
     options = _.merge({
       property: 'invalid'
     }, options);
 
-    return function(err){
-      return callback(_objectAccessor(errors, err.path)[options.property]);
+    return function(err) {
+      return callback(objectAccessor(errors, err.path)[options.property]);
     };
   },
 
@@ -129,18 +128,18 @@ module.exports = {
    * @returns Function that takes an error as argument and executes callback with processed CastError.
    * @returns If request object is not secure, if method is GET then redirects to secured URL, else respond with 403. Else, control is passed to the next middleware.
    */
-  enforceSSL: function(options){
+  enforceSSL(options) {
     options = _.merge({
       port: 443
     }, options);
 
-    return function(req, res, next){
-      if (req.secure){
+    return function(req, res, next) {
+      if (req.secure) {
         return next();
       }
 
-      if (req.method === 'GET'){
-        return res.redirect(301, 'https://' + req.hostname + ':' + options.port + req.originalUrl);
+      if (req.method === 'GET') {
+        return res.redirect(301, `https://${req.hostname}:${options.port}${req.originalUrl}`);
       }
 
       Response.Forbidden(res)('SSL Required.');

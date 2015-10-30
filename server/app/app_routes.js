@@ -1,23 +1,23 @@
 'use strict';
 
-var config     = require('config');
-var path       = require('path');
-var express    = require('express');
-var fs         = require('fs');
-var favicon    = require('serve-favicon');
-var RouteUtils = require('../utils/route_utils');
+const config     = require('config');
+const path       = require('path');
+const express    = require('express');
+const fs         = require('fs');
+const favicon    = require('serve-favicon');
+const RouteUtils = require('../utils/route_utils');
 
-var enforceSSL = RouteUtils.enforceSSL({ port: config.server.ssl.port });
+const enforceSSL = RouteUtils.enforceSSL({ port: config.server.ssl.port });
 
-var apiRoute = function(resource){
+function apiRoute(resource) {
   return path.join(config.app.api.base, resource).replace(/\\/g, '/');
-};
+}
 
-var serveBundledIndex = function(page, bundleMappingsPath){
-  return function(req, res, next){
+function serveBundledIndex(page, bundleMappingsPath) {
+  return function(req, res, next) {
     fs.readFileAsync(bundleMappingsPath)
     .then(JSON.parse)
-    .then(function(mappings){
+    .then(function(mappings) {
       res.render('index', {
         settings : config.app[page],
         scripts  : {
@@ -28,14 +28,14 @@ var serveBundledIndex = function(page, bundleMappingsPath){
     })
     .catch(next);
   };
-};
+}
 
-exports.applyTo = function(app){
+exports.applyTo = function(app) {
 
-  if (config.app.favicon){
+  if (config.app.favicon) {
     app.use(favicon(path.join(__dirname, config.app.favicon)));
   } else {
-    app.use('favicon.ico', function(req, res){
+    app.use('favicon.ico', function(req, res) {
       res.status(200);
       res.type('image/x-icon');
     });
@@ -57,11 +57,11 @@ exports.applyTo = function(app){
 
   // URL rewrite for non-HTML5 browsers
   // Just send the index.html for other files to support HTML5Mode
-  // app.all(config.app.dashboard.base + '*', function(req, res, next){
+  // app.all(config.app.dashboard.base + '*', function(req, res, next) {
   //   res.sendFile(config.app.dashboard.index, { root: path.join(__dirname, config.app.dashboard.root) });
   // });
 
-  // app.all(config.app.web.base + '*', function(req, res, next){
+  // app.all(config.app.web.base + '*', function(req, res, next) {
   //   res.sendFile(config.app.web.index, { root: path.join(__dirname, config.app.web.root) });
   // });
 

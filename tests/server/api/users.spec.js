@@ -40,8 +40,12 @@ describe('/api/users', function(){
 
     before(function(done){
       App.setup()
-      .thenReturn(User.removeAsync())
-      .thenReturn(UserSeed.seed(usersToSeed))
+      .then(() => {
+        return User.removeAsync();
+      })
+      .then(() => {
+        return UserSeed.seed(usersToSeed);
+      })
       .then(_.partialRight(TestUtils.prepareSeededObjects, UserSettings.paths, function(item){ return item.email; }))
       .then(function(seeded){
         seededUsers = seeded;
@@ -182,8 +186,12 @@ describe('/api/users', function(){
 
     before(function(done){
       App.setup()
-      .thenReturn(User.removeAsync())
-      .thenReturn(UserSeed.seed(usersToSeed))
+      .then(() => {
+        return User.removeAsync();
+      })
+      .then(() => {
+        return UserSeed.seed(usersToSeed);
+      })
       .then(_.partialRight(TestUtils.prepareSeededObjects, UserSettings.paths, function(item){ return item.email; }))
       .then(function(seeded){
         return performLogin(_.first(seeded), 'test');

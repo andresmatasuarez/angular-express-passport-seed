@@ -1,15 +1,14 @@
 'use strict';
 
-var path        = require('path');
-var config      = require('config');
-var passport    = require('passport');
-var morgan      = require('morgan');
-var compression = require('compression');
-var bodyparser  = require('body-parser');
-var Middlewares = require('../middlewares');
-var User        = require('../model/user');
+const config      = require('config');
+const passport    = require('passport');
+const morgan      = require('morgan');
+const compression = require('compression');
+const bodyparser  = require('body-parser');
+const Middlewares = require('../middlewares');
+const User        = require('../model/user');
 
-exports.applyTo = function(app){
+exports.applyTo = function(app) {
 
   passport.use(User.createStrategy());
 
@@ -18,7 +17,7 @@ exports.applyTo = function(app){
   app.set('view engine', 'jade');
   app.set("views", config.app.views.path);
 
-  if(config.env !== config.environments.test){
+  if (config.env !== config.environments.test) {
     app.use(morgan('dev'));
   }
 

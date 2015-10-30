@@ -1,37 +1,37 @@
 'use strict';
 
-var _            = require('lodash');
-var Bluebird     = require('bluebird');
-var util         = require('util');
-var uuid         = require('node-uuid');
-var jwt          = require('jsonwebtoken');
-var RedisService = require('../utils/redis_service');
+const _            = require('lodash');
+const Bluebird     = require('bluebird');
+const util         = require('util');
+const uuid         = require('node-uuid');
+const jwt          = require('jsonwebtoken');
+const RedisService = require('../utils/redis_service');
 
-var SECOND = 1000;
+const SECOND = 1000;
 
-var JWTRedisServiceError = function JWTRedisServiceError(message){
+function JWTRedisServiceError(message) {
   Error.call(this);
   this.name    = 'JWTRedisServiceError';
   this.message = message;
-};
+}
 
-var UnauthorizedAccessError = function UnauthorizedAccessError(message){
+function UnauthorizedAccessError(message) {
   Error.call(this);
   this.name    = 'UnauthorizedAccessError';
   this.message = message || 'Token verification failed. User not authenticated or token expired.';
-};
+}
 
-var NoTokenProvidedError = function NoTokenProvidedError(message){
+function NoTokenProvidedError(message) {
   Error.call(this);
   this.name    = 'NoTokenProvidedError';
   this.message = message || 'No token provided.';
-};
+}
 
 util.inherits(JWTRedisServiceError,    Error);
 util.inherits(UnauthorizedAccessError, Error);
 util.inherits(NoTokenProvidedError,    Error);
 
-var JWTRedisService = function JWTRedisService(config){
+function JWTRedisService(config) {
   this.client = RedisService.createClient({
     host : config.host,
     port : config.port,
@@ -42,19 +42,19 @@ var JWTRedisService = function JWTRedisService(config){
   this.secret     = config.secret;
   this.keyspace   = config.keyspace;
   this.expiration = config.expiration;
-};
+}
 
-JWTRedisService.prototype.sign = function(data){
-  var jti = uuid.v4();
+JWTRedisService.prototype.sign = function(data) {
+  const jti = uuid.v4();
 
-  var token = jwt.sign({ jti: jti }, this.secret, {
+  const token = jwt.sign({ jti }, this.secret, {
     issuer           : this.issuer,
     expiresInSeconds : this.expiration / SECOND
   });
 
   return this.client.psetexAsync(this.keyspace + jti, this.expiration, JSON.stringify(data))
-  .then(function(reply){
-    if (!reply){
+  .then((reply) => {
+    if (!reply) {
       throw new JWTRedisServiceError('Session could not be stored in Redis');
     }
   })
@@ -62,38 +62,38 @@ JWTRedisService.prototype.sign = function(data){
 
 };
 
-JWTRedisService.prototype.verify = function(token){
-  if (_.isEmpty(token)){
+JWTRedisService.prototype.verify = function(token) {
+  if (_.isEmpty(token)) {
     return Bluebird.reject(new NoTokenProvidedError());
   }
 
   return jwt.verifyAsync(token, this.secret)
-  .catch(function(err){
+  .catch(() => {
     throw new UnauthorizedAccessError();
   })
-  .then(function(decoded){
-    if (_.isEmpty(decoded.jti)){
+  .then((decoded) => {
+    if (_.isEmpty(decoded.jti)) {
       throw new UnauthorizedAccessError();
     }
     return this.client.getAsync(this.keyspace + decoded.jti)
-    .then(function(data){
-      if (_.isEmpty(data)){
+    .then((data) => {
+      if (_.isEmpty(data)) {
         throw new UnauthorizedAccessError();
       }
 
       return [ decoded.jti, data ];
     });
-  }.bind(this));
+  });
 };
 
-JWTRedisService.prototype.expire = function(token){
-  if (_.isEmpty(token)){
+JWTRedisService.prototype.expire = function(token) {
+  if (_.isEmpty(token)) {
     return Bluebird.resolve();
   }
 
-  var data = jwt.decode(token, this.secret);
+  const data = jwt.decode(token, this.secret);
 
-  if (_.isEmpty(data) || _.isEmpty(data.jti)){
+  if (_.isEmpty(data) || _.isEmpty(data.jti)) {
     return Bluebird.resolve();
   }
 
