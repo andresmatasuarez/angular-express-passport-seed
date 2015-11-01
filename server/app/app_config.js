@@ -8,7 +8,7 @@ const bodyparser  = require('body-parser');
 const Middlewares = require('../middlewares');
 const User        = require('../model/user');
 
-exports.applyTo = function(app) {
+module.exports = function(app) {
 
   passport.use(User.createStrategy());
 

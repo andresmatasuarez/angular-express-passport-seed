@@ -6,9 +6,9 @@ const fs         = require('fs');
 const https      = require('https');
 const express    = require('express');
 const Mongootils = require('mongootils');
-const AppConfig  = require('./app_config');
-const AppErrors  = require('./app_errors');
-const AppRoutes  = require('./app_routes');
+const appConfig  = require('./app_config');
+const appErrors  = require('./app_errors');
+const appRoutes  = require('./app_routes');
 
 const serverHttp = express(); // HTTP server object
 let serverHttps;              // HTTPS server object
@@ -34,9 +34,9 @@ function setup() {
     setupPromise = new Mongootils(config.mongo.uri, config.mongo.options)
     .connect()
     .then(() => {
-      AppConfig.applyTo(serverHttp);
-      AppRoutes.applyTo(serverHttp);
-      AppErrors.applyTo(serverHttp);
+      appConfig(serverHttp);
+      appRoutes(serverHttp);
+      appErrors(serverHttp);
     });
   }
 

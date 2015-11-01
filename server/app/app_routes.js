@@ -27,7 +27,7 @@ function serveBundledIndex(page, bundleMappingsPath) {
   };
 }
 
-exports.applyTo = function(app) {
+module.exports = function(app) {
 
   if (config.app.favicon) {
     app.use(favicon(path.join(__dirname, config.app.favicon)));

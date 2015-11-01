@@ -4,7 +4,7 @@
 const config   = require('config');
 const Response = require('simple-response');
 
-exports.applyTo = function(app) {
+module.exports = function(app) {
 
   // Since this is the last non-error-handling middleware,
   // we assume 404, as nothing else responded.
