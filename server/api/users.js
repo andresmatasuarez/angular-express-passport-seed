@@ -1,16 +1,15 @@
 'use strict';
 
-const _               = require('lodash');
-const Bluebird        = require('bluebird');
-const express         = require('express');
-const Response        = require('simple-response');
-const BadRequestError = require('passport-local-mongoose/lib/badrequesterror');
-const User            = require('../model/user');
-const Auth            = require('../middlewares').Auth;
-const RouteUtils      = require('../utils/route_utils');
-const UserSettings    = require('../settings').User;
+const _          = require('lodash');
+const Bluebird   = require('bluebird');
+const express    = require('express');
+const Response   = require('simple-response');
+const User       = require('../model/user');
+const Auth       = require('../middlewares').Auth;
+const RouteUtils = require('../utils/route_utils');
+const Settings   = require('../settings');
 
-const UserErrors   = UserSettings.errors;
+const UserErrors = Settings.User.errors;
 
 const router = express.Router();
 
@@ -26,40 +25,39 @@ const normalize = {
   }
 };
 
-router.get('/', Auth.ensureAuthenticated, normalize.queryParams, (req, res) => {
-  User.findAsync({}, UserSettings.paths.join(' '), {
+router.get('/', Auth.ensureAuthenticated, normalize.queryParams, (req, res, next) => {
+  User.findAsync({}, Settings.User.paths.join(' '), {
     skip  : req.query.skip,
     limit : req.query.limit,
-    sort  : UserSettings.sort
+    sort  : Settings.User.sort
   })
   .then(Response.Ok(res))
-  .catch(Response.InternalServerError(res));
+  .catch(next);
 });
 
-router.get('/total', Auth.ensureAuthenticated, (req, res) => {
+router.get('/total', Auth.ensureAuthenticated, (req, res, next) => {
   User.countAsync()
   .then((total) => {
     Response.Ok(res)({ total });
   })
-  .catch(Response.InternalServerError(res));
+  .catch(next);
 });
 
-router.get('/:id', Auth.ensureAuthenticated, RouteUtils.validateId({ error: UserSettings.errors.invalidId }), RouteUtils.fetchByIdAndPopulateRequest('User', 'fetchedUser', {
-  fields: UserSettings.paths.join(' '),
-  error: UserSettings.errors.notFound
+router.get('/:id', Auth.ensureAuthenticated, RouteUtils.validateId({ error: Settings.User.errors.invalidId }), RouteUtils.populateById('User', 'fetchedUser', {
+  fields: Settings.User.paths.join(' '),
+  error: Settings.User.errors.notFound
 }), (req, res) => {
   Response.Ok(res)(req.fetchedUser);
 });
 
-router.post('/', Auth.ensureAuthenticated, (req, res) => {
+router.post('/', Auth.ensureAuthenticated, (req, res, next) => {
   User.registerAsync(new User({ email: req.body.email }), req.body.password)
   .then(Response.Ok(res))
-  .catch(BadRequestError, Response.BadRequest(res))
-  .catch(Response.InternalServerError(res));
+  .catch(next);
 });
 
-router.put('/:id', Auth.ensureAuthenticated, RouteUtils.fetchByIdAndPopulateRequest('User', 'fetchedUser', {
-  error: UserSettings.errors.notFound
+router.put('/:id', Auth.ensureAuthenticated, RouteUtils.populateById('User', 'fetchedUser', {
+  error: Settings.User.errors.notFound
 }), (req, res) => {
 
   let editionPromise = Bluebird.resolve();
@@ -72,7 +70,7 @@ router.put('/:id', Auth.ensureAuthenticated, RouteUtils.fetchByIdAndPopulateRequ
       return req.fetchedUser.authenticateAsync(req.body.password);
     })
     .then((result) => {
-      // isArray determines is authentication failed.
+      // isArray determines if authentication failed.
       // Check https://github.com/saintedlama/passport-local-mongoose#authenticatepassword-cb
       if (_.isArray(result)) {
         throw new Error(result[1].message);
@@ -98,10 +96,10 @@ router.put('/:id', Auth.ensureAuthenticated, RouteUtils.fetchByIdAndPopulateRequ
   });
 });
 
-router.delete('/:id', Auth.ensureAuthenticated, RouteUtils.validateId({ error: UserSettings.errors.invalidId }), (req, res) => {
+router.delete('/:id', Auth.ensureAuthenticated, RouteUtils.validateId({ error: Settings.User.errors.invalidId }), (req, res, next) => {
   User.findByIdAndRemoveAsync(req.params.id)
   .then(Response.Ok(res))
-  .catch(Response.InternalServerError(res));
+  .catch(next);
 });
 
 module.exports = router;

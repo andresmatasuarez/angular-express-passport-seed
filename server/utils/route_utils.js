@@ -6,23 +6,6 @@ var _         = require('lodash');
 var mongoose  = require('mongoose');
 var Response  = require('simple-response');
 
-function objectAccessor(object, accessor) {
-  var keys = accessor.split('.');
-  var result = object;
-
-  while (keys.length > 0) {
-    var key = keys.shift();
-    if (typeof result[key] === 'undefined') {
-      result = null;
-      break;
-    } else {
-      result = result[key];
-    }
-  }
-
-  return result;
-}
-
 module.exports = {
 
   /**
@@ -52,7 +35,7 @@ module.exports = {
   },
 
   /**
-   * fetchByIdAndPopulateRequest
+   * populateById
    * @desc Fetchs a MongoDB Document by its ID and populate the request object with it.
    * @param {string} modelName - The name of the model to query.
    * @param {string} populateTo - The name of the field to populate in the request object.
@@ -63,7 +46,7 @@ module.exports = {
    * @param {function} [options.callback(req, res, next, error)=Sends a Not Found response with error message] - Callback that is called in case of finding no document.
    * @returns If no document is found, options.callback is called with error message. Else, control is passed to the next middleware.
    */
-  fetchByIdAndPopulateRequest(modelName, populateTo, options) {
+  populateById(modelName, populateTo, options) {
     options = _.merge({
       param    : 'id',
       fields   : null,
@@ -116,7 +99,7 @@ module.exports = {
     }, options);
 
     return function(err) {
-      return callback(objectAccessor(errors, err.path)[options.property]);
+      return callback(_.get(errors, err.path)[options.property]);
     };
   },
 
@@ -143,6 +126,23 @@ module.exports = {
       }
 
       Response.Forbidden(res)('SSL Required.');
+    };
+  },
+
+  /**
+   * handleError
+   * @desc Helper to write an error route handler for each error, instead of having to write only one with complex ifs and switches.
+   * @param {error} type - Error class to catch
+   * @param {function} cb - Error callback (err, req, res, next) to handle caught exception
+   * @returns Express error route handler function, with signature (err, req, res, next)
+   */
+  handleError(type, cb) {
+    return (err, req, res, next) => {
+      if (err.constructor.name === type.name) {
+        return cb(err, req, res, next);
+      } else {
+        return next(err);
+      }
     };
   }
 
