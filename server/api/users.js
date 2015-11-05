@@ -43,9 +43,11 @@ router.get('/total', Auth.ensureAuthenticated, (req, res, next) => {
   .catch(next);
 });
 
-router.get('/:id', Auth.ensureAuthenticated, RouteUtils.validateId({ error: Settings.User.errors.invalidId }), RouteUtils.populateById('User', 'fetchedUser', {
-  fields: Settings.User.paths.join(' '),
-  error: Settings.User.errors.notFound
+router.get('/:id', Auth.ensureAuthenticated, RouteUtils.validateId({ error: Settings.User.errors.invalidId }), RouteUtils.populateDocument({
+  model      : User,
+  populateTo : 'fetchedUser',
+  fields     : Settings.User.paths.join(' '),
+  error      : Settings.User.errors.notFound
 }), (req, res) => {
   Response.Ok(res)(req.fetchedUser);
 });
@@ -56,8 +58,10 @@ router.post('/', Auth.ensureAuthenticated, (req, res, next) => {
   .catch(next);
 });
 
-router.put('/:id', Auth.ensureAuthenticated, RouteUtils.populateById('User', 'fetchedUser', {
-  error: Settings.User.errors.notFound
+router.put('/:id', Auth.ensureAuthenticated, RouteUtils.populateDocument({
+  model      : User,
+  populateTo : 'fetchedUser',
+  error      : Settings.User.errors.notFound
 }), (req, res) => {
 
   let editionPromise = Bluebird.resolve();

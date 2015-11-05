@@ -17,6 +17,14 @@ module.exports = function() {
   api.use('/auth',     require('./auth'));
   api.use('/users',    require('./users'));
 
+  api.use(RouteUtils.handleError(RouteUtils.InvalidIdError, (err, req, res, next) => {
+    Response.BadRequest(res)(err);
+  }));
+
+  api.use(RouteUtils.handleError(RouteUtils.DocumentNotFoundError, (err, req, res, next) => {
+    Response.NotFound(res)(err);
+  }));
+
   api.use(RouteUtils.handleError(BadRequestError, (err, req, res, next) => {
     Response.BadRequest(res)(err);
   }));

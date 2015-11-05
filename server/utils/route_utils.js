@@ -3,10 +3,32 @@
 'use strict';
 
 var _         = require('lodash');
+var util      = require('util');
 var mongoose  = require('mongoose');
+var Bluebird  = require('bluebird');
 var Response  = require('simple-response');
 
+function InvalidIdError(message, extra) {
+  Error.captureStackTrace(this, this.constructor);
+  this.name = this.constructor.name;
+  this.message = message;
+  this.extra = extra;
+}
+
+function DocumentNotFoundError(message, extra) {
+  Error.captureStackTrace(this, this.constructor);
+  this.name = this.constructor.name;
+  this.message = message;
+  this.extra = extra;
+}
+
+util.inherits(InvalidIdError, Error);
+util.inherits(DocumentNotFoundError, Error);
+
 module.exports = {
+
+  InvalidIdError,
+  DocumentNotFoundError,
 
   /**
    * validateId
@@ -22,7 +44,7 @@ module.exports = {
       param    : 'id',
       error    : 'Invalid ID',
       callback(req, res, next, error) {
-        Response.BadRequest(res)(error);
+        throw new InvalidIdError(error);
       }
     }, options);
 
@@ -35,38 +57,78 @@ module.exports = {
   },
 
   /**
-   * populateById
-   * @desc Fetchs a MongoDB Document by its ID and populate the request object with it.
+   * populateDocument
+   * @desc Fetchs a MongoDB Document by a specified property (_id by default) and populate the request object with it.
    * @param {string} modelName - The name of the model to query.
    * @param {string} populateTo - The name of the field to populate in the request object.
    * @param {object} options - Options.
    * @param {string} [options.param='id'] The name of the request param that holds the ID.
-   * @param {string} [options.fields=null] Document fields to select.
+   * @param {string} [options.projection=null] Document fields to select.
    * @param {string} [options.error='Resource not found'] Error message to display in case of finding no document.
    * @param {function} [options.callback(req, res, next, error)=Sends a Not Found response with error message] - Callback that is called in case of finding no document.
    * @returns If no document is found, options.callback is called with error message. Else, control is passed to the next middleware.
    */
-  populateById(modelName, populateTo, options) {
+  populateDocument(options) {
     options = _.merge({
-      param    : 'id',
-      fields   : null,
-      error    : 'Resource not found',
-      callback(req, res, next, error) {
-        Response.NotFound(res)(error);
+      model      : undefined,
+      populateTo : 'document',
+      param      : 'params.id:_id',
+      method     : 'findOneAsync',
+      projection : null,
+      error      : 'Resource not found',
+      onDocumentNotFound(req, res, next, error) {
+        throw new DocumentNotFoundError(error);
       }
     }, options);
 
+    let model;
+    if (_.isString(options.model)) {
+      model = mongoose.model(options.model);
+    } else {
+      model = options.model;
+    }
+
     return function(req, res, next) {
-      mongoose.model(modelName)
-      .findByIdAsync(req.params[options.param], options.fields)
+
+      Bluebird.try(() => {
+        function buildCriteria() {
+          let criteria;
+          if (_.isString(options.param)) {
+            const pairs = options.param.split(',');
+
+            criteria = {};
+            _.forEach(pairs, pair => {
+              const paramPath = pair.split(':')[0];
+              const propertyName = pair.split(':')[1];
+              criteria[propertyName] = _.get(req, paramPath);
+            });
+          } else if (_.isFunction(options.param)) {
+            criteria = options.param(req);
+          } else {
+            criteria = options.param;
+          }
+          return criteria;
+        }
+
+        function buildMethod() {
+          if (_.isString(options.method)) {
+            return model[options.method].bind(model);
+          } else {
+            return options.method(req);
+          }
+        }
+
+        return buildMethod()(buildCriteria(), options.projection);
+      })
       .then(function(doc) {
         if (_.isEmpty(doc)) {
-          return options.callback(req, res, next, options.error);
+          return options.onDocumentNotFound(req, res, next, options.error);
         }
-        req[populateTo] = doc;
+        _.set(req, options.populateTo, doc);
         next();
       })
-      .catch(Response.InternalServerError(res));
+      .catch(next);
+
     };
   },
 
