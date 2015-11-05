@@ -25,6 +25,10 @@ module.exports = function() {
     Response.NotFound(res)(err);
   }));
 
+  api.use(RouteUtils.handleError(RouteUtils.ForbiddenError, (err, req, res, next) => {
+    Response.Forbidden(res)(err);
+  }));
+
   api.use(RouteUtils.handleError(BadRequestError, (err, req, res, next) => {
     Response.BadRequest(res)(err);
   }));

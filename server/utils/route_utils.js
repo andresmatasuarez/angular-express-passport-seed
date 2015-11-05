@@ -6,7 +6,6 @@ var _         = require('lodash');
 var util      = require('util');
 var mongoose  = require('mongoose');
 var Bluebird  = require('bluebird');
-var Response  = require('simple-response');
 
 function InvalidIdError(message, extra) {
   Error.captureStackTrace(this, this.constructor);
@@ -22,13 +21,22 @@ function DocumentNotFoundError(message, extra) {
   this.extra = extra;
 }
 
+function ForbiddenError(message, extra) {
+  Error.captureStackTrace(this, this.constructor);
+  this.name = this.constructor.name;
+  this.message = message;
+  this.extra = extra;
+}
+
 util.inherits(InvalidIdError, Error);
 util.inherits(DocumentNotFoundError, Error);
+util.inherits(ForbiddenError, Error);
 
 module.exports = {
 
   InvalidIdError,
   DocumentNotFoundError,
+  ForbiddenError,
 
   /**
    * validateId
@@ -58,15 +66,21 @@ module.exports = {
 
   /**
    * populateDocument
-   * @desc Fetchs a MongoDB Document by a specified property (_id by default) and populate the request object with it.
-   * @param {string} modelName - The name of the model to query.
-   * @param {string} populateTo - The name of the field to populate in the request object.
+   * @desc Fetchs a MongoDB Document by a specified property ('id' from request params by default) and populate the request object with it.
    * @param {object} options - Options.
-   * @param {string} [options.param='id'] The name of the request param that holds the ID.
-   * @param {string} [options.projection=null] Document fields to select.
-   * @param {string} [options.error='Resource not found'] Error message to display in case of finding no document.
-   * @param {function} [options.callback(req, res, next, error)=Sends a Not Found response with error message] - Callback that is called in case of finding no document.
-   * @returns If no document is found, options.callback is called with error message. Else, control is passed to the next middleware.
+   * @param {string|object} options.model - The Mongoose model to query. If its a string, then the actual model is obtained from the default connection using 'mongoose.model(options.model)'. This param is taking into account if and only if 'options.method' is a string.
+   * @param {string} [options.populateTo='document'] The name of the property to populate in the request object. Supports dot notation.
+   * @param {string|function|object} [options.param='params.id:_id'] The criteria for querying the model.
+   *   If string, it is parsed as 'src:dest', where 'src' is the property from the request object (dot notation supported) to extract the param and send it as 'dest' in side the query object.
+   *   If function, it gets invoked with the request object as argument and returns an object describing the criteria object for querying.
+   *   If object, it will be used as the criteria object for querying.
+   * @param {string|function} [options.method='findOneAsync'] Query function.
+   *   If string, it is assumed to be a property of the model.
+   *   If function, it is invoked with the request object as argument.
+   * @param {string} [options.projection=null] Query projection.
+   * @param {string} [options.error='Resource not found'] Error message to throw in case of document not found.
+   * @param {function} [options.onDocumentNotFound(req, res, next, options.error)=throws DocumentNotFoundError] - Callback that is called in case of document not found.
+   * @returns If no document is found, options.onDocumentNotFound is called with 'options.error'. Else, control is passed to the next middleware.
    */
   populateDocument(options) {
     options = _.merge({
@@ -171,7 +185,7 @@ module.exports = {
    * @param {object} options - Option.
    * @param {function} [options.port=443] - SSL port.
    * @returns Function that takes an error as argument and executes callback with processed CastError.
-   * @returns If request object is not secure, if method is GET then redirects to secured URL, else respond with 403. Else, control is passed to the next middleware.
+   * @returns If request is secure, passes control to the next middleware in chain. Else, if method is GET redirects to secured URL, otherwise throws a ForbiddenError.
    */
   enforceSSL(options) {
     options = _.merge({
@@ -187,7 +201,8 @@ module.exports = {
         return res.redirect(301, `https://${req.hostname}:${options.port}${req.originalUrl}`);
       }
 
-      Response.Forbidden(res)('SSL Required.');
+      throw new ForbiddenError('SSL Required.');
+
     };
   },
 
