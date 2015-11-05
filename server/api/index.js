@@ -6,6 +6,7 @@ const express         = require('express');
 const Response        = require('simple-response');
 const BadRequestError = require('passport-local-mongoose/lib/badrequesterror');
 const RouteUtils      = require('../utils/route_utils');
+const Middlewares     = require('../middlewares');
 
 module.exports = function() {
 
@@ -15,7 +16,7 @@ module.exports = function() {
 
   api.use('/settings', require('./settings'));
   api.use('/auth',     require('./auth'));
-  api.use('/users',    require('./users'));
+  api.use('/users',    Middlewares.Auth.ensureAuthenticated, require('./users'));
 
   api.use(RouteUtils.handleError(RouteUtils.InvalidIdError, (err, req, res, next) => {
     Response.BadRequest(res)(err);

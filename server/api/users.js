@@ -5,7 +5,6 @@ const Bluebird   = require('bluebird');
 const express    = require('express');
 const Response   = require('simple-response');
 const User       = require('../model/user');
-const Auth       = require('../middlewares').Auth;
 const RouteUtils = require('../utils/route_utils');
 const Settings   = require('../settings');
 
@@ -25,7 +24,7 @@ const normalize = {
   }
 };
 
-router.get('/', Auth.ensureAuthenticated, normalize.queryParams, (req, res, next) => {
+router.get('/', normalize.queryParams, (req, res, next) => {
   User.findAsync({}, Settings.User.paths.join(' '), {
     skip  : req.query.skip,
     limit : req.query.limit,
@@ -35,7 +34,7 @@ router.get('/', Auth.ensureAuthenticated, normalize.queryParams, (req, res, next
   .catch(next);
 });
 
-router.get('/total', Auth.ensureAuthenticated, (req, res, next) => {
+router.get('/total', (req, res, next) => {
   User.countAsync()
   .then((total) => {
     Response.Ok(res)({ total });
@@ -43,7 +42,7 @@ router.get('/total', Auth.ensureAuthenticated, (req, res, next) => {
   .catch(next);
 });
 
-router.get('/:id', Auth.ensureAuthenticated, RouteUtils.validateId({ error: Settings.User.errors.invalidId }), RouteUtils.populateDocument({
+router.get('/:id', RouteUtils.validateId({ error: Settings.User.errors.invalidId }), RouteUtils.populateDocument({
   model      : User,
   populateTo : 'fetchedUser',
   fields     : Settings.User.paths.join(' '),
@@ -52,13 +51,13 @@ router.get('/:id', Auth.ensureAuthenticated, RouteUtils.validateId({ error: Sett
   Response.Ok(res)(req.fetchedUser);
 });
 
-router.post('/', Auth.ensureAuthenticated, (req, res, next) => {
+router.post('/', (req, res, next) => {
   User.registerAsync(new User({ email: req.body.email }), req.body.password)
   .then(Response.Ok(res))
   .catch(next);
 });
 
-router.put('/:id', Auth.ensureAuthenticated, RouteUtils.populateDocument({
+router.put('/:id', RouteUtils.populateDocument({
   model      : User,
   populateTo : 'fetchedUser',
   error      : Settings.User.errors.notFound
@@ -100,7 +99,7 @@ router.put('/:id', Auth.ensureAuthenticated, RouteUtils.populateDocument({
   });
 });
 
-router.delete('/:id', Auth.ensureAuthenticated, RouteUtils.validateId({ error: Settings.User.errors.invalidId }), (req, res, next) => {
+router.delete('/:id', RouteUtils.validateId({ error: Settings.User.errors.invalidId }), (req, res, next) => {
   User.findByIdAndRemoveAsync(req.params.id)
   .then(Response.Ok(res))
   .catch(next);
