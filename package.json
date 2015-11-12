@@ -5,7 +5,7 @@
   "main": "server/app.js",
   "scripts": {
     "start": "grunt serve",
-    "test": "grunt test",
+    "test": "eslint . && grunt test",
     "lint": "eslint .",
     "dist": "grunt build",
     "seed": "grunt seed"
