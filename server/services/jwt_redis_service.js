@@ -48,8 +48,8 @@ JWTRedisService.prototype.sign = function(data) {
   const jti = uuid.v4();
 
   const token = jwt.sign({ jti }, this.secret, {
-    issuer           : this.issuer,
-    expiresInSeconds : this.expiration / SECOND
+    issuer    : this.issuer,
+    expiresIn : this.expiration / SECOND
   });
 
   return this.client.psetexAsync(this.keyspace + jti, this.expiration, JSON.stringify(data))
