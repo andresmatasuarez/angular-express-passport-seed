@@ -51,6 +51,6 @@ module.exports = function(grunt) {
     'webpack:dist'
   ]);
 
-  grunt.registerTask('serve:dist', [ 'env:prod', 'build:dist', 'express:dist', 'wait', 'express-keepalive' ]);
+  grunt.registerTask('serve:dist', [ 'env:prod', 'build:dist', 'express:dist', 'wait' ]);
 
 };

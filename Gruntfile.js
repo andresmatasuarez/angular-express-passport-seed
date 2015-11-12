@@ -56,10 +56,6 @@ module.exports = function(grunt){
     }, 1500);
   });
 
-  grunt.registerTask('express-keepalive', 'Keep grunt running', function(){
-    this.async();
-  });
-
   grunt.registerTask('build', [ 'build:dist' ]);
   grunt.registerTask('serve', [ 'serve:dev' ]);
 
