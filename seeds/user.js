@@ -13,7 +13,7 @@ module.exports = {
   seed(n) {
     return Bluebird.all(_.times(n, () => {
 
-      var user = new User({
+      const user = new User({
         email: chance.email({ domain: 'test.com' })
       });
 

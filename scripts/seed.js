@@ -2,11 +2,11 @@
 
 require('../server/run');
 
-var _          = require('lodash');
-var config     = require('config');
-var Mongootils = require('mongootils');
-var UserSeed   = require('../seeds/user');
-var Log        = require('../server/utils/log');
+const _          = require('lodash');
+const config     = require('config');
+const Mongootils = require('mongootils');
+const UserSeed   = require('../seeds/user');
+const Log        = require('../server/utils/log');
 
 new Mongootils(config.mongo.uri, config.mongo.options)
 .connect()

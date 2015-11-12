@@ -1,11 +1,11 @@
 'use strict';
 
-var url          = require('url');
-var path         = require('path');
-var Environments = require('./environments');
+const url          = require('url');
+const path         = require('path');
+const Environments = require('./environments');
 
-var aYear = 31556952000;
-var projectRoot = path.normalize(path.join(__dirname, '../../'));
+const aYear = 31556952000;
+const projectRoot = path.normalize(path.join(__dirname, '../../'));
 
 module.exports = {
   environments: Environments,

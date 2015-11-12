@@ -1,6 +1,6 @@
 'use strict';
 
-var Environments = require('./environments');
+const Environments = require('./environments');
 
 module.exports = {
   env: Environments.production,

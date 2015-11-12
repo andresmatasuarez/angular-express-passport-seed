@@ -2,10 +2,10 @@
 
 'use strict';
 
-var _         = require('lodash');
-var util      = require('util');
-var mongoose  = require('mongoose');
-var Bluebird  = require('bluebird');
+const _         = require('lodash');
+const util      = require('util');
+const mongoose  = require('mongoose');
+const Bluebird  = require('bluebird');
 
 function InvalidIdError(message, extra) {
   Error.captureStackTrace(this, this.constructor);
