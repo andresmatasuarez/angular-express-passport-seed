@@ -1,8 +1,8 @@
 'use strict';
 
-var webpackConfig = require('../webpack.config.js');
+const webpackConfig = require('../webpack.config.js');
 
-module.exports = function(grunt){
+module.exports = function(grunt) {
 
   grunt.config('webpack', {
     options: webpackConfig

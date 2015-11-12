@@ -1,9 +1,9 @@
 'use strict';
 
-var webpack          = require('webpack');
-var ngAnnotatePlugin = require('ng-annotate-webpack-plugin');
+// const webpack          = require('webpack');
+const NgAnnotatePlugin = require('ng-annotate-webpack-plugin');
 
-module.exports = function(grunt){
+module.exports = function(grunt) {
 
   grunt.config('express.dist', {
     options: {
@@ -17,10 +17,11 @@ module.exports = function(grunt){
       path: '<%= paths.dist.assets %>'
     },
     plugins: [
+
       // new webpack.optimize.UglifyJsPlugin(),
       // new webpack.optimize.OccurenceOrderPlugin(),
       // new webpack.optimize.DedupePlugin(),
-      new ngAnnotatePlugin()
+      new NgAnnotatePlugin()
     ]
   });
 

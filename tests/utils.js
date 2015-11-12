@@ -1,33 +1,33 @@
 'use strict';
 
-var _        = require('lodash');
-var expect   = require('chai').expect;
-var mongoose = require('mongoose');
+const _        = require('lodash');
+const expect   = require('chai').expect;
+const mongoose = require('mongoose');
 
-var DEFAULT_SEEDING_TIMEOUT_PER_DOCUMENT = 1000;
+const DEFAULT_SEEDING_TIMEOUT_PER_DOCUMENT = 1000;
 
-exports.prepareSeededObjects = function(seeded, paths, sortBy){
-  var op = _(seeded)
-  .map(function(item){
+exports.prepareSeededObjects = function(seeded, paths, sortBy) {
+  let op = _(seeded)
+  .map(function(item) {
     item = _.pick(item, paths);
     item._id = item._id.toString();
     return item;
   });
 
-  if (_.isFunction(sortBy)){
+  if (_.isFunction(sortBy)) {
     op = op.sortBy(sortBy);
   }
 
   return op.value();
 };
 
-exports.seedingTimeout = function(testSuite, quantityToSeed, timeoutPerDocument){
+exports.seedingTimeout = function(testSuite, quantityToSeed, timeoutPerDocument) {
   timeoutPerDocument = timeoutPerDocument || DEFAULT_SEEDING_TIMEOUT_PER_DOCUMENT;
   testSuite.timeout(quantityToSeed * timeoutPerDocument);
 };
 
-exports.assertUnorderedArrays = function(anArray, anotherArray){
-  if (_.isUndefined(anArray) || _.isNull(anArray)){
+exports.assertUnorderedArrays = function(anArray, anotherArray) {
+  if (_.isUndefined(anArray) || _.isNull(anArray)) {
     return expect(anotherArray).to.not.exist;
   }
 
@@ -35,16 +35,16 @@ exports.assertUnorderedArrays = function(anArray, anotherArray){
   expect(anotherArray).to.be.instanceof(Array);
   expect(anArray).to.have.length(anotherArray.length);
 
-  _.forEach(anArray, function(item){
+  _.forEach(anArray, function(item) {
     expect(anotherArray).to.include(item);
   });
 
-  _.forEach(anotherArray, function(item){
+  _.forEach(anotherArray, function(item) {
     expect(anArray).to.include(item);
   });
 };
 
-exports.assertObjectIds = function(anId, anotherId){
+exports.assertObjectIds = function(anId, anotherId) {
   expect(mongoose.Types.ObjectId.isValid(anId));
   expect(mongoose.Types.ObjectId.isValid(anotherId));
   expect(anId.toString()).to.be.eql(anotherId.toString());

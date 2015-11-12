@@ -6,6 +6,7 @@
   "scripts": {
     "start": "grunt serve",
     "test": "grunt test",
+    "lint": "eslint server client seeds grunt scripts tests/server",
     "dist": "grunt build",
     "seed": "grunt seed"
   },

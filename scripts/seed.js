@@ -13,16 +13,16 @@ new Mongootils(config.mongo.uri, config.mongo.options)
 .then(() => {
   return UserSeed.seed(process.argv[2]);
 })
-.then(function(result){
+.then((result) => {
   Log.info('Finished seeding. Seeded users:');
   _(result)
-  .forEach(function(user){
-    Log.info('  User { _id: ' + user._id + ', Email: ' + user.email + ' }');
+  .forEach((user) => {
+    Log.info(`  User { _id: ${user._id}, Email: ${user.email} }`);
   });
 
   process.exit(0);
 })
-.catch(function(err){
+.catch((err) => {
   console.log(JSON.stringify(err));
   process.exit(1);
 });

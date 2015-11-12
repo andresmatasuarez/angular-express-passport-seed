@@ -12,4 +12,8 @@ rules:
   array-bracket-spacing: 0 # revert later
 
   # Own override
-
+  array-bracket-spacing:
+    - 2
+    - always
+    -
+      objectsInArrays: false

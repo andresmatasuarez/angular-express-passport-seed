@@ -1,10 +1,10 @@
 'use strict';
 
-module.exports = function(grunt){
+module.exports = function(grunt) {
 
   grunt.config('mochaTest', {
     options: {
-      reporter: 'spec',
+      reporter: 'spec'
     },
     src: [ '<%= paths.tests.server %>/**/*.spec.js' ]
   });
@@ -15,8 +15,8 @@ module.exports = function(grunt){
     }
   });
 
-  grunt.registerTask('test', function(target){
-    switch(target){
+  grunt.registerTask('test', function(target) {
+    switch (target) {
       case 'server' : return grunt.task.run([ 'env:test',    'mochaTest' ]);
       case 'client' : return grunt.task.run([ 'env:test',    'karma' ]);
       default       : return grunt.task.run([ 'test:server', 'test:client' ]);

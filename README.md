@@ -59,7 +59,7 @@ Don't forget to add the `ssl.passphrase` entry with the passphrase you set.
 * Consistent coding style is ensured using:
 > Don't write a single line of code without any of this tools installed and running inside your editor.
   1. [EditorConfig](http://editorconfig.org/). Supported editors [plugins](http://editorconfig.org/#download)
-  2. [JSHint](http://jshint.com/). Supported editors [plugins](http://jshint.com/install/)
+  2. [ESLint](http://eslint.org/).
 
 * Start web server: `npm start`
 * Seed database: `npm run seed`

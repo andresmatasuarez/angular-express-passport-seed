@@ -1,0 +1,17 @@
+env:
+  es6: false
+
+globals:
+  _              : false
+  angular        : false
+  sinon          : false
+  browser        : false
+  ngMidwayTester : false
+  describe       : false
+  beforeEach     : false
+  afterEach      : false
+  before         : false
+  after          : false
+  inject         : false
+  expect         : false
+  it             : false
