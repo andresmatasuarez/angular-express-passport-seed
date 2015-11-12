@@ -1,6 +1,6 @@
 'use strict';
 
-require('../run');
+require('./context');
 
 const config = require('config');
 const Log    = require('../utils/log');

@@ -1,6 +1,6 @@
 'use strict';
 
-require('../../../server/run');
+require('../../../server/bin/context');
 
 const _               = require('lodash');
 const mongoose        = require('mongoose');

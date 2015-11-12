@@ -2,7 +2,7 @@
   "name": "angular-express-passport-seed",
   "version": "0.0.0",
   "description": "AngularJS/ExpressJS seed",
-  "main": "server/app.js",
+  "main": "server/bin/web.js",
   "scripts": {
     "start": "grunt serve",
     "test": "eslint . && grunt test",

@@ -1,6 +1,6 @@
 'use strict';
 
-require('../../server/run');
+require('../../server/bin/context');
 
 const request     = require('supertest');
 const mongoose    = require('mongoose');
