@@ -10,7 +10,7 @@ const jwtRedisService = new JWTRedisService({
   port       : config.redis.port,
   pass       : config.redis.pass,
   issuer     : config.server.auth.issues,
-  secret     : config.server.auth.token_secret,
+  secret     : config.server.auth.tokenSecret,
   expiration : config.server.auth.expiration
 });
 

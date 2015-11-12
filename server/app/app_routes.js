@@ -44,7 +44,7 @@ module.exports = function(app) {
   // Serve assets
   app.use('/', express.static(config.app.assets.path, {
     etag   : true,
-    maxage : config.app.assets.max_age,
+    maxage : config.app.assets.maxAge,
     index  : false
   }));
 

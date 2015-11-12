@@ -6,7 +6,7 @@ module.exports = {
   env: Environments.test,
   server: {
     auth: {
-      token_secret: 'mercyfulfate'
+      tokenSecret: 'mercyfulfate'
     }
   },
   mongo: {

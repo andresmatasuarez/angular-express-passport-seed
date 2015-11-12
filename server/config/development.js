@@ -6,7 +6,7 @@ module.exports = {
   env: Environments.development,
   app: {
     assets: {
-      max_age: 0
+      maxAge: 0
     },
     web: {
       root: '../../.tmp' // TODO review when reviewing HTML5 support
@@ -21,7 +21,7 @@ module.exports = {
       port: 3001
     },
     auth: {
-      token_secret: 'mercyfulfate'
+      tokenSecret: 'mercyfulfate'
     }
   },
   mongo: {

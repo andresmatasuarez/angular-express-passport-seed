@@ -6,7 +6,6 @@ ecmaFeatures:
   modules: false
 
 rules:
-  camelcase: 0  # revert later
   func-names: 0 # revert later
   array-bracket-spacing: 0 # revert later
 

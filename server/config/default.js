@@ -14,7 +14,7 @@ module.exports = {
     assets: {
       path     : path.join(projectRoot, './bundle'),
       mappings : path.join(projectRoot, './bundle/webpack-assets.json'),
-      max_age  : aYear
+      maxAge   : aYear
     },
     views: {
       path: path.join(projectRoot, './server/views')
@@ -46,9 +46,9 @@ module.exports = {
       passphrase  : process.env.SSL_PASSPHRASE
     },
     auth: {
-      issuer       : 'ExpressJS/AngularJS seed',
-      token_secret : process.env.TOKEN_SECRET,
-      expiration   : 30 * 60 * 1000
+      issuer      : 'ExpressJS/AngularJS seed',
+      tokenSecret : process.env.TOKEN_SECRET,
+      expiration  : 30 * 60 * 1000
     }
   },
   mongo: {
