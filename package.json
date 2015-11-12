@@ -22,7 +22,7 @@
   "author": "Andrés Mata Suárez <amatasuarez@gmail.com>",
   "license": "MIT",
   "engines": {
-    "node": "0.10.36"
+    "node": "4.2.1"
   },
   "bugs": {
     "url": "https://github.com/andresmatasuarez/angular-express-passport-seed/issues"
