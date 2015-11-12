@@ -7,7 +7,6 @@ ecmaFeatures:
 
 rules:
   func-names: 0 # revert later
-  array-bracket-spacing: 0 # revert later
 
   # Own override
   array-bracket-spacing:
