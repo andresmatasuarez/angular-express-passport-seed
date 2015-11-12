@@ -1,10 +1,10 @@
 'use strict';
 
-var jit          = require('jit-grunt');
-var time         = require('time-grunt');
-var Environments = require('./server/config/environments');
+const jit          = require('jit-grunt');
+const time         = require('time-grunt');
+const Environments = require('./server/config/environments');
 
-module.exports = function(grunt){
+module.exports = function(grunt) {
 
   // Load grunt tasks automatically when needed.
   jit(grunt, {
@@ -45,12 +45,12 @@ module.exports = function(grunt){
   grunt.loadTasks('grunt');
 
   // Used for delaying livereload until after server has restarted
-  grunt.registerTask('wait', function () {
+  grunt.registerTask('wait', function() {
     grunt.log.ok('Waiting for server reload...');
 
-    var done = this.async();
+    const done = this.async();
 
-    setTimeout(function () {
+    setTimeout(() => {
       grunt.log.writeln('Done waiting!');
       done();
     }, 1500);

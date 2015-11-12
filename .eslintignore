@@ -1,6 +1,5 @@
 bundle
 dist
 tests/client
-Gruntfile.js
 webpack.config.js
 karma.conf.js
