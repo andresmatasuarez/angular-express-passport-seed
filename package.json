@@ -6,7 +6,7 @@
   "scripts": {
     "start": "grunt serve",
     "test": "eslint . && grunt test",
-    "lint": "eslint .",
+    "linter": "eslint .",
     "dist": "grunt build",
     "seed": "grunt seed"
   },
