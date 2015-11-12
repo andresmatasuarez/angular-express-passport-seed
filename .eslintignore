@@ -1,5 +1,4 @@
 bundle
 dist
 tests/client
-webpack.config.js
 karma.conf.js
