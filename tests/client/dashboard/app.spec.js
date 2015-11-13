@@ -3,12 +3,12 @@
 describe('"Dashboard" module', function(){
 
   var module;
-  before(function(){
+  beforeEach(function(){
     module = angular.module('dashboard');
   });
 
   it('should be registered', function(){
-    expect(module).not.to.be.null;
+    expect(module).not.to.be.empty;
   });
 
 });

@@ -9,10 +9,9 @@ describe('Service: AuthService', function(){
 
   var APISpy = {};
 
-  beforeEach(module('dashboard'));
-  beforeEach(module('dashboardTemplates'));
+  beforeEach(angular.mock.module('dashboard'));
 
-  beforeEach(module(function($provide){
+  beforeEach(angular.mock.module(function($provide){
     $provide.value('API', APISpy);
   }));
 

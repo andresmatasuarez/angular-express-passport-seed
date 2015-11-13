@@ -5,8 +5,7 @@ var PASSWORD = '123456';
 
 describe('Service: API', function(){
 
-  beforeEach(module('dashboard'));
-  beforeEach(module('dashboardTemplates'));
+  beforeEach(angular.mock.module('dashboard'));
 
   it('should be registered', inject(function(API){
     expect(API).not.to.be.null;

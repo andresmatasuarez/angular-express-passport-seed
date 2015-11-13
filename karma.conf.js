@@ -1,5 +1,7 @@
 'use strict';
 
+const webpackConfig = require('./webpack.config.js');
+
 module.exports = function(config) {
   config.set({
 
@@ -8,23 +10,10 @@ module.exports = function(config) {
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: [
-      'mocha',
-      'sinon-chai'
-    ],
+    frameworks: [ 'mocha', 'sinon-chai' ],
 
     // list of files / patterns to load in the browser
-    files: [
-
-      // TODO: add client bundle
-
-      'tests/client/dashboard/helpers.js',
-      'tests/client/dashboard/**/*.mock.js',
-      'tests/client/dashboard/**/*.spec.js',
-      'client/dashboard/**/*.coffee',
-      'client/dashboard/**/*.jade',
-      'client/dashboard/index.html'
-    ],
+    files: [ 'tests/client/bundle.js' ],
 
     // list of files to exclude
     exclude: [],
@@ -32,14 +21,15 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      'client/dashboard/**/*.jade'   : 'ng-jade2js',
-      'client/dashboard/**/*.html'   : 'html2js',
-      'client/dashboard/**/*.coffee' : 'coffee'
+      'tests/client/bundle.js': [ 'webpack' ]
     },
 
-    ngJade2JsPreprocessor: {
-      moduleName  : 'dashboardTemplates',
-      stripPrefix : 'client/dashboard/'
+    webpack: {
+      module  : webpackConfig.module,
+      resolve : webpackConfig.resolve,
+      plugins : webpackConfig.plugins,
+      devtool : 'eval',
+      cache   : true
     },
 
     reporters: [ 'mocha' ],
