@@ -44,25 +44,12 @@ module.exports = function(config) {
 
     reporters: [ 'mocha' ],
 
-    // web server port
-    port: 9876,
+    port      : 9876,             // web server port
+    colors    : true,             // enable/disable colors in the output (reporters and logs)
+    logLevel  : config.LOG_ERROR, // level of logging. Possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
+    autoWatch : false,            // enable/disable watching file and executing tests whenever any file changes
+    browsers  : [ 'Chrome' ],     // start these browsers. Available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
+    singleRun : true              // Continuous Integration mode. If true, Karma captures browsers, runs the tests and exits
 
-    // enable / disable colors in the output (reporters and logs)
-    colors: true,
-
-    // level of logging
-    // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
-    logLevel: config.LOG_ERROR,
-
-    // enable / disable watching file and executing tests whenever any file changes
-    autoWatch: true,
-
-    // start these browsers
-    // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: [ 'Chrome' ],
-
-    // Continuous Integration mode
-    // if true, Karma captures browsers, runs the tests and exits
-    singleRun: true
   });
 };
