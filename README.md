@@ -9,8 +9,7 @@ Some features included in this seed:
 * `MongoDB` Persistent user model.
 * `CoffeeScript`, `Jade` and `LESS` on client.
 * `Bootstrap` base styles.
-* `Mocha` for server tests.
-* `Karma` for client tests.
+* Server and client tests using `Mocha` and `Karma`.
 
 Some ideas taken from [DaftMonk/generator-angular-fullstack](https://github.com/DaftMonk/generator-angular-fullstack)
 
@@ -69,3 +68,6 @@ Don't forget to add the `ssl.passphrase` entry with the passphrase you set.
 
 # Test
 `npm test`
+
+## Linting
+`npm run linter`
