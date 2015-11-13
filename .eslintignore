@@ -1,4 +1,3 @@
 bundle
 dist
 tests/client
-karma.conf.js

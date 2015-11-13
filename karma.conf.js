@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function(config){
+module.exports = function(config) {
   config.set({
 
     // base path that will be used to resolve all patterns (eg. files, exclude)
@@ -15,6 +15,7 @@ module.exports = function(config){
 
     // list of files / patterns to load in the browser
     files: [
+
       // TODO: add client bundle
 
       'tests/client/dashboard/helpers.js',
@@ -58,7 +59,7 @@ module.exports = function(config){
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['Chrome'],
+    browsers: [ 'Chrome' ],
 
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits
