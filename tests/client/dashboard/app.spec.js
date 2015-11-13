@@ -1,13 +1,13 @@
 'use strict';
 
-describe('"Dashboard" module', function(){
+describe('"Dashboard" module', function() {
 
-  var module;
-  beforeEach(function(){
+  let module;
+  before(function() {
     module = angular.module('dashboard');
   });
 
-  it('should be registered', function(){
+  it('should be registered', function() {
     expect(module).not.to.be.empty;
   });
 

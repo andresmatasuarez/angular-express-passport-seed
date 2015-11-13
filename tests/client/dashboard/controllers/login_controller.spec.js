@@ -1,12 +1,12 @@
 'use strict';
 
-describe('Controller: LoginController', function(){
+describe('Controller: LoginController', function() {
 
-  var scope, $q, $rootScope, $controller, AuthService;
+  let scope, $q, $rootScope, $controller, AuthService;
 
   beforeEach(angular.mock.module('dashboard'));
 
-  beforeEach(inject(function($injector){
+  beforeEach(inject(function($injector) {
     $controller = $injector.get('$controller');
     $rootScope  = $injector.get('$rootScope');
     $q          = $injector.get('$q');
@@ -14,28 +14,28 @@ describe('Controller: LoginController', function(){
     AuthService = {};
 
     $controller('LoginController', {
-      $scope      : scope,
-      AuthService : AuthService
+      $scope: scope,
+      AuthService
     });
   }));
 
-  it('should initialize $scope.model to an empty object', function(){
+  it('should initialize $scope.model to an empty object', function() {
     expect(scope.model).to.be.instanceof(Object);
     expect(scope.model).to.be.empty;
   });
 
-  describe('$scope.login', function(){
+  describe('$scope.login', function() {
 
-    var login = {
+    const login = {
       username        : 'username',
       password        : 'password',
       invalidPassword : 'invalidPassword'
     };
 
-    it('should set update $scope.submitting before and after completion', function(done){
+    it('should set update $scope.submitting before and after completion', function(done) {
       sinon.stub($rootScope, 'goToNextState');
 
-      AuthService.login = sinon.spy(function(){
+      AuthService.login = sinon.spy(function() {
         expect(!!scope.submitting).to.be.true;
         return $q.when();
       });
@@ -43,13 +43,13 @@ describe('Controller: LoginController', function(){
       scope.model.email    = login.username;
       scope.model.password = login.password;
       scope.login()
-      .then(function(){
+      .then(function() {
         expect(AuthService.login).to.have.been.calledOnce;
         expect(AuthService.login).to.have.been.calledWithExactly(login.username, login.password);
         expect($rootScope.goToNextState).to.have.been.calledOnce;
         expect(!!scope.submitting).to.be.false;
       })
-      .then(function(){
+      .then(function() {
         $rootScope.goToNextState.restore();
         done();
       });
@@ -57,11 +57,11 @@ describe('Controller: LoginController', function(){
       scope.$apply();
     });
 
-    it('should expose errors under $scope.responseErrors on unsuccessful login', function(done){
+    it('should expose errors under $scope.responseErrors on unsuccessful login', function(done) {
 
-      var NOT_AUTHORIZED = '403 Not Authorized';
+      const NOT_AUTHORIZED = '403 Not Authorized';
 
-      AuthService.login = sinon.spy(function(){
+      AuthService.login = sinon.spy(function() {
         expect(!!scope.submitting).to.be.true;
         return $q.reject(NOT_AUTHORIZED);
       });
@@ -69,11 +69,11 @@ describe('Controller: LoginController', function(){
       scope.model.email    = login.username;
       scope.model.password = login.invalidPassword;
       scope.login()
-      .then(function(){
+      .then(function() {
         expect(scope.responseErrors).to.be.eql([ NOT_AUTHORIZED ]);
         expect(!!scope.submitting).to.be.false;
       })
-      .then(function(){
+      .then(function() {
         done();
       });
 
