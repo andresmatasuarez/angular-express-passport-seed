@@ -11,11 +11,14 @@ resolveAuthenticationAndEmitIf = (eventToEmit, emitIfAuthenticated) ->
   # Manual dependency injection annotations, as ngAnnotate is having problems
   # detecting this, even with explicit comments
   [ '$rootScope', '$q', 'AuthService', ($rootScope, $q, AuthService) ->
-    AuthService.isAuthenticated()
-    .then (authenticated) ->
-      if authenticated == emitIfAuthenticated
+    AuthService.ensureUserData()
+    .then ->
+      if emitIfAuthenticated
         $rootScope.$broadcast "auth:#{eventToEmit}"
-        $q.reject()
+    .catch ->
+      if !emitIfAuthenticated
+        $rootScope.$broadcast "auth:#{eventToEmit}"
+        $q.reject() # Return a rejected promise so resolve does not 'resolves'
   ]
 
 module.exports = ($locationProvider, $urlRouterProvider, $stateProvider, cfpLoadingBarProvider, $breadcrumbProvider) ->

@@ -1,12 +1,13 @@
 'use strict';
 
-const config      = require('config');
-const passport    = require('passport');
-const morgan      = require('morgan');
-const compression = require('compression');
-const bodyparser  = require('body-parser');
-const Middlewares = require('../middlewares');
-const User        = require('../model/user');
+const config       = require('config');
+const cookieParser = require('cookie-parser');
+const passport     = require('passport');
+const morgan       = require('morgan');
+const compression  = require('compression');
+const bodyparser   = require('body-parser');
+const Middlewares  = require('../middlewares');
+const User         = require('../model/user');
 
 module.exports = function(app) {
 
@@ -24,6 +25,12 @@ module.exports = function(app) {
   app.use(compression());
   app.use(bodyparser.urlencoded({ extended: true }));
   app.use(bodyparser.json());
+
+  // httpOnly : true,
+  // secure   : true,
+  // path     : '/',
+  // maxAge   : 1000 * 60 * 24 // 24 hours
+  app.use(cookieParser({}));
 
   app.use(passport.initialize());
 
