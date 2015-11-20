@@ -15,6 +15,7 @@ resolveAuthenticationAndEmitIf = (eventToEmit, emitIfAuthenticated) ->
     .then ->
       if emitIfAuthenticated
         $rootScope.$broadcast "auth:#{eventToEmit}"
+        $q.reject()
     .catch ->
       if !emitIfAuthenticated
         $rootScope.$broadcast "auth:#{eventToEmit}"
@@ -39,14 +40,14 @@ module.exports = ($locationProvider, $urlRouterProvider, $stateProvider, cfpLoad
     url         : '/login'
     templateUrl : templateLogin
     controller  : 'LoginController'
-    resolve     :
-      auth: resolveAuthenticationAndEmitIf 'alreadylogged', true
+    # resolve     :
+    #   auth: resolveAuthenticationAndEmitIf 'alreadylogged', true
 
   $stateProvider.state 'dashboard',
     abstract      : true
     templateUrl   : templateDashboard
-    resolve       :
-      auth: resolveAuthenticationAndEmitIf 'unauthorized', false
+    # resolve       :
+    #   auth: resolveAuthenticationAndEmitIf 'unauthorized', false
     ncyBreadcrumb :
       skip : true
 
@@ -54,8 +55,8 @@ module.exports = ($locationProvider, $urlRouterProvider, $stateProvider, cfpLoad
     parent        : 'dashboard'
     url           : '/'
     templateUrl   : templateHome
-    resolve       :
-      auth: resolveAuthenticationAndEmitIf 'unauthorized', false
+    # resolve       :
+    #   auth: resolveAuthenticationAndEmitIf 'unauthorized', false
     ncyBreadcrumb :
       label: 'Dashboard'
 
@@ -64,8 +65,8 @@ module.exports = ($locationProvider, $urlRouterProvider, $stateProvider, cfpLoad
     abstract      : true
     url           : '/users'
     templateUrl   : templateBreadcrumbs
-    resolve       :
-      auth: resolveAuthenticationAndEmitIf 'unauthorized', false
+    # resolve       :
+    #   auth: resolveAuthenticationAndEmitIf 'unauthorized', false
     ncyBreadcrumb :
       skip: true
 
@@ -73,8 +74,8 @@ module.exports = ($locationProvider, $urlRouterProvider, $stateProvider, cfpLoad
     url           : '/list'
     templateUrl   : templateUsersList
     controller    : 'UsersListController'
-    resolve       :
-      auth: resolveAuthenticationAndEmitIf 'unauthorized', false
+    # resolve       :
+    #   auth: resolveAuthenticationAndEmitIf 'unauthorized', false
     ncyBreadcrumb :
       label: 'Users'
 
@@ -83,7 +84,7 @@ module.exports = ($locationProvider, $urlRouterProvider, $stateProvider, cfpLoad
     templateUrl   : templateUsersProfile
     controller    : 'UsersProfileController'
     resolve       :
-      auth: resolveAuthenticationAndEmitIf 'unauthorized', false
+      # auth: resolveAuthenticationAndEmitIf 'unauthorized', false
       user: -> undefined
     ncyBreadcrumb :
       parent : 'users.list'
@@ -94,7 +95,7 @@ module.exports = ($locationProvider, $urlRouterProvider, $stateProvider, cfpLoad
     templateUrl   : templateUsersProfile
     controller    : 'UsersProfileController'
     resolve       :
-      auth: resolveAuthenticationAndEmitIf 'unauthorized', false
+      # auth: resolveAuthenticationAndEmitIf 'unauthorized', false
       user: ($stateParams, API) -> API.users.get($stateParams.id)
     ncyBreadcrumb :
       parent : 'users.list'
