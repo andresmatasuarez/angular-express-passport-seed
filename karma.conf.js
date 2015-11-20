@@ -2,6 +2,10 @@
 
 const webpackConfig = require('./webpack.config.js');
 
+// Disable all plugins in test environment due to https://github.com/webpack/karma-webpack/issues/91
+// Workaround taken from https://github.com/webpack/karma-webpack/issues/91#issuecomment-158212599
+webpackConfig.plugins = [];
+
 module.exports = function(config) {
   config.set({
 

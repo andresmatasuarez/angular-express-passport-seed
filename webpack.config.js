@@ -11,23 +11,6 @@ function resolvePath(p) {
   return path.resolve(__dirname, p);
 }
 
-function getPlugins() {
-  const plugins = [
-    new AssetsWebpackPlugin({ path: './bundle' })
-  ];
-
-  // Disable webpack.optimize.CommonsChunkPlugin in test environment
-  // due to https://github.com/webpack/karma-webpack/issues/91
-  if (process.env.NODE_ENV === 'test') {
-    plugins[plugins.length] = new webpack.optimize.CommonsChunkPlugin({
-      name      : 'commons',
-      minChunks : 2
-    });
-  }
-
-  return plugins;
-}
-
 module.exports = {
   entry: {
     web       : resolvePath('client/web/entry'),
@@ -73,5 +56,11 @@ module.exports = {
     extensions         : [ '', '.js', '.json', '.coffee' ],
     modulesDirectories : [ 'node_modules' ]
   },
-  plugins: getPlugins()
+  plugins: [
+    new AssetsWebpackPlugin({ path: './bundle' }),
+    new webpack.optimize.CommonsChunkPlugin({
+      name      : 'commons',
+      minChunks : 2
+    })
+  ]
 };
