@@ -1,4 +1,4 @@
-navbar(ng-hide="isState('login')")
+navbar(ng-hide="'login' | isState")
 
 .container
   .row(ui-view="")

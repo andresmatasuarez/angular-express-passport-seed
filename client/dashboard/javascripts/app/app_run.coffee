@@ -4,9 +4,10 @@ _ = require 'lodash'
 
 module.exports = ($rootScope, $state, AuthService, $templateCache) ->
 
-  # State utils
-  $rootScope.isState = (name) -> $state.is name
+  # Initial check of authentication
+  AuthService.ensureUserData().catch -> $state.go 'login'
 
+  # State utils
   $rootScope.goBack = ->
     prev = $rootScope.previousState
 

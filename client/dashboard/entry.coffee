@@ -12,12 +12,12 @@ angular.element(document).ready ->
   initInjector = angular.injector [ 'ng' ]
   $http        = initInjector.get '$http'
 
+  dashboardModule = angular.module dashboard
+
   # Fetch settings
   $http.get '/api/settings'
   .then (res) ->
-    angular
-    .module dashboard
-    .constant 'Settings', res.data
+    dashboardModule.constant 'Settings', res.data
 
     # Prepend main template to body
     document.body.innerHTML = mainTemplate + document.body.innerHTML

@@ -1,2 +1,2 @@
-.main(ng-class="{ 'login-body': isState('login') }")
+.main(ng-class="{ 'login-body': ('login' | isState) }")
   .row(ui-view="")
