@@ -23,7 +23,7 @@ function performLogin(admin, password) {
     password
   })
   .endAsync()
-  .then(agentUtils.saveJWT.bind(agentUtils));
+  .then(agentUtils.saveCookies.bind(agentUtils));
 }
 
 describe('Authentication', function() {
@@ -198,32 +198,28 @@ describe('Authentication', function() {
       .catch(done);
     });
 
-    after(function() {
-      agentUtils.resetJWT();
-    });
-
     it('GET /api/admins should respond 200', function(done) {
-      agentUtils.withJWT(server.get('/api/admins')).expect(200).end(done);
+      agentUtils.withCookies(server.get('/api/admins')).expect(200).end(done);
     });
 
     it('GET /api/admins/total should respond 200', function(done) {
-      agentUtils.withJWT(server.get('/api/admins/total')).expect(200).end(done);
+      agentUtils.withCookies(server.get('/api/admins/total')).expect(200).end(done);
     });
 
     it('GET /api/admins/:id should respond 404', function(done) {
-      agentUtils.withJWT(server.get(`/api/admins/${randomId}`)).expect(404).end(done);
+      agentUtils.withCookies(server.get(`/api/admins/${randomId}`)).expect(404).end(done);
     });
 
     it('POST /api/admins/ should respond 400', function(done) {
-      agentUtils.withJWT(server.post('/api/admins/')).expect(400).end(done);
+      agentUtils.withCookies(server.post('/api/admins/')).expect(400).end(done);
     });
 
     it('PUT /api/admins/:id should respond 404', function(done) {
-      agentUtils.withJWT(server.put(`/api/admins/${randomId}`)).expect(404).end(done);
+      agentUtils.withCookies(server.put(`/api/admins/${randomId}`)).expect(404).end(done);
     });
 
     it('DELETE /api/admins/:id should respond 200', function(done) {
-      agentUtils.withJWT(server.delete(`/api/admins/${randomId}`)).expect(200).end(done);
+      agentUtils.withCookies(server.delete(`/api/admins/${randomId}`)).expect(200).end(done);
     });
 
   });
