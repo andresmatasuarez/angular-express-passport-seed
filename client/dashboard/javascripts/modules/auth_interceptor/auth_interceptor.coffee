@@ -1,11 +1,6 @@
 'use strict'
 
-module.exports = ($rootScope, $q, $sessionStorage) ->
-
-  # request: (config) ->
-  #   config.headers = config.headers || {}
-  #   config.headers.Authorization = "Bearer #{$sessionStorage.token}" if $sessionStorage.token
-  #   config
+module.exports = ($rootScope, $q) ->
 
   responseError: (rejection) ->
     if rejection.status == 401
