@@ -2,22 +2,34 @@
 
 describe('Controller: LoginController', function() {
 
-  let scope, $q, $rootScope, $controller, AuthService;
+  let scope, $q, $rootScope, AuthService, $httpBackend;
 
   beforeEach(angular.mock.module('dashboard'));
 
   beforeEach(inject(function($injector) {
-    $controller = $injector.get('$controller');
-    $rootScope  = $injector.get('$rootScope');
-    $q          = $injector.get('$q');
-    scope       = $rootScope.$new();
-    AuthService = {};
+    $rootScope   = $injector.get('$rootScope');
+    $q           = $injector.get('$q');
+    $httpBackend = $injector.get('$httpBackend');
+    scope        = $rootScope.$new();
+    AuthService  = {};
+
+    const $controller  = $injector.get('$controller');
+
+    // Mock initial request for ensure admin data
+    $httpBackend.when('GET', '/api/auth/me').respond();
+    $httpBackend.when('POST', '/api/auth/login').respond();
 
     $controller('LoginController', {
       $scope: scope,
       AuthService
     });
   }));
+
+  afterEach(function() {
+    $httpBackend.flush();
+    $httpBackend.verifyNoOutstandingExpectation();
+    $httpBackend.verifyNoOutstandingRequest();
+  });
 
   it('should initialize $scope.model to an empty object', function() {
     expect(scope.model).to.be.instanceof(Object);

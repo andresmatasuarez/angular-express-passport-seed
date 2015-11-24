@@ -87,7 +87,7 @@ describe('Service: API', function() {
       $rootScope   = $injector.get('$rootScope');
       API          = $injector.get('API');
 
-      $httpBackend.when('GET',    '/api/auth/me')               .respond({ _id: ME._id, email: ME.email });
+      $httpBackend.when('GET',    '/api/auth/me')                .respond({ _id: ME._id, email: ME.email });
       $httpBackend.when('GET',    '/api/admins/total')           .respond({ total: 15 });
       $httpBackend.when('GET',    '/api/admins')                 .respond(_.times(100, _.identity));
       $httpBackend.when('GET',    '/api/admins?skip=6')          .respond(_.times(94, _.identity));
