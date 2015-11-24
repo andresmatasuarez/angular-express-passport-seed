@@ -5,7 +5,9 @@ _ = require 'lodash'
 module.exports = ($rootScope, $state, AuthService, $templateCache) ->
 
   # Initial check of authentication
-  AuthService.ensureUserData().catch -> $state.go 'login'
+  AuthService.ensureUserData().catch ->
+    AuthService.deleteUserData()
+    $state.go 'login'
 
   # State utils
   $rootScope.goBack = ->
@@ -55,6 +57,8 @@ module.exports = ($rootScope, $state, AuthService, $templateCache) ->
     $rootScope.currentState =
       name   : to.name
       params : toParams
+
+    $rootScope.nextState = undefined
 
   # Keep track of every state change
   $rootScope.$on '$stateChangeStart', (ev, to, toParams, from, fromParams) ->
