@@ -2,7 +2,22 @@
 
 _ = require 'lodash'
 
-module.exports = ($rootScope, $state, AuthService, $templateCache) ->
+templateErrorModal = require '../../partials/_error_modal.jade'
+
+openErrorModal = ($uibModal, status, message) ->
+  modalInstance = $uibModal.open
+    templateUrl : templateErrorModal
+    size        : 'sm'
+    controller  : [ '$scope', ($scope) ->
+      $scope.status  = status
+      $scope.message = message
+    ]
+
+  modalInstance.result
+  .then ->
+    console.log 'Modal closed at: ', new Date()
+
+module.exports = ($rootScope, $state, $uibModal, AuthService, $templateCache) ->
 
   # Initial check of authentication
   AuthService.ensureUserData().catch ->
@@ -49,7 +64,7 @@ module.exports = ($rootScope, $state, AuthService, $templateCache) ->
     $state.go 'home'
 
   $rootScope.$on 'connection_refused', (msg, data) ->
-    console.log 'connection refused'
+    openErrorModal $uibModal, -1, 'Connection refused by server'
 
   # Keep track of previous and current states.
   $rootScope.$on '$stateChangeSuccess', (ev, to, toParams, from, fromParams) ->
