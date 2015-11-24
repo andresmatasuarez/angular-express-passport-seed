@@ -41,7 +41,7 @@ module.exports = ($locationProvider, $urlRouterProvider, $stateProvider, cfpLoad
     templateUrl : templateLogin
     controller  : 'LoginController'
     # resolve     :
-    #   auth: resolveAuthenticationAndEmitIf 'alreadylogged', true
+    #   auth: resolveAuthenticationAndEmitIf 'already_logged', true
 
   $stateProvider.state 'dashboard',
     abstract      : true

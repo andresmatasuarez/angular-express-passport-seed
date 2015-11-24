@@ -44,7 +44,7 @@ module.exports = ($rootScope, $state, AuthService, $templateCache) ->
     AuthService.deleteUserData()
     $state.go 'login'
 
-  $rootScope.$on 'auth:alreadylogged', (msg, data) ->
+  $rootScope.$on 'auth:already_logged', (msg, data) ->
     prev = $rootScope.previousState
     $state.go 'home'
 
