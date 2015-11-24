@@ -15,8 +15,9 @@ require 'ng-table-async'
 angular = require 'angular'
 
 # Modules
-authInterceptor = require '../modules/auth_interceptor'
-api             = require '../modules/api'
+authInterceptor              = require '../modules/auth_interceptor'
+connectionRefusedInterceptor = require '../modules/connection_refused_interceptor'
+api                          = require '../modules/api'
 
 # Services
 authService = require '../services/auth_service'
@@ -45,6 +46,7 @@ angular
   'ngTableAsync'
   'ncy-angular-breadcrumb'
   authInterceptor
+  connectionRefusedInterceptor
   api
 ]
 .controller 'LoginController',        loginController

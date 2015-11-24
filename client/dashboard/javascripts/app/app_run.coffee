@@ -48,6 +48,9 @@ module.exports = ($rootScope, $state, AuthService, $templateCache) ->
     prev = $rootScope.previousState
     $state.go 'home'
 
+  $rootScope.$on 'connection_refused', (msg, data) ->
+    console.log 'connection refused'
+
   # Keep track of previous and current states.
   $rootScope.$on '$stateChangeSuccess', (ev, to, toParams, from, fromParams) ->
     $rootScope.previousState =
