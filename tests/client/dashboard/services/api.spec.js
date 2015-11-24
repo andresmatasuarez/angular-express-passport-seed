@@ -31,7 +31,7 @@ describe('Service: API', function() {
       $httpBackend.verifyNoOutstandingRequest();
     });
 
-    it('.me should fetch logged user', function() {
+    it('.me should fetch logged admin', function() {
       $httpBackend.expect('GET', '/api/auth/me');
 
       let result;
@@ -44,7 +44,7 @@ describe('Service: API', function() {
       expect(result.email).to.be.eql(ME.email);
     });
 
-    it('.login should log user in', function() {
+    it('.login should log admin in', function() {
       $httpBackend.expect(
         'POST',
         '/api/auth/login',
@@ -64,7 +64,7 @@ describe('Service: API', function() {
       expect(result).to.be.empty;
     });
 
-    it('.logout should log user out', function() {
+    it('.logout should log admin out', function() {
       $httpBackend.expect('POST', '/api/auth/logout');
 
       let result;
@@ -78,7 +78,7 @@ describe('Service: API', function() {
 
   });
 
-  describe('users', function() {
+  describe('admins', function() {
 
     let $httpBackend, $rootScope, API;
 
@@ -88,13 +88,13 @@ describe('Service: API', function() {
       API          = $injector.get('API');
 
       $httpBackend.when('GET',    '/api/auth/me')               .respond({ _id: ME._id, email: ME.email });
-      $httpBackend.when('GET',    '/api/users/total')           .respond({ total: 15 });
-      $httpBackend.when('GET',    '/api/users')                 .respond(_.times(100, _.identity));
-      $httpBackend.when('GET',    '/api/users?skip=6')          .respond(_.times(94, _.identity));
-      $httpBackend.when('GET',    '/api/users?limit=66')        .respond(_.times(66, _.identity));
-      $httpBackend.when('DELETE', '/api/users/some_id')         .respond();
-      $httpBackend.when('GET',    '/api/users?skip=6&limit=66') .respond(_.times(60, _.identity));
-      $httpBackend.when('GET',    '/api/users?limit=66&skip=6') .respond(_.times(60, _.identity));
+      $httpBackend.when('GET',    '/api/admins/total')           .respond({ total: 15 });
+      $httpBackend.when('GET',    '/api/admins')                 .respond(_.times(100, _.identity));
+      $httpBackend.when('GET',    '/api/admins?skip=6')          .respond(_.times(94, _.identity));
+      $httpBackend.when('GET',    '/api/admins?limit=66')        .respond(_.times(66, _.identity));
+      $httpBackend.when('DELETE', '/api/admins/some_id')         .respond();
+      $httpBackend.when('GET',    '/api/admins?skip=6&limit=66') .respond(_.times(60, _.identity));
+      $httpBackend.when('GET',    '/api/admins?limit=66&skip=6') .respond(_.times(60, _.identity));
 
     }));
 
@@ -103,22 +103,22 @@ describe('Service: API', function() {
       $httpBackend.verifyNoOutstandingRequest();
     });
 
-    it('.total should fetch total user count', function() {
-      $httpBackend.expect('GET', '/api/users/total');
+    it('.total should fetch total admin count', function() {
+      $httpBackend.expect('GET', '/api/admins/total');
 
       let result;
-      API.users.total().then(function(r) { result = r; });
+      API.admins.total().then(function(r) { result = r; });
 
       $httpBackend.flush();
       $rootScope.$apply();
       expect(result).to.be.eql(15);
     });
 
-    it('.list should fetch user list', function() {
-      $httpBackend.expect('GET', '/api/users');
+    it('.list should fetch admin list', function() {
+      $httpBackend.expect('GET', '/api/admins');
 
       let result;
-      API.users.list().then(function(r) { result = r; });
+      API.admins.list().then(function(r) { result = r; });
 
       $httpBackend.flush();
       $rootScope.$apply();
@@ -126,11 +126,11 @@ describe('Service: API', function() {
       expect(result).to.have.length.of(100);
     });
 
-    it('.list should fetch user list, skipping the first 6 users', function() {
-      $httpBackend.expect('GET', '/api/users?skip=6');
+    it('.list should fetch admin list, skipping the first 6 admins', function() {
+      $httpBackend.expect('GET', '/api/admins?skip=6');
 
       let result;
-      API.users.list(6).then(function(r) { result = r; });
+      API.admins.list(6).then(function(r) { result = r; });
 
       $httpBackend.flush();
       $rootScope.$apply();
@@ -138,11 +138,11 @@ describe('Service: API', function() {
       expect(result).to.have.length.of(94);
     });
 
-    it('.list should fetch user list, limitting to the first 66 users', function() {
-      $httpBackend.expect('GET', '/api/users?limit=66');
+    it('.list should fetch admin list, limitting to the first 66 admins', function() {
+      $httpBackend.expect('GET', '/api/admins?limit=66');
 
       let result;
-      API.users.list(null, 66).then(function(r) { result = r; });
+      API.admins.list(null, 66).then(function(r) { result = r; });
 
       $httpBackend.flush();
       $rootScope.$apply();
@@ -150,13 +150,13 @@ describe('Service: API', function() {
       expect(result).to.have.length.of(66);
     });
 
-    it('.list should fetch user list, skipping the first 6 users and limitting to the first 66 ones', function() {
+    it('.list should fetch admin list, skipping the first 6 admins and limitting to the first 66 ones', function() {
       $httpBackend.expect('GET', function(url) {
-        return url === '/api/users?skip=6&limit=66' || url === '/api/users?limit=66&skip=6';
+        return url === '/api/admins?skip=6&limit=66' || url === '/api/admins?limit=66&skip=6';
       });
 
       let result;
-      API.users.list(6, 66).then(function(r) { result = r; });
+      API.admins.list(6, 66).then(function(r) { result = r; });
 
       $httpBackend.flush();
       expect(result).to.be.ok;
@@ -164,11 +164,11 @@ describe('Service: API', function() {
     });
 
 
-    it('.delete should delete user by id', function() {
-      $httpBackend.expect('DELETE', '/api/users/some_id');
+    it('.delete should delete admin by id', function() {
+      $httpBackend.expect('DELETE', '/api/admins/some_id');
 
       let result;
-      API.users.delete('some_id').then(function(r) { result = r; });
+      API.admins.delete('some_id').then(function(r) { result = r; });
 
       $httpBackend.flush();
       $rootScope.$apply();

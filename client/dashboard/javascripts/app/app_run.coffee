@@ -5,8 +5,8 @@ _ = require 'lodash'
 module.exports = ($rootScope, $state, AuthService, $templateCache, errorModal) ->
 
   # Initial check of authentication
-  AuthService.ensureUserData().catch ->
-    AuthService.deleteUserData()
+  AuthService.ensureAdminData().catch ->
+    AuthService.deleteAdminData()
     $state.go 'login'
 
   # State utils
@@ -41,7 +41,7 @@ module.exports = ($rootScope, $state, AuthService, $templateCache, errorModal) -
       [ err.data.message ]
 
   $rootScope.$on 'auth:unauthorized', (msg, data) ->
-    AuthService.deleteUserData()
+    AuthService.deleteAdminData()
     $state.go 'login'
 
   $rootScope.$on 'auth:already_logged', (msg, data) ->

@@ -24,9 +24,9 @@ errorModal                   = require '../modules/error_modal'
 authService = require '../services/auth_service'
 
 # Controllers
-loginController        = require '../controllers/login_controller'
-usersListController    = require '../controllers/users_list_controller'
-usersProfileController = require '../controllers/users_profile_controller'
+loginController         = require '../controllers/login_controller'
+adminsListController    = require '../controllers/admins_list_controller'
+adminsProfileController = require '../controllers/admins_profile_controller'
 
 # Directives
 navbar         = require '../directives/navbar'
@@ -51,12 +51,12 @@ angular
   api
   errorModal
 ]
-.controller 'LoginController',        loginController
-.controller 'UsersListController',    usersListController
-.controller 'UsersProfileController', usersProfileController
-.factory    'AuthService',            authService
-.directive  'navbar',                 navbar
-.directive  'compareToModel',         compareToModel
+.controller 'LoginController',         loginController
+.controller 'AdminsListController',    adminsListController
+.controller 'AdminsProfileController', adminsProfileController
+.factory    'AuthService',             authService
+.directive  'navbar',                  navbar
+.directive  'compareToModel',          compareToModel
 
 .config appConfig
 .run appRun

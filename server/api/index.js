@@ -16,7 +16,7 @@ module.exports = function() {
 
   api.use('/settings', require('./settings'));
   api.use('/auth',     require('./auth'));
-  api.use('/users',    Middlewares.Auth.ensureAuthenticated(), require('./users'));
+  api.use('/admins',   Middlewares.Auth.ensureAuthenticated(), require('./admins'));
 
   api.use(RouteUtils.handleError(RouteUtils.InvalidIdError, (err, req, res, next) => {
     Response.BadRequest(res)(err);

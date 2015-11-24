@@ -25,7 +25,7 @@ describe('Service: AuthService', function() {
       login: sinon.spy(function(email, password) {
         return password === PASSWORD ? $q.when({
           token: TOKEN,
-          user: {
+          admin: {
             _id: USER._id,
             email
           }
@@ -47,11 +47,11 @@ describe('Service: AuthService', function() {
       $sessionStorage = $injector.get('$sessionStorage');
       $rootScope      = $injector.get('$rootScope');
 
-      delete $sessionStorage.user;
+      delete $sessionStorage.admin;
     }));
 
-    it('should set logged user _id and email in SessionStorage on success', function() {
-      expect($sessionStorage.user).to.be.undefined;
+    it('should set logged admin _id and email in SessionStorage on success', function() {
+      expect($sessionStorage.admin).to.be.undefined;
 
       AuthService.login(USER.email, PASSWORD);
 
@@ -61,7 +61,7 @@ describe('Service: AuthService', function() {
     });
 
     it('should not set anything in SessionStorage on error', function() {
-      expect($sessionStorage.user).to.be.undefined;
+      expect($sessionStorage.admin).to.be.undefined;
 
       AuthService.login(USER.email, INVALID_PASSWORD);
 

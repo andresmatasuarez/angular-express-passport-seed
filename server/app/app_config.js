@@ -7,11 +7,11 @@ const morgan       = require('morgan');
 const compression  = require('compression');
 const bodyparser   = require('body-parser');
 const Middlewares  = require('../middlewares');
-const User         = require('../model/user');
+const Admin        = require('../model/admin');
 
 module.exports = function(app) {
 
-  passport.use(User.createStrategy());
+  passport.use(Admin.createStrategy());
 
   app.enable('trust proxy');
 

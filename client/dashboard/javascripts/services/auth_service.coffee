@@ -5,20 +5,20 @@ module.exports = ($q, $sessionStorage, API) ->
   login: (email, password) ->
     API.auth.login email, password
     .then =>
-      this.ensureUserData()
+      this.ensureAdminData()
 
   logout: ->
-    this.deleteUserData()
+    this.deleteAdminData()
     API.auth.logout()
 
-  deleteUserData: ->
-    delete $sessionStorage.user
+  deleteAdminData: ->
+    delete $sessionStorage.admin
 
-  fetchUserData: ->
-    API.auth.me().then (user) -> $sessionStorage.user = user
+  fetchAdminData: ->
+    API.auth.me().then (admin) -> $sessionStorage.admin = admin
 
-  ensureUserData: ->
-    if $sessionStorage.user
+  ensureAdminData: ->
+    if $sessionStorage.admin
       $q.when()
     else
-      this.fetchUserData()
+      this.fetchAdminData()

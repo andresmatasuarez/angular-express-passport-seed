@@ -1,17 +1,17 @@
 'use strict'
 
-templateLogin        = require '../../partials/_login.jade'
-templateDashboard    = require '../../partials/_dashboard.jade'
-templateHome         = require '../../partials/_home.jade'
-templateBreadcrumbs  = require '../../partials/_breadcrumbs.jade'
-templateUsersList    = require '../../partials/_users_list.jade'
-templateUsersProfile = require '../../partials/_users_profile.jade'
+templateLogin         = require '../../partials/_login.jade'
+templateDashboard     = require '../../partials/_dashboard.jade'
+templateHome          = require '../../partials/_home.jade'
+templateBreadcrumbs   = require '../../partials/_breadcrumbs.jade'
+templateAdminsList    = require '../../partials/_admins_list.jade'
+templateAdminsProfile = require '../../partials/_admins_profile.jade'
 
 resolveAuthenticationAndEmitIf = (eventToEmit, emitIfAuthenticated) ->
   # Manual dependency injection annotations, as ngAnnotate is having problems
   # detecting this, even with explicit comments
   [ '$rootScope', '$q', 'AuthService', ($rootScope, $q, AuthService) ->
-    AuthService.ensureUserData()
+    AuthService.ensureAdminData()
     .then ->
       if emitIfAuthenticated
         $rootScope.$broadcast "auth:#{eventToEmit}"
@@ -60,43 +60,43 @@ module.exports = ($locationProvider, $urlRouterProvider, $stateProvider, cfpLoad
     ncyBreadcrumb :
       label: 'Dashboard'
 
-  $stateProvider.state 'users',
+  $stateProvider.state 'admins',
     parent        : 'dashboard'
     abstract      : true
-    url           : '/users'
+    url           : '/admins'
     templateUrl   : templateBreadcrumbs
     # resolve       :
     #   auth: resolveAuthenticationAndEmitIf 'unauthorized', false
     ncyBreadcrumb :
       skip: true
 
-  $stateProvider.state 'users.list',
+  $stateProvider.state 'admins.list',
     url           : '/list'
-    templateUrl   : templateUsersList
-    controller    : 'UsersListController'
+    templateUrl   : templateAdminsList
+    controller    : 'AdminsListController'
     # resolve       :
     #   auth: resolveAuthenticationAndEmitIf 'unauthorized', false
     ncyBreadcrumb :
-      label: 'Users'
+      label: 'Admins'
 
-  $stateProvider.state 'users.add',
+  $stateProvider.state 'admins.add',
     url           : '/add'
-    templateUrl   : templateUsersProfile
-    controller    : 'UsersProfileController'
+    templateUrl   : templateAdminsProfile
+    controller    : 'AdminsProfileController'
     resolve       :
       # auth: resolveAuthenticationAndEmitIf 'unauthorized', false
-      user: -> undefined
+      admin: -> undefined
     ncyBreadcrumb :
-      parent : 'users.list'
+      parent : 'admins.list'
       label  : 'New'
 
-  $stateProvider.state 'users.edit',
+  $stateProvider.state 'admins.edit',
     url           : '/edit/:id'
-    templateUrl   : templateUsersProfile
-    controller    : 'UsersProfileController'
+    templateUrl   : templateAdminsProfile
+    controller    : 'AdminsProfileController'
     resolve       :
       # auth: resolveAuthenticationAndEmitIf 'unauthorized', false
-      user: ($stateParams, API) -> API.users.get($stateParams.id)
+      admin: ($stateParams, API) -> API.admins.get($stateParams.id)
     ncyBreadcrumb :
-      parent : 'users.list'
+      parent : 'admins.list'
       label  : 'Edit'

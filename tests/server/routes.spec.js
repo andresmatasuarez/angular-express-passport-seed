@@ -10,30 +10,30 @@ const server  = request(App.server.http);
 
 describe('/api API must be served over SSL', function() {
 
-  it('GET /users should respond with 301 Redirect', function(done) {
+  it('GET /admins should respond with 301 Redirect', function(done) {
     return server
-    .get('/api/users')
+    .get('/api/admins')
     .expect(301)
     .end(done);
   });
 
-  it('GET /users/:id should respond with 301 Redirect', function(done) {
+  it('GET /admins/:id should respond with 301 Redirect', function(done) {
     return server
-    .get(`/api/users/${mongoose.Types.ObjectId()}`)
+    .get(`/api/admins/${mongoose.Types.ObjectId()}`)
     .expect(301)
     .end(done);
   });
 
-  it('GET /users/total should respond with 301 Redirect', function(done) {
+  it('GET /admins/total should respond with 301 Redirect', function(done) {
     return server
-    .get('/api/users/total')
+    .get('/api/admins/total')
     .expect(301)
     .end(done);
   });
 
-  it('POST /users should respond with 301 Redirect', function(done) {
+  it('POST /admins should respond with 301 Redirect', function(done) {
     return server
-    .post('/api/users')
+    .post('/api/admins')
     .expect(403)
     .end(done);
   });

@@ -1,11 +1,11 @@
 .page-header
-  button.btn.btn-default.pull-right(ng-click="addUser()")
+  button.btn.btn-default.pull-right(ng-click="addAdmin()")
     i.glyphicon.glyphicon-plus
     | #{' '}
-    | New user
-  h1 Users
+    | New admin
+  h1 Admins
 
-ng-table-async.users-list(options="tableOptions")
+ng-table-async.admins-list(options="tableOptions")
   nta-column(header="'_id'"   content="item._id")
   nta-column(header="'Email'" content="item.email")
   nta-column(header="'Actions'")

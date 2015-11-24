@@ -7,9 +7,9 @@ const mongoose        = require('mongoose');
 const request         = require('supertest');
 const expect          = require('chai').expect;
 const App             = require('../../../server/app');
-const User            = require('../../../server/model/user');
-const UserSeed        = require('../../../seeds/user');
-const UserSettings    = require('../../../server/settings').User;
+const Admin           = require('../../../server/model/admin');
+const AdminSeed       = require('../../../seeds/admin');
+const AdminSettings   = require('../../../server/settings').Admin;
 const TestUtils       = require('../../../tests/utils');
 const SuperAgentUtils = require('../superagent_utils');
 
@@ -18,37 +18,37 @@ const agent  = request.agent(App.server.https);
 
 const agentUtils = new SuperAgentUtils(agent);
 
-function performLogin(user, password) {
+function performLogin(admin, password) {
   return server
   .post('/api/auth/login')
   .send({
-    email: user.email,
+    email: admin.email,
     password
   })
   .endAsync()
   .then(agentUtils.saveJWT.bind(agentUtils));
 }
 
-describe('/api/users', function() {
+describe('/api/admins', function() {
 
   describe('GET', function() {
 
-    const usersToSeed = 10;
-    TestUtils.seedingTimeout(this, usersToSeed);
+    const adminsToSeed = 10;
+    TestUtils.seedingTimeout(this, adminsToSeed);
 
-    let seededUsers;
+    let seededAdmins;
 
     before(function(done) {
       App.setup()
       .then(() => {
-        return User.removeAsync();
+        return Admin.removeAsync();
       })
       .then(() => {
-        return UserSeed.seed(usersToSeed);
+        return AdminSeed.seed(adminsToSeed);
       })
-      .then(_.partialRight(TestUtils.prepareSeededObjects, UserSettings.paths, function(item) { return item.email; }))
+      .then(_.partialRight(TestUtils.prepareSeededObjects, AdminSettings.paths, function(item) { return item.email; }))
       .then((seeded) => {
-        seededUsers = seeded;
+        seededAdmins = seeded;
         return performLogin(_.first(seeded), 'test');
       })
       .then(() => {
@@ -58,120 +58,120 @@ describe('/api/users', function() {
     });
 
     after(function(done) {
-      User.removeAsync()
+      Admin.removeAsync()
       .then(() => {
         done();
       })
       .catch(done);
     });
 
-    it('/ should return user list', function(done) {
-      agentUtils.withJWT(server.get('/api/users'))
+    it('/ should return admin list', function(done) {
+      agentUtils.withJWT(server.get('/api/admins'))
       .expect(200)
       .expect('Content-Type', /json/)
       .endAsync()
       .then((res) => {
-        expect(res.body).to.be.eql(seededUsers);
+        expect(res.body).to.be.eql(seededAdmins);
         done();
       })
       .catch(done);
     });
 
-    it('?skip=4 should return user list skipping the first four users', function(done) {
-      agentUtils.withJWT(server.get('/api/users?skip=4'))
+    it('?skip=4 should return admin list skipping the first four admins', function(done) {
+      agentUtils.withJWT(server.get('/api/admins?skip=4'))
       .expect(200)
       .expect('Content-Type', /json/)
       .endAsync()
       .then((res) => {
-        expect(res.body).to.be.eql(_.slice(seededUsers, 4));
+        expect(res.body).to.be.eql(_.slice(seededAdmins, 4));
         done();
       })
       .catch(done);
     });
 
-    it('?skip=invalid_skip_param should return user list without skipping anything', function(done) {
-      agentUtils.withJWT(server.get('/api/users?skip=invalid_skip_param'))
+    it('?skip=invalid_skip_param should return admin list without skipping anything', function(done) {
+      agentUtils.withJWT(server.get('/api/admins?skip=invalid_skip_param'))
       .expect(200)
       .expect('Content-Type', /json/)
       .endAsync()
       .then((res) => {
-        expect(res.body).to.be.eql(seededUsers);
+        expect(res.body).to.be.eql(seededAdmins);
         done();
       })
       .catch(done);
     });
 
-    it('?limit=4 should return the first four users', function(done) {
-      agentUtils.withJWT(server.get('/api/users?limit=4'))
+    it('?limit=4 should return the first four admins', function(done) {
+      agentUtils.withJWT(server.get('/api/admins?limit=4'))
       .expect(200)
       .expect('Content-Type', /json/)
       .endAsync()
       .then((res) => {
-        expect(res.body).to.be.eql(_.slice(seededUsers, 0, 4));
+        expect(res.body).to.be.eql(_.slice(seededAdmins, 0, 4));
         done();
       })
       .catch(done);
     });
 
-    it('?limit=invalid_limit_param should return all users', function(done) {
-      agentUtils.withJWT(server.get('/api/users?limit=invalid_limit_param'))
+    it('?limit=invalid_limit_param should return all admins', function(done) {
+      agentUtils.withJWT(server.get('/api/admins?limit=invalid_limit_param'))
       .expect(200)
       .expect('Content-Type', /json/)
       .endAsync()
       .then((res) => {
-        expect(res.body).to.be.eql(seededUsers);
+        expect(res.body).to.be.eql(seededAdmins);
         done();
       })
       .catch(done);
     });
 
-    it('/:id should return user with _id = :id', function(done) {
-      const user = _.first(seededUsers);
-      agentUtils.withJWT(server.get(`/api/users/${user._id}`))
+    it('/:id should return admin with _id = :id', function(done) {
+      const admin = _.first(seededAdmins);
+      agentUtils.withJWT(server.get(`/api/admins/${admin._id}`))
       .expect(200)
       .expect('Content-Type', /json/)
       .endAsync()
       .then((res) => {
-        TestUtils.assertObjectIds(user._id, res.body._id);
-        TestUtils.assertUnorderedArrays(_.keys(res.body), UserSettings.paths);
+        TestUtils.assertObjectIds(admin._id, res.body._id);
+        TestUtils.assertUnorderedArrays(_.keys(res.body), AdminSettings.paths);
         done();
       })
       .catch(done);
     });
 
-    it('/total should return total user list size', function(done) {
-      agentUtils.withJWT(server.get('/api/users/total'))
+    it('/total should return total admin list size', function(done) {
+      agentUtils.withJWT(server.get('/api/admins/total'))
       .expect(200)
       .expect('Content-Type', /json/)
       .endAsync()
       .then((res) => {
-        expect(res.body).to.eql({ total: seededUsers.length });
+        expect(res.body).to.eql({ total: seededAdmins.length });
         done();
       })
       .catch(done);
     });
 
     it('/:not_found_id should respond with 404', function(done) {
-      agentUtils.withJWT(server.get(`/api/users/${mongoose.Types.ObjectId()}`))
+      agentUtils.withJWT(server.get(`/api/admins/${mongoose.Types.ObjectId()}`))
       .expect(404)
       .expect('Content-Type', /json/)
       .endAsync()
       .then((res) => {
         expect(res.body).not.to.be.empty;
-        expect(res.body.message).to.eql(UserSettings.errors.notFound);
+        expect(res.body.message).to.eql(AdminSettings.errors.notFound);
         done();
       })
       .catch(done);
     });
 
     it('/:invalid_id should respond with 400', function(done) {
-      agentUtils.withJWT(server.get('/api/users/powerfromhell'))
+      agentUtils.withJWT(server.get('/api/admins/powerfromhell'))
       .expect(400)
       .expect('Content-Type', /json/)
       .endAsync()
       .then((res) => {
         expect(res.body).not.to.be.empty;
-        expect(res.body.message).to.eql(UserSettings.errors.invalidId);
+        expect(res.body.message).to.eql(AdminSettings.errors.invalidId);
         done();
       })
       .catch(done);
@@ -181,18 +181,18 @@ describe('/api/users', function() {
 
   describe('POST', function() {
 
-    const usersToSeed = 1;
-    TestUtils.seedingTimeout(this, usersToSeed, 3000);
+    const adminsToSeed = 1;
+    TestUtils.seedingTimeout(this, adminsToSeed, 3000);
 
     before(function(done) {
       App.setup()
       .then(() => {
-        return User.removeAsync();
+        return Admin.removeAsync();
       })
       .then(() => {
-        return UserSeed.seed(usersToSeed);
+        return AdminSeed.seed(adminsToSeed);
       })
-      .then(_.partialRight(TestUtils.prepareSeededObjects, UserSettings.paths, function(item) { return item.email; }))
+      .then(_.partialRight(TestUtils.prepareSeededObjects, AdminSettings.paths, function(item) { return item.email; }))
       .then((seeded) => {
         return performLogin(_.first(seeded), 'test');
       })
@@ -203,7 +203,7 @@ describe('/api/users', function() {
     });
 
     after(function(done) {
-      User.removeAsync()
+      Admin.removeAsync()
       .then(() => {
         done();
       })
@@ -211,8 +211,8 @@ describe('/api/users', function() {
     });
 
 
-    it('/ should create a new user', function(done) {
-      agentUtils.withJWT(server.post('/api/users'))
+    it('/ should create a new admin', function(done) {
+      agentUtils.withJWT(server.post('/api/admins'))
       .send({
         email    : 'rudimentary@peni.com',
         password : 'rudimentarypassword'
@@ -221,18 +221,18 @@ describe('/api/users', function() {
       .expect('Content-Type', /json/)
       .endAsync()
       .then(() => {
-        User.findByUsernameAsync('rudimentary@peni.com')
-        .then((user) => {
-          expect(user).to.be.instanceof(Object);
-          expect(user.email).to.eql('rudimentary@peni.com');
+        Admin.findByAdminnameAsync('rudimentary@peni.com')
+        .then((admin) => {
+          expect(admin).to.be.instanceof(Object);
+          expect(admin.email).to.eql('rudimentary@peni.com');
           done();
         });
       })
       .catch(done);
     });
 
-    it('/ should fail creation of a user with an already-existing email', function(done) {
-      agentUtils.withJWT(server.post('/api/users'))
+    it('/ should fail creation of a admin with an already-existing email', function(done) {
+      agentUtils.withJWT(server.post('/api/admins'))
       .send({
         email: 'rudimentary@peni.com',
         password: 'rudimentarypassword'
@@ -241,7 +241,7 @@ describe('/api/users', function() {
       .expect('Content-Type', /json/)
       .endAsync()
       .then((res) => {
-        let error = UserSettings.errors.email.unique;
+        let error = AdminSettings.errors.email.unique;
         error = error.replace('%s', 'email');
         error = error.replace('%s', 'rudimentary@peni.com');
         expect(res.body.message).to.be.eql(error);
@@ -251,7 +251,7 @@ describe('/api/users', function() {
     });
 
     it('/ (no email) should fail', function(done) {
-      agentUtils.withJWT(server.post('/api/users'))
+      agentUtils.withJWT(server.post('/api/admins'))
       .send({
         password: 'rudimentarypassword'
       })
@@ -259,7 +259,7 @@ describe('/api/users', function() {
       .expect('Content-Type', /json/)
       .endAsync()
       .then((res) => {
-        let error = UserSettings.errors.email.required;
+        let error = AdminSettings.errors.email.required;
         error = error.replace('%s', 'email');
         expect(res.body.message).to.be.eql(error);
         done();
@@ -268,7 +268,7 @@ describe('/api/users', function() {
     });
 
     it('/ (no password) should fail', function(done) {
-      agentUtils.withJWT(server.post('/api/users'))
+      agentUtils.withJWT(server.post('/api/admins'))
       .send({
         email: 'musta@paraati.com'
       })
@@ -276,7 +276,7 @@ describe('/api/users', function() {
       .expect('Content-Type', /json/)
       .endAsync()
       .then((res) => {
-        expect(res.body.message).to.be.eql(UserSettings.errors.passwordMissing);
+        expect(res.body.message).to.be.eql(AdminSettings.errors.passwordMissing);
         done();
       })
       .catch(done);

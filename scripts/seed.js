@@ -5,19 +5,19 @@ require('../server/bin/context');
 const _          = require('lodash');
 const config     = require('config');
 const Mongootils = require('mongootils');
-const UserSeed   = require('../seeds/user');
+const AdminSeed  = require('../seeds/admin');
 const Log        = require('../server/utils/log');
 
 new Mongootils(config.mongo.uri, config.mongo.options)
 .connect()
 .then(() => {
-  return UserSeed.seed(process.argv[2]);
+  return AdminSeed.seed(process.argv[2]);
 })
 .then((result) => {
-  Log.info('Finished seeding. Seeded users:');
+  Log.info('Finished seeding. Seeded admins:');
   _(result)
-  .forEach((user) => {
-    Log.info(`  User { _id: ${user._id}, Email: ${user.email} }`);
+  .forEach((admin) => {
+    Log.info(`  Admin { _id: ${admin._id}, Email: ${admin.email} }`);
   });
 
   process.exit(0);

@@ -24,41 +24,41 @@ module.exports = (Restangular) ->
     logout: ->
       api.one('auth', 'logout').post()
 
-  users:
+  admins:
     total: ->
-      api.one('users', 'total').get()
+      api.one('admins', 'total').get()
       .then _.property('total')
 
     list: (skip, limit) ->
-      api.customGETLIST 'users',
+      api.customGETLIST 'admins',
         skip  : skip
         limit : limit
 
     get: (id) ->
-      api.one('users', id).get()
+      api.one('admins', id).get()
 
-    create: (user) ->
+    create: (admin) ->
       body = $.param
-        email           : user.email
-        password        : user.password
-        confirmPassword : user.confirmPassword
+        email           : admin.email
+        password        : admin.password
+        confirmPassword : admin.confirmPassword
 
       headers =
         'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
 
-      api.one('users').customPOST body, undefined, undefined, headers
+      api.one('admins').customPOST body, undefined, undefined, headers
 
-    edit: (id, user) ->
+    edit: (id, admin) ->
       body = $.param
-        email           : user.email
-        password        : user.password
-        newPassword     : user.newPassword
-        confirmPassword : user.confirmPassword
+        email           : admin.email
+        password        : admin.password
+        newPassword     : admin.newPassword
+        confirmPassword : admin.confirmPassword
 
       headers =
         'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
 
-      api.one('users', id).customPUT body, undefined, undefined, headers
+      api.one('admins', id).customPUT body, undefined, undefined, headers
 
     delete: (id) ->
-      api.one('users', id).remove()
+      api.one('admins', id).remove()

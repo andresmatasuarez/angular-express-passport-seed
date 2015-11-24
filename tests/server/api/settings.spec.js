@@ -6,17 +6,17 @@ const APISettings = require('../../../server/settings');
 
 describe('API settings', function() {
 
-  describe('User', function() {
+  describe('Admin', function() {
 
     it('Exposed paths should be "_id" and "email"', function() {
-      const userPaths = [ '_id', 'email' ];
-      expect(_.difference(APISettings.User.paths, userPaths)).to.be.empty;
-      expect(_.difference(userPaths, APISettings.User.paths)).to.be.empty;
+      const adminPaths = [ '_id', 'email' ];
+      expect(_.difference(APISettings.Admin.paths, adminPaths)).to.be.empty;
+      expect(_.difference(adminPaths, APISettings.Admin.paths)).to.be.empty;
     });
 
     it('List should be sorted in ascending order by "email"', function() {
-      expect(APISettings.User.sort).to.have.keys([ 'email' ]);
-      expect(APISettings.User.sort.email).and.equal('asc');
+      expect(APISettings.Admin.sort).to.have.keys([ 'email' ]);
+      expect(APISettings.Admin.sort.email).and.equal('asc');
     });
 
   });

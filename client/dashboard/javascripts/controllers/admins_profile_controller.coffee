@@ -1,21 +1,21 @@
 'use strict'
 
-module.exports = ($scope, $state, API, user) ->
+module.exports = ($scope, $state, API, admin) ->
 
-  editing = !_.isEmpty user
-  action = if editing then _.partial(API.users.edit, user._id) else API.users.create
+  editing = !_.isEmpty admin
+  action = if editing then _.partial(API.admins.edit, admin._id) else API.admins.create
   $scope.editing = editing
 
   # Initialize form model (to avoid ngIf child scopes creating their own 'model' property and thus, causing annoying bugs)
   $scope.model = {}
 
   if editing
-    $scope.model.email = user.email
+    $scope.model.email = admin.email
 
   $scope.save = ->
     $scope.submitting = true
     action $scope.model
-    .then        -> $state.go 'users.list'
+    .then        -> $state.go 'admins.list'
     .catch (err) -> $scope.responseErrors = $scope.cleanResponseErrors err
     .finally     -> delete $scope.submitting
 

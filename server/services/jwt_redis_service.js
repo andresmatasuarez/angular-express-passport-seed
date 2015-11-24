@@ -18,7 +18,7 @@ function JWTRedisServiceError(message) {
 function UnauthorizedAccessError(message) {
   Error.call(this);
   this.name    = 'UnauthorizedAccessError';
-  this.message = message || 'Token verification failed. User not authenticated or token expired.';
+  this.message = message || 'Token verification failed. Admin not authenticated or token expired.';
 }
 
 function NoTokenProvidedError(message) {

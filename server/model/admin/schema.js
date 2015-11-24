@@ -12,23 +12,23 @@ const schema = new mongoose.Schema({
     type      : String,
     lowercase : true
 
-    //unique    : UserErrors.email.unique,
+    //unique    : AdminErrors.email.unique,
   }
 });
 
 // passport-local-mongoose plugin
 schema.plugin(passportLocalMongoose, {
   usernameField          : 'email',
-  missingUsernameError   : Settings.User.errors.email.required,
-  missingPasswordError   : Settings.User.errors.passwordMissing,
-  userExistsError        : Settings.User.errors.email.unique,
-  incorrectPasswordError : Settings.User.errors.incorrectPassword
+  missingUsernameError   : Settings.Admin.errors.email.required,
+  missingPasswordError   : Settings.Admin.errors.passwordMissing,
+  userExistsError        : Settings.Admin.errors.email.unique,
+  incorrectPasswordError : Settings.Admin.errors.incorrectPassword
 });
 
 schema.plugin(validations);
 
 function transform(doc, ret) {
-  return _.pick(ret, Settings.User.paths);
+  return _.pick(ret, Settings.Admin.paths);
 }
 
 schema.set('toJSON',   { transform });

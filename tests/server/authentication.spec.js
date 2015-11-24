@@ -6,8 +6,8 @@ const _               = require('lodash');
 const request         = require('supertest');
 const expect          = require('chai').expect;
 const App             = require('../../server/app');
-const User            = require('../../server/model/user');
-const UserSeed        = require('../../seeds/user');
+const Admin           = require('../../server/model/admin');
+const AdminSeed       = require('../../seeds/admin');
 const TestUtils       = require('../../tests/utils');
 const SuperAgentUtils = require('./superagent_utils');
 
@@ -15,11 +15,11 @@ const server     = request(App.server.https);
 const agent      = request.agent(App.server.https);
 const agentUtils = new SuperAgentUtils(agent);
 
-function performLogin(user, password) {
+function performLogin(admin, password) {
   return server
   .post('/api/auth/login')
   .send({
-    email    : user.email,
+    email: admin.email,
     password
   })
   .endAsync()
@@ -28,9 +28,9 @@ function performLogin(user, password) {
 
 describe('Authentication', function() {
 
-  // Increase default timeout to let user seed do its work.
-  const usersToSeed = 1;
-  TestUtils.seedingTimeout(this, usersToSeed, 2000);
+  // Increase default timeout to let admin seed do its work.
+  const adminsToSeed = 1;
+  TestUtils.seedingTimeout(this, adminsToSeed, 2000);
 
   let admin;
   const randomId = '507f1f77bcf86cd799439011';
@@ -38,10 +38,10 @@ describe('Authentication', function() {
   before(function(done) {
     App.setup()
     .then(() => {
-      return User.removeAsync();
+      return Admin.removeAsync();
     })
     .then(() => {
-      return UserSeed.seed(usersToSeed);
+      return AdminSeed.seed(adminsToSeed);
     })
     .then(_.first)
     .then((registered) => {
@@ -52,7 +52,7 @@ describe('Authentication', function() {
   });
 
   after(function(done) {
-    User.removeAsync()
+    Admin.removeAsync()
     .then(() => {
       done();
     })
@@ -81,7 +81,7 @@ describe('Authentication', function() {
         .expect(401)
         .expect('Content-Type', /json/)
         .send({
-          email    : 'fake@user.com',
+          email    : 'fake@admin.com',
           password : 'fake_password'
         })
         .endAsync()
@@ -126,8 +126,8 @@ describe('Authentication', function() {
       .catch(done);
     });
 
-    it('GET /api/users/ should respond 401', function(done) {
-      server.get('/api/users').expect(401).expect('Content-Type', /json/).endAsync()
+    it('GET /api/admins/ should respond 401', function(done) {
+      server.get('/api/admins').expect(401).expect('Content-Type', /json/).endAsync()
       .then((res) => {
         expect(res.body).not.to.be.empty;
         expect(res.body.message).to.be.equals('No token provided.');
@@ -136,8 +136,8 @@ describe('Authentication', function() {
       .catch(done);
     });
 
-    it('GET /api/users/:id should respond 401', function(done) {
-      server.get(`/api/users/${randomId}`).expect(401).expect('Content-Type', /json/).endAsync()
+    it('GET /api/admins/:id should respond 401', function(done) {
+      server.get(`/api/admins/${randomId}`).expect(401).expect('Content-Type', /json/).endAsync()
       .then((res) => {
         expect(res.body).not.to.be.empty;
         expect(res.body.message).to.be.equals('No token provided.');
@@ -146,8 +146,8 @@ describe('Authentication', function() {
       .catch(done);
     });
 
-    it('GET /api/users/total should respond 401', function(done) {
-      server.get('/api/users/total').expect(401).expect('Content-Type', /json/).endAsync()
+    it('GET /api/admins/total should respond 401', function(done) {
+      server.get('/api/admins/total').expect(401).expect('Content-Type', /json/).endAsync()
       .then((res) => {
         expect(res.body).not.to.be.empty;
         expect(res.body.message).to.be.equals('No token provided.');
@@ -156,8 +156,8 @@ describe('Authentication', function() {
       .catch(done);
     });
 
-    it('POST /api/users/ should respond 401', function(done) {
-      server.post('/api/users/').expect(401).expect('Content-Type', /json/).endAsync()
+    it('POST /api/admins/ should respond 401', function(done) {
+      server.post('/api/admins/').expect(401).expect('Content-Type', /json/).endAsync()
       .then((res) => {
         expect(res.body).not.to.be.empty;
         expect(res.body.message).to.be.equals('No token provided.');
@@ -166,8 +166,8 @@ describe('Authentication', function() {
       .catch(done);
     });
 
-    it('PUT /api/users/:id should respond 401', function(done) {
-      server.put(`/api/users/${randomId}`).expect(401).expect('Content-Type', /json/).endAsync()
+    it('PUT /api/admins/:id should respond 401', function(done) {
+      server.put(`/api/admins/${randomId}`).expect(401).expect('Content-Type', /json/).endAsync()
       .then((res) => {
         expect(res.body).not.to.be.empty;
         expect(res.body.message).to.be.equals('No token provided.');
@@ -176,8 +176,8 @@ describe('Authentication', function() {
       .catch(done);
     });
 
-    it('DELETE /api/users/:id should respond 401', function(done) {
-      server.delete(`/api/users/${randomId}`).expect(401).expect('Content-Type', /json/).endAsync()
+    it('DELETE /api/admins/:id should respond 401', function(done) {
+      server.delete(`/api/admins/${randomId}`).expect(401).expect('Content-Type', /json/).endAsync()
       .then((res) => {
         expect(res.body).not.to.be.empty;
         expect(res.body.message).to.be.equals('No token provided.');
@@ -202,28 +202,28 @@ describe('Authentication', function() {
       agentUtils.resetJWT();
     });
 
-    it('GET /api/users should respond 200', function(done) {
-      agentUtils.withJWT(server.get('/api/users')).expect(200).end(done);
+    it('GET /api/admins should respond 200', function(done) {
+      agentUtils.withJWT(server.get('/api/admins')).expect(200).end(done);
     });
 
-    it('GET /api/users/total should respond 200', function(done) {
-      agentUtils.withJWT(server.get('/api/users/total')).expect(200).end(done);
+    it('GET /api/admins/total should respond 200', function(done) {
+      agentUtils.withJWT(server.get('/api/admins/total')).expect(200).end(done);
     });
 
-    it('GET /api/users/:id should respond 404', function(done) {
-      agentUtils.withJWT(server.get(`/api/users/${randomId}`)).expect(404).end(done);
+    it('GET /api/admins/:id should respond 404', function(done) {
+      agentUtils.withJWT(server.get(`/api/admins/${randomId}`)).expect(404).end(done);
     });
 
-    it('POST /api/users/ should respond 400', function(done) {
-      agentUtils.withJWT(server.post('/api/users/')).expect(400).end(done);
+    it('POST /api/admins/ should respond 400', function(done) {
+      agentUtils.withJWT(server.post('/api/admins/')).expect(400).end(done);
     });
 
-    it('PUT /api/users/:id should respond 404', function(done) {
-      agentUtils.withJWT(server.put(`/api/users/${randomId}`)).expect(404).end(done);
+    it('PUT /api/admins/:id should respond 404', function(done) {
+      agentUtils.withJWT(server.put(`/api/admins/${randomId}`)).expect(404).end(done);
     });
 
-    it('DELETE /api/users/:id should respond 200', function(done) {
-      agentUtils.withJWT(server.delete(`/api/users/${randomId}`)).expect(200).end(done);
+    it('DELETE /api/admins/:id should respond 200', function(done) {
+      agentUtils.withJWT(server.delete(`/api/admins/${randomId}`)).expect(200).end(done);
     });
 
   });
