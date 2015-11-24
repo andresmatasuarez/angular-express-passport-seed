@@ -1,6 +1,7 @@
 'use strict'
 
-require 'angular-bootstrap'
+uibs = require 'angular-ui-bootstrap'
+require 'angular-animate'
 require 'angular-breadcrumb'
 require 'angular-messages'
 require 'angular-ui-router'
@@ -38,8 +39,9 @@ appConfig = require './app_config'
 angular
 .module 'dashboard', [
   'ui.router'
-  'ui.bootstrap'
+  uibs
   'restangular'
+  'ngAnimate'
   'ngStorage'
   'angular-loading-bar'
   'ngMessages'

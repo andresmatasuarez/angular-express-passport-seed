@@ -30,10 +30,11 @@
   "homepage": "https://github.com/andresmatasuarez/angular-express-passport-seed",
   "dependencies": {
     "angular": "^1.4.3",
-    "angular-bootstrap": "^0.12.0",
+    "angular-animate": "^1.4.8",
     "angular-breadcrumb": "^0.4.0",
     "angular-loading-bar": "^0.8.0",
     "angular-messages": "^1.4.3",
+    "angular-ui-bootstrap": "^0.14.3",
     "angular-ui-router": "^0.2.15",
     "bluebird": "^2.3.11",
     "body-parser": "^1.9.1",
