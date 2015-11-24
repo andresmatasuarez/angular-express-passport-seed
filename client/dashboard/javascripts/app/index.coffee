@@ -1,6 +1,5 @@
 'use strict'
 
-uibs = require 'angular-ui-bootstrap'
 require 'angular-animate'
 require 'angular-breadcrumb'
 require 'angular-messages'
@@ -19,6 +18,7 @@ angular = require 'angular'
 authInterceptor              = require '../modules/auth_interceptor'
 connectionRefusedInterceptor = require '../modules/connection_refused_interceptor'
 api                          = require '../modules/api'
+errorModal                   = require '../modules/error_modal'
 
 # Services
 authService = require '../services/auth_service'
@@ -39,7 +39,6 @@ appConfig = require './app_config'
 angular
 .module 'dashboard', [
   'ui.router'
-  uibs
   'restangular'
   'ngAnimate'
   'ngStorage'
@@ -50,6 +49,7 @@ angular
   authInterceptor
   connectionRefusedInterceptor
   api
+  errorModal
 ]
 .controller 'LoginController',        loginController
 .controller 'UsersListController',    usersListController
