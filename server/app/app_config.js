@@ -25,15 +25,8 @@ module.exports = function(app) {
   app.use(compression());
   app.use(bodyparser.urlencoded({ extended: true }));
   app.use(bodyparser.json());
-
-  // httpOnly : true,
-  // secure   : true,
-  // path     : '/',
-  // maxAge   : 1000 * 60 * 24 // 24 hours
-  app.use(cookieParser({}));
-
+  app.use(cookieParser());
   app.use(passport.initialize());
-
   app.use(Middlewares.TokenExtractor);
 
 };

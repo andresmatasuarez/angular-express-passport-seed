@@ -48,7 +48,8 @@ module.exports = {
     auth: {
       issuer      : 'ExpressJS/AngularJS seed',
       tokenSecret : process.env.TOKEN_SECRET,
-      expiration  : 30 * 60 * 1000
+      expiration  : 30 * 60 * 1000,
+      cookieName  : 'seed_jwt'
     }
   },
   mongo: {

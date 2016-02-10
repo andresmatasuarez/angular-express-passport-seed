@@ -18,7 +18,7 @@ module.exports = {
 
   ensureAuthenticated() {
     return (req, res, next) => {
-      const token = req.cookies['seed_jwt'];
+      const token = req.cookies[config.server.auth.cookieName];
       return jwtRedisService.verify(token)
       .spread((jti, user) => {
         req.auth = {
@@ -62,7 +62,7 @@ module.exports = {
       const user = req.user.toJSON();
       return jwtRedisService.sign(user)
       .then((token) => {
-        res.cookie('seed_jwt', token, {
+        res.cookie(config.server.auth.cookieName, token, {
           httpOnly : true,
           secure   : true,
           path     : '/',
@@ -76,14 +76,14 @@ module.exports = {
 
   logout() {
     return (req, res) => {
-      const token = req.cookies['seed_jwt'];
+      const token = req.cookies[config.server.auth.cookieName];
       if (!token) {
         return Response.NoContent(res)();
       }
 
       return jwtRedisService.expire(token)
       .then(() => {
-        res.clearCookie('seed_jwt');
+        res.clearCookie(config.server.auth.cookieName);
         Response.Ok(res)('Sucessfully signed out.');
       })
       .catch(Response.InternalServerError(res));
