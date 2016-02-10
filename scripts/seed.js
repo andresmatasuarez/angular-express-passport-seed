@@ -8,11 +8,11 @@ const Mongootils = require('mongootils');
 const AdminSeed  = require('../seeds/admin');
 const Log        = require('../server/utils/log');
 
+const adminsToSeed = process.argv[2] || 3;
+
 new Mongootils(config.mongo.uri, config.mongo.options)
 .connect()
-.then(() => {
-  return AdminSeed.seed(process.argv[2]);
-})
+.then(() => AdminSeed.seed(adminsToSeed))
 .then((result) => {
   Log.info('Finished seeding. Seeded admins:');
   _(result)
