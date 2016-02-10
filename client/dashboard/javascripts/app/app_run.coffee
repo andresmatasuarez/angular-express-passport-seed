@@ -35,7 +35,7 @@ module.exports = ($rootScope, $state, AuthService, $templateCache, errorModal) -
   $rootScope.cleanResponseErrors = (err) ->
     if _.isString err
       [ err ]
-    else if _.isUndefined(err.data) || _.isUndefined(err.data.message)
+    else if _.isEmpty(err.data) || _.isEmpty(err.data.message)
       if _.isArray err.data then err.data else [ err.data ]
     else
       [ err.data.message ]
