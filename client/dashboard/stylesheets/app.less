@@ -3,7 +3,19 @@
 
 @font-stack: Helvetica, sans-serif;
 
-.login-body { background-color: #eee; }
+html {
+  height: 100%;
+
+  body {
+    height: 100%;
+
+    .is-login {
+      min-height: 100%;
+      background-color: #eee;
+    }
+  }
+
+}
 
 // Loading bar override
 #loading-bar .bar { background: crimson; }
