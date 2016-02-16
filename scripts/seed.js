@@ -18,7 +18,8 @@ new Mongootils(config.mongo.uri, config.mongo.options)
   _(result)
   .forEach((admin) => {
     Log.info(`  Admin { _id: ${admin._id}, Email: ${admin.email} }`);
-  });
+  })
+  .value();
 
   process.exit(0);
 })

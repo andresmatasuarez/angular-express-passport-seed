@@ -10,7 +10,7 @@
     "test-client": "eslint . && grunt test:client",
     "linter": "eslint .",
     "dist": "grunt build",
-    "seed": "grunt seed"
+    "seed": "node scripts/seed"
   },
   "repository": {
     "type": "git",
