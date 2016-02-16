@@ -1,38 +1,31 @@
 'use strict';
 
-const _          = require('lodash');
-const Bluebird   = require('bluebird');
-const express    = require('express');
-const Response   = require('simple-response');
-const Admin      = require('../model/admin');
-const RouteUtils = require('../utils/route_utils');
-const Settings   = require('../settings');
+const _           = require('lodash');
+const Bluebird    = require('bluebird');
+const express     = require('express');
+const Response    = require('simple-response');
+const Admin       = require('../model/admin');
+const RouteUtils  = require('../utils/route_utils');
+const Settings    = require('../settings');
+const Middlewares = require('../middlewares');
 
 const AdminErrors = Settings.Admin.errors;
 
 const router = express.Router();
 
-const normalize = {
-  integer(value, defaultsTo) {
-    const integer = parseInt(value);
-    return _.isNaN(integer) ? defaultsTo : integer;
-  },
-  queryParams(req, res, next) {
-    req.query.skip  = normalize.integer(req.query.skip, 0);
-    req.query.limit = normalize.integer(req.query.limit, 0);
-    next();
+router.get('/',
+  Middlewares.Normalize('query.skip').as('integer', { defaultsTo: 0 }),
+  Middlewares.Normalize('query.limit').as('integer', { defaultsTo: 0 }),
+  (req, res, next) => {
+    Admin.findAsync({}, Settings.Admin.paths.join(' '), {
+      skip  : req.query.skip,
+      limit : req.query.limit,
+      sort  : Settings.Admin.sort
+    })
+    .then(Response.Ok(res))
+    .catch(next);
   }
-};
-
-router.get('/', normalize.queryParams, (req, res, next) => {
-  Admin.findAsync({}, Settings.Admin.paths.join(' '), {
-    skip  : req.query.skip,
-    limit : req.query.limit,
-    sort  : Settings.Admin.sort
-  })
-  .then(Response.Ok(res))
-  .catch(next);
-});
+);
 
 router.get('/total', (req, res, next) => {
   Admin.countAsync()
