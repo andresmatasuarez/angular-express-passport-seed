@@ -9,7 +9,7 @@ const expect          = require('chai').expect;
 const App             = require('../../../server/app');
 const Admin           = require('../../../server/model/admin');
 const AdminSeed       = require('../../../seeds/admin');
-const AdminSettings   = require('../../../server/settings').Admin;
+const Settings        = require('../../../server/settings');
 const TestUtils       = require('../../../tests/utils');
 const SuperAgentUtils = require('../superagent_utils');
 
@@ -42,16 +42,14 @@ describe('/api/admins', function() {
       return App.setup()
       .then(() => Admin.removeAsync())
       .then(() => AdminSeed.seed(adminsToSeed))
-      .then(_.partialRight(TestUtils.prepareSeededObjects, AdminSettings.paths, function(item) { return item.email; }))
+      .then(_.partialRight(TestUtils.prepareSeededObjects, Settings.Admin.paths, (item) => item.email))
       .then((seeded) => {
         seededAdmins = seeded;
         return performLogin(_.first(seeded), 'test');
       });
     });
 
-    after(function() {
-      return Admin.removeAsync();
-    });
+    after(() => Admin.removeAsync());
 
     it('/ should return admin list', function() {
       return agentUtils.withCookies(server.get('/api/admins'))
@@ -111,7 +109,7 @@ describe('/api/admins', function() {
       .endAsync()
       .then((res) => {
         TestUtils.assertObjectIds(admin._id, res.body._id);
-        TestUtils.assertUnorderedArrays(_.keys(res.body), AdminSettings.paths);
+        TestUtils.assertUnorderedArrays(_.keys(res.body), Settings.Admin.paths);
       });
     });
 
@@ -132,7 +130,7 @@ describe('/api/admins', function() {
       .endAsync()
       .then((res) => {
         expect(res.body).not.to.be.empty;
-        expect(res.body.message).to.eql(AdminSettings.errors.notFound);
+        expect(res.body.message).to.eql(Settings.Admin.errors.notFound);
       });
     });
 
@@ -143,7 +141,7 @@ describe('/api/admins', function() {
       .endAsync()
       .then((res) => {
         expect(res.body).not.to.be.empty;
-        expect(res.body.message).to.eql(AdminSettings.errors.invalidId);
+        expect(res.body.message).to.eql(Settings.Admin.errors.invalidId);
       });
     });
 
@@ -158,14 +156,11 @@ describe('/api/admins', function() {
       return App.setup()
       .then(() => Admin.removeAsync())
       .then(() => AdminSeed.seed(adminsToSeed))
-      .then(_.partialRight(TestUtils.prepareSeededObjects, AdminSettings.paths, function(item) { return item.email; }))
+      .then(_.partialRight(TestUtils.prepareSeededObjects, Settings.Admin.paths, (item) => item.email))
       .then((seeded) => performLogin(_.first(seeded), 'test'));
     });
 
-    after(function() {
-      return Admin.removeAsync();
-    });
-
+    after(() => Admin.removeAsync());
 
     it('/ should create a new admin', function() {
       return agentUtils.withCookies(server.post('/api/admins'))
@@ -193,7 +188,7 @@ describe('/api/admins', function() {
       .expect('Content-Type', /json/)
       .endAsync()
       .then((res) => {
-        let error = AdminSettings.errors.email.unique;
+        let error = Settings.Admin.errors.email.unique;
         error = error.replace('%s', 'email');
         error = error.replace('%s', 'rudimentary@peni.com');
         expect(res.body.message).to.be.eql(error);
@@ -209,7 +204,7 @@ describe('/api/admins', function() {
       .expect('Content-Type', /json/)
       .endAsync()
       .then((res) => {
-        let error = AdminSettings.errors.email.required;
+        let error = Settings.Admin.errors.email.required;
         error = error.replace('%s', 'email');
         expect(res.body.message).to.be.eql(error);
       });
@@ -224,7 +219,7 @@ describe('/api/admins', function() {
       .expect('Content-Type', /json/)
       .endAsync()
       .then((res) => {
-        expect(res.body.message).to.be.eql(AdminSettings.errors.passwordMissing);
+        expect(res.body.message).to.be.eql(Settings.Admin.errors.passwordMissing);
       });
     });
 

@@ -35,49 +35,35 @@ describe('Authentication', function() {
   let admin;
   const randomId = '507f1f77bcf86cd799439011';
 
-  before(function(done) {
-    App.setup()
-    .then(() => {
-      return Admin.removeAsync();
-    })
-    .then(() => {
-      return AdminSeed.seed(adminsToSeed);
-    })
+  before(function() {
+    return App.setup()
+    .then(() => Admin.removeAsync())
+    .then(() => AdminSeed.seed(adminsToSeed))
     .then(_.first)
     .then((registered) => {
       admin = registered;
-      done();
-    })
-    .catch(done);
+    });
   });
 
-  after(function(done) {
-    Admin.removeAsync()
-    .then(() => {
-      done();
-    })
-    .catch(done);
-  });
+  after(() => Admin.removeAsync());
 
   describe('Unauthenticated', function() {
 
     describe('POST /api/auth/login', function() {
 
-      it('(missing credentials) should respond 401', function(done) {
-        server.post('/api/auth/login')
+      it('(missing credentials) should respond 401', function() {
+        return server.post('/api/auth/login')
         .expect(401)
         .expect('Content-Type', /json/)
         .endAsync()
         .then((res) => {
           expect(res.body).not.to.be.empty;
           expect(res.body.message).to.be.equals('Missing credentials');
-          done();
-        })
-        .catch(done);
+        });
       });
 
-      it('(invalid credentials) should respond 401', function(done) {
-        server.post('/api/auth/login')
+      it('(invalid credentials) should respond 401', function() {
+        return server.post('/api/auth/login')
         .expect(401)
         .expect('Content-Type', /json/)
         .send({
@@ -88,13 +74,11 @@ describe('Authentication', function() {
         .then((res) => {
           expect(res.body).not.to.be.empty;
           expect(res.body.message).to.be.equals('Incorrect email');
-          done();
-        })
-        .catch(done);
+        });
       });
 
-      it('(invalid password) should respond 401', function(done) {
-        server.post('/api/auth/login')
+      it('(invalid password) should respond 401', function() {
+        return server.post('/api/auth/login')
         .expect(401)
         .expect('Content-Type', /json/)
         .send({
@@ -105,121 +89,99 @@ describe('Authentication', function() {
         .then((res) => {
           expect(res.body).not.to.be.empty;
           expect(res.body.message).to.be.equals('Incorrect password');
-          done();
-        })
-        .catch(done);
+        });
       });
 
     });
 
-    it('POST /api/auth/logout should respond 204', function(done) {
-      server.post('/api/auth/logout').expect(204).end(done);
+    it('POST /api/auth/logout should respond 204', function() {
+      return server.post('/api/auth/logout').expect(204).end(done);
     });
 
-    it('GET /api/auth/me should respond 401', function(done) {
-      server.get('/api/auth/me').expect(401).expect('Content-Type', /json/).endAsync()
+    it('GET /api/auth/me should respond 401', function() {
+      return server.get('/api/auth/me').expect(401).expect('Content-Type', /json/).endAsync()
       .then((res) => {
         expect(res.body).not.to.be.empty;
         expect(res.body.message).to.be.equals('No token provided.');
-        done();
-      })
-      .catch(done);
+      });
     });
 
-    it('GET /api/admins/ should respond 401', function(done) {
-      server.get('/api/admins').expect(401).expect('Content-Type', /json/).endAsync()
+    it('GET /api/admins/ should respond 401', function() {
+      return server.get('/api/admins').expect(401).expect('Content-Type', /json/).endAsync()
       .then((res) => {
         expect(res.body).not.to.be.empty;
         expect(res.body.message).to.be.equals('No token provided.');
-        done();
-      })
-      .catch(done);
+      });
     });
 
-    it('GET /api/admins/:id should respond 401', function(done) {
-      server.get(`/api/admins/${randomId}`).expect(401).expect('Content-Type', /json/).endAsync()
+    it('GET /api/admins/:id should respond 401', function() {
+      return server.get(`/api/admins/${randomId}`).expect(401).expect('Content-Type', /json/).endAsync()
       .then((res) => {
         expect(res.body).not.to.be.empty;
         expect(res.body.message).to.be.equals('No token provided.');
-        done();
-      })
-      .catch(done);
+      });
     });
 
-    it('GET /api/admins/total should respond 401', function(done) {
-      server.get('/api/admins/total').expect(401).expect('Content-Type', /json/).endAsync()
+    it('GET /api/admins/total should respond 401', function() {
+      return server.get('/api/admins/total').expect(401).expect('Content-Type', /json/).endAsync()
       .then((res) => {
         expect(res.body).not.to.be.empty;
         expect(res.body.message).to.be.equals('No token provided.');
-        done();
-      })
-      .catch(done);
+      });
     });
 
-    it('POST /api/admins/ should respond 401', function(done) {
-      server.post('/api/admins/').expect(401).expect('Content-Type', /json/).endAsync()
+    it('POST /api/admins/ should respond 401', function() {
+      return server.post('/api/admins/').expect(401).expect('Content-Type', /json/).endAsync()
       .then((res) => {
         expect(res.body).not.to.be.empty;
         expect(res.body.message).to.be.equals('No token provided.');
-        done();
-      })
-      .catch(done);
+      });
     });
 
-    it('PUT /api/admins/:id should respond 401', function(done) {
-      server.put(`/api/admins/${randomId}`).expect(401).expect('Content-Type', /json/).endAsync()
+    it('PUT /api/admins/:id should respond 401', function() {
+      return server.put(`/api/admins/${randomId}`).expect(401).expect('Content-Type', /json/).endAsync()
       .then((res) => {
         expect(res.body).not.to.be.empty;
         expect(res.body.message).to.be.equals('No token provided.');
-        done();
-      })
-      .catch(done);
+      });
     });
 
-    it('DELETE /api/admins/:id should respond 401', function(done) {
-      server.delete(`/api/admins/${randomId}`).expect(401).expect('Content-Type', /json/).endAsync()
+    it('DELETE /api/admins/:id should respond 401', function() {
+      return server.delete(`/api/admins/${randomId}`).expect(401).expect('Content-Type', /json/).endAsync()
       .then((res) => {
         expect(res.body).not.to.be.empty;
         expect(res.body.message).to.be.equals('No token provided.');
-        done();
-      })
-      .catch(done);
+      });
     });
 
   });
 
   describe('Authenticated', function() {
 
-    before(function(done) {
-      return performLogin(admin, 'test')
-      .then(() => {
-        done();
-      })
-      .catch(done);
+    before(() => performLogin(admin, 'test'));
+
+    it('GET /api/admins should respond 200', function() {
+      return agentUtils.withCookies(server.get('/api/admins')).expect(200).endAsync();
     });
 
-    it('GET /api/admins should respond 200', function(done) {
-      agentUtils.withCookies(server.get('/api/admins')).expect(200).end(done);
+    it('GET /api/admins/total should respond 200', function() {
+      return agentUtils.withCookies(server.get('/api/admins/total')).expect(200).endAsync();
     });
 
-    it('GET /api/admins/total should respond 200', function(done) {
-      agentUtils.withCookies(server.get('/api/admins/total')).expect(200).end(done);
+    it('GET /api/admins/:id should respond 404', function() {
+      return agentUtils.withCookies(server.get(`/api/admins/${randomId}`)).expect(404).endAsync();
     });
 
-    it('GET /api/admins/:id should respond 404', function(done) {
-      agentUtils.withCookies(server.get(`/api/admins/${randomId}`)).expect(404).end(done);
+    it('POST /api/admins/ should respond 400', function() {
+      return agentUtils.withCookies(server.post('/api/admins/')).expect(400).endAsync();
     });
 
-    it('POST /api/admins/ should respond 400', function(done) {
-      agentUtils.withCookies(server.post('/api/admins/')).expect(400).end(done);
+    it('PUT /api/admins/:id should respond 404', function() {
+      return agentUtils.withCookies(server.put(`/api/admins/${randomId}`)).expect(404).endAsync();
     });
 
-    it('PUT /api/admins/:id should respond 404', function(done) {
-      agentUtils.withCookies(server.put(`/api/admins/${randomId}`)).expect(404).end(done);
-    });
-
-    it('DELETE /api/admins/:id should respond 200', function(done) {
-      agentUtils.withCookies(server.delete(`/api/admins/${randomId}`)).expect(200).end(done);
+    it('DELETE /api/admins/:id should respond 200', function() {
+      return agentUtils.withCookies(server.delete(`/api/admins/${randomId}`)).expect(200).endAsync();
     });
 
   });
