@@ -19,6 +19,7 @@ authInterceptor              = require '../modules/auth_interceptor'
 connectionRefusedInterceptor = require '../modules/connection_refused_interceptor'
 api                          = require '../modules/api'
 errorModal                   = require '../modules/error_modal'
+confirmationModal            = require '../modules/confirmation_modal'
 
 # Services
 authService = require '../services/auth_service'
@@ -50,10 +51,13 @@ angular
   connectionRefusedInterceptor
   api
   errorModal
+  confirmationModal
 ]
+
 .controller 'LoginController',         loginController
 .controller 'AdminsListController',    adminsListController
 .controller 'AdminsProfileController', adminsProfileController
+
 .factory    'AuthService',             authService
 .directive  'navbar',                  navbar
 .directive  'compareToModel',          compareToModel

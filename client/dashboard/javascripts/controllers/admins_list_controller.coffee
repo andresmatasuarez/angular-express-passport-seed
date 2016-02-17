@@ -1,8 +1,6 @@
 'use strict'
 
-deleteAdminConfirmTemplate = require '../../partials/_delete_admin_confirm.jade'
-
-module.exports = ($scope, $q, $state, API) ->
+module.exports = ($scope, $q, $state, API, confirmationModal) ->
 
   $scope.addAdmin = ->
     $state.go 'admins.add'
@@ -20,7 +18,11 @@ module.exports = ($scope, $q, $state, API) ->
         method : (admin) -> $state.go 'admins.edit', id: admin._id
         reload : false
       remove:
-        method : (admin) -> API.admins.delete admin._id
-        dialog :
-          templateUrl : deleteAdminConfirmTemplate
-          params      : (item) -> username: item.email
+        method : (admin) ->
+          confirmationModal.open
+            title       : 'Delete admin'
+            message     : "Do you wish to delete admin #{admin.username}?"
+            closeLabel  : 'Cancel'
+            acceptLabel : 'Delete'
+          .result
+          .then -> API.admins.delete admin._id
