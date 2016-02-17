@@ -38,143 +38,113 @@ describe('/api/admins', function() {
 
     let seededAdmins;
 
-    before(function(done) {
-      App.setup()
-      .then(() => {
-        return Admin.removeAsync();
-      })
-      .then(() => {
-        return AdminSeed.seed(adminsToSeed);
-      })
+    before(function() {
+      return App.setup()
+      .then(() => Admin.removeAsync())
+      .then(() => AdminSeed.seed(adminsToSeed))
       .then(_.partialRight(TestUtils.prepareSeededObjects, AdminSettings.paths, function(item) { return item.email; }))
       .then((seeded) => {
         seededAdmins = seeded;
         return performLogin(_.first(seeded), 'test');
-      })
-      .then(() => {
-        done();
-      })
-      .catch(done);
+      });
     });
 
-    after(function(done) {
-      Admin.removeAsync()
-      .then(() => {
-        done();
-      })
-      .catch(done);
+    after(function() {
+      return Admin.removeAsync();
     });
 
-    it('/ should return admin list', function(done) {
-      agentUtils.withCookies(server.get('/api/admins'))
+    it('/ should return admin list', function() {
+      return agentUtils.withCookies(server.get('/api/admins'))
       .expect(200)
       .expect('Content-Type', /json/)
       .endAsync()
       .then((res) => {
         expect(res.body).to.be.eql(seededAdmins);
-        done();
-      })
-      .catch(done);
+      });
     });
 
-    it('?skip=4 should return admin list skipping the first four admins', function(done) {
-      agentUtils.withCookies(server.get('/api/admins?skip=4'))
+    it('?skip=4 should return admin list skipping the first four admins', function() {
+      return agentUtils.withCookies(server.get('/api/admins?skip=4'))
       .expect(200)
       .expect('Content-Type', /json/)
       .endAsync()
       .then((res) => {
         expect(res.body).to.be.eql(_.slice(seededAdmins, 4));
-        done();
-      })
-      .catch(done);
+      });
     });
 
-    it('?skip=invalid_skip_param should return admin list without skipping anything', function(done) {
-      agentUtils.withCookies(server.get('/api/admins?skip=invalid_skip_param'))
+    it('?skip=invalid_skip_param should return admin list without skipping anything', function() {
+      return agentUtils.withCookies(server.get('/api/admins?skip=invalid_skip_param'))
       .expect(200)
       .expect('Content-Type', /json/)
       .endAsync()
       .then((res) => {
         expect(res.body).to.be.eql(seededAdmins);
-        done();
-      })
-      .catch(done);
+      });
     });
 
-    it('?limit=4 should return the first four admins', function(done) {
-      agentUtils.withCookies(server.get('/api/admins?limit=4'))
+    it('?limit=4 should return the first four admins', function() {
+      return agentUtils.withCookies(server.get('/api/admins?limit=4'))
       .expect(200)
       .expect('Content-Type', /json/)
       .endAsync()
       .then((res) => {
         expect(res.body).to.be.eql(_.slice(seededAdmins, 0, 4));
-        done();
-      })
-      .catch(done);
+      });
     });
 
-    it('?limit=invalid_limit_param should return all admins', function(done) {
-      agentUtils.withCookies(server.get('/api/admins?limit=invalid_limit_param'))
+    it('?limit=invalid_limit_param should return all admins', function() {
+      return agentUtils.withCookies(server.get('/api/admins?limit=invalid_limit_param'))
       .expect(200)
       .expect('Content-Type', /json/)
       .endAsync()
       .then((res) => {
         expect(res.body).to.be.eql(seededAdmins);
-        done();
-      })
-      .catch(done);
+      });
     });
 
-    it('/:id should return admin with _id = :id', function(done) {
+    it('/:id should return admin with _id = :id', function() {
       const admin = _.first(seededAdmins);
-      agentUtils.withCookies(server.get(`/api/admins/${admin._id}`))
+      return agentUtils.withCookies(server.get(`/api/admins/${admin._id}`))
       .expect(200)
       .expect('Content-Type', /json/)
       .endAsync()
       .then((res) => {
         TestUtils.assertObjectIds(admin._id, res.body._id);
         TestUtils.assertUnorderedArrays(_.keys(res.body), AdminSettings.paths);
-        done();
-      })
-      .catch(done);
+      });
     });
 
-    it('/total should return total admin list size', function(done) {
-      agentUtils.withCookies(server.get('/api/admins/total'))
+    it('/total should return total admin list size', function() {
+      return agentUtils.withCookies(server.get('/api/admins/total'))
       .expect(200)
       .expect('Content-Type', /json/)
       .endAsync()
       .then((res) => {
         expect(res.body).to.eql({ total: seededAdmins.length });
-        done();
-      })
-      .catch(done);
+      });
     });
 
-    it('/:not_found_id should respond with 404', function(done) {
-      agentUtils.withCookies(server.get(`/api/admins/${mongoose.Types.ObjectId()}`))
+    it('/:not_found_id should respond with 404', function() {
+      return agentUtils.withCookies(server.get(`/api/admins/${mongoose.Types.ObjectId()}`))
       .expect(404)
       .expect('Content-Type', /json/)
       .endAsync()
       .then((res) => {
         expect(res.body).not.to.be.empty;
         expect(res.body.message).to.eql(AdminSettings.errors.notFound);
-        done();
-      })
-      .catch(done);
+      });
     });
 
-    it('/:invalid_id should respond with 400', function(done) {
-      agentUtils.withCookies(server.get('/api/admins/powerfromhell'))
+    it('/:invalid_id should respond with 400', function() {
+      return agentUtils.withCookies(server.get('/api/admins/powerfromhell'))
       .expect(400)
       .expect('Content-Type', /json/)
       .endAsync()
       .then((res) => {
         expect(res.body).not.to.be.empty;
         expect(res.body.message).to.eql(AdminSettings.errors.invalidId);
-        done();
-      })
-      .catch(done);
+      });
     });
 
   });
@@ -184,35 +154,21 @@ describe('/api/admins', function() {
     const adminsToSeed = 1;
     TestUtils.seedingTimeout(this, adminsToSeed, 3000);
 
-    before(function(done) {
-      App.setup()
-      .then(() => {
-        return Admin.removeAsync();
-      })
-      .then(() => {
-        return AdminSeed.seed(adminsToSeed);
-      })
+    before(function() {
+      return App.setup()
+      .then(() => Admin.removeAsync())
+      .then(() => AdminSeed.seed(adminsToSeed))
       .then(_.partialRight(TestUtils.prepareSeededObjects, AdminSettings.paths, function(item) { return item.email; }))
-      .then((seeded) => {
-        return performLogin(_.first(seeded), 'test');
-      })
-      .then(() => {
-        done();
-      })
-      .catch(done);
+      .then((seeded) => performLogin(_.first(seeded), 'test'));
     });
 
-    after(function(done) {
-      Admin.removeAsync()
-      .then(() => {
-        done();
-      })
-      .catch(done);
+    after(function() {
+      return Admin.removeAsync();
     });
 
 
-    it('/ should create a new admin', function(done) {
-      agentUtils.withCookies(server.post('/api/admins'))
+    it('/ should create a new admin', function() {
+      return agentUtils.withCookies(server.post('/api/admins'))
       .send({
         email    : 'rudimentary@peni.com',
         password : 'rudimentarypassword'
@@ -220,19 +176,15 @@ describe('/api/admins', function() {
       .expect(200)
       .expect('Content-Type', /json/)
       .endAsync()
-      .then(() => {
-        Admin.findByUsernameAsync('rudimentary@peni.com')
-        .then((admin) => {
-          expect(admin).to.be.instanceof(Object);
-          expect(admin.email).to.eql('rudimentary@peni.com');
-          done();
-        });
-      })
-      .catch(done);
+      .then(() => Admin.findByUsernameAsync('rudimentary@peni.com'))
+      .then((admin) => {
+        expect(admin).to.be.instanceof(Object);
+        expect(admin.email).to.eql('rudimentary@peni.com');
+      });
     });
 
-    it('/ should fail creation of a admin with an already-existing email', function(done) {
-      agentUtils.withCookies(server.post('/api/admins'))
+    it('/ should fail creation of a admin with an already-existing email', function() {
+      return agentUtils.withCookies(server.post('/api/admins'))
       .send({
         email: 'rudimentary@peni.com',
         password: 'rudimentarypassword'
@@ -245,13 +197,11 @@ describe('/api/admins', function() {
         error = error.replace('%s', 'email');
         error = error.replace('%s', 'rudimentary@peni.com');
         expect(res.body.message).to.be.eql(error);
-        done();
-      })
-      .catch(done);
+      });
     });
 
-    it('/ (no email) should fail', function(done) {
-      agentUtils.withCookies(server.post('/api/admins'))
+    it('/ (no email) should fail', function() {
+      return agentUtils.withCookies(server.post('/api/admins'))
       .send({
         password: 'rudimentarypassword'
       })
@@ -262,13 +212,11 @@ describe('/api/admins', function() {
         let error = AdminSettings.errors.email.required;
         error = error.replace('%s', 'email');
         expect(res.body.message).to.be.eql(error);
-        done();
-      })
-      .catch(done);
+      });
     });
 
-    it('/ (no password) should fail', function(done) {
-      agentUtils.withCookies(server.post('/api/admins'))
+    it('/ (no password) should fail', function() {
+      return agentUtils.withCookies(server.post('/api/admins'))
       .send({
         email: 'musta@paraati.com'
       })
@@ -277,9 +225,7 @@ describe('/api/admins', function() {
       .endAsync()
       .then((res) => {
         expect(res.body.message).to.be.eql(AdminSettings.errors.passwordMissing);
-        done();
-      })
-      .catch(done);
+      });
     });
 
   });
