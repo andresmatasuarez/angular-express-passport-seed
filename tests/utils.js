@@ -9,7 +9,7 @@ const DEFAULT_SEEDING_TIMEOUT_PER_DOCUMENT = 1000;
 exports.prepareSeededObjects = function(seeded, paths, sortBy) {
   let op = _(seeded)
   .map(function(item) {
-    item = _.pick(item, paths);
+    item = _.pick(item.toJSON(), paths);
     item._id = item._id.toString();
     return item;
   });
