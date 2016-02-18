@@ -71,7 +71,6 @@
     "angular-mocks": "^1.4.7",
     "assets-webpack-plugin": "^2.2.3",
     "chai": "^1.10.0",
-    "chance": "^0.6.1",
     "coffee-loader": "^0.7.2",
     "css-loader": "^0.15.5",
     "errorhandler": "^1.2.2",
