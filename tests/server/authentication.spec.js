@@ -95,7 +95,7 @@ describe('Authentication', function() {
     });
 
     it('POST /api/auth/logout should respond 204', function() {
-      return server.post('/api/auth/logout').expect(204).end(done);
+      return server.post('/api/auth/logout').expect(204).endAsync();
     });
 
     it('GET /api/auth/me should respond 401', function() {
