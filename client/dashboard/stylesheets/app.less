@@ -1,0 +1,51 @@
+@import '~bootstrap/less/bootstrap.less';
+@import '~font-awesome/less/font-awesome.less';
+
+@font-stack: Helvetica, sans-serif;
+
+html {
+  height: 100%;
+
+  body {
+    height: 100%;
+
+    .is-login {
+      min-height: 100%;
+      background-color: #eee;
+    }
+  }
+
+}
+
+// Loading bar override
+#loading-bar .bar { background: crimson; }
+
+// Utils
+.btn-margin-left { margin-left: 3px; }
+.btn-margin-right { margin-right: 3px; }
+
+// ngTable override
+.ng-table th { text-align: left; }
+
+.admins-list {
+  position: relative;
+  .loadingTable {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 100px;
+    padding-top: 100px;
+    background: rgba(255,255,255,0.5);
+    color: #888;
+  }
+}
+
+// Login page
+.form-signin { max-width: 330px; padding: 15px; margin: 40px auto 0 auto; }
+
+// Breadcrumbs
+.well.breadcrumbs {
+  padding: 8px 15px;
+  .breadcrumb { padding: 0; margin: 0; }
+}

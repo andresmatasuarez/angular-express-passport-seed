@@ -7,14 +7,15 @@ server/config/ssl/
 *.pem
 *.crt
 
-# Grunt intermediate storage
-# (http://gruntjs.com/creating-plugins#storing-task-files)
-.tmp
+# Output directory for production builds
+dist
+
+# Output directory for development builds
+bundle
 
 node_modules
-bower_components
-dist
 dump.rdb
 .sass-cache
 *.heapsnapshot
 *.log
+

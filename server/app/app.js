@@ -1,27 +1,27 @@
 'use strict';
 
-var _         = require('lodash');
-var config    = require('config');
-var fs        = require('fs');
-var https     = require('https');
-var express   = require('express');
-var db        = require('../utils/db');
-var AppConfig = require('./app_config');
-var AppErrors = require('./app_errors');
-var AppRoutes = require('./app_routes');
+const _          = require('lodash');
+const config     = require('config');
+const fs         = require('fs');
+const https      = require('https');
+const express    = require('express');
+const Mongootils = require('mongootils');
+const appConfig  = require('./app_config');
+const appErrors  = require('./app_errors');
+const appRoutes  = require('./app_routes');
 
-var serverHttp = express(); // HTTP server object
-var serverHttps;            // HTTPS server object
-var setupPromise;           // Setup singleton promise
+const serverHttp = express(); // HTTP server object
+let serverHttps;              // HTTPS server object
+let setupPromise;             // Setup singleton promise
 
-// SSL certificate
-if (config.env === config.environments.development || config.env === config.environments.test){
-  var sslOptions = {
+// SSL support
+if (config.server && config.server.ssl && config.server.ssl.enable) {
+  const sslOptions = {
     key  : fs.readFileSync(config.server.ssl.key),
     cert : fs.readFileSync(config.server.ssl.certificate)
   };
 
-  if (!_.isEmpty(config.server.ssl.passphrase)){
+  if (!_.isEmpty(config.server.ssl.passphrase)) {
     sslOptions.passphrase = config.server.ssl.passphrase;
   }
 
@@ -29,13 +29,14 @@ if (config.env === config.environments.development || config.env === config.envi
 }
 
 // Promise that is resolved when app has been successfully setup and rejected otherwise.
-function _setup(){
-  if (!setupPromise){
-    setupPromise = db.connect()
-    .then(function(){
-      AppConfig.applyTo(serverHttp);
-      AppRoutes.applyTo(serverHttp);
-      AppErrors.applyTo(serverHttp);
+function setup() {
+  if (!setupPromise) {
+    setupPromise = new Mongootils(config.mongo.uri, config.mongo.options)
+    .connect()
+    .then(() => {
+      appConfig(serverHttp);
+      appRoutes(serverHttp);
+      appErrors(serverHttp);
     });
   }
 
@@ -45,7 +46,7 @@ function _setup(){
 module.exports = {
   server: {
     http  : serverHttp,
-    https : serverHttps,
+    https : serverHttps
   },
-  setup: _setup
+  setup
 };

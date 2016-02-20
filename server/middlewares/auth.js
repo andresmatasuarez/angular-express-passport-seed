@@ -1,86 +1,94 @@
 'use strict';
 
-var config          = require('config');
-var passport        = require('passport');
-var Response        = require('../utils/response');
-var JWTRedisService = require('../services/jwt_redis_service');
+const config          = require('config');
+const passport        = require('passport');
+const Response        = require('simple-response');
+const JWTRedisService = require('../services/jwt_redis_service');
 
-var jwtRedisService = new JWTRedisService({
+const jwtRedisService = new JWTRedisService({
   host       : config.redis.host,
   port       : config.redis.port,
   pass       : config.redis.pass,
   issuer     : config.server.auth.issues,
-  secret     : config.server.auth.token_secret,
+  secret     : config.server.auth.tokenSecret,
   expiration : config.server.auth.expiration
 });
 
 module.exports = {
 
-  ensureAuthenticated: function(req, res, next){
-    return jwtRedisService.verify(req.token)
-    .spread(function(jti, user){
-      req.session = {
-        jti  : jti,
-        user : JSON.parse(user)
-      };
-      next();
-    })
-    .catch(JWTRedisService.NoTokenProvidedError, JWTRedisService.UnauthorizedAccessError, Response.Unauthorized(res))
-    .catch(Response.InternalServerError(res));
+  ensureAuthenticated() {
+    return (req, res, next) => {
+      const token = req.cookies[config.server.auth.cookieName];
+      return jwtRedisService.verify(token)
+      .spread((jti, user) => {
+        req.auth = {
+          jti,
+          user: JSON.parse(user)
+        };
+        next();
+      })
+      .catch(JWTRedisService.NoTokenProvidedError, JWTRedisService.UnauthorizedAccessError, Response.Unauthorized(res))
+      .catch(Response.InternalServerError(res));
 
+    };
   },
 
-  authenticate: function(req, res, next){
-    passport.authenticate('local', function(err, user, info){
-      if (err){
-        return Response.InternalServerError(res)(err);
-      }
-
-      if (!user){
-        return Response.Unauthorized(res)(info);
-      }
-
-      req.login(user, { session: false }, function(err){
-        if (err){
+  authenticate() {
+    return (req, res, next) => {
+      passport.authenticate('local', (err, user, info) => {
+        if (err) {
           return Response.InternalServerError(res)(err);
         }
 
-        next();
+        if (!user) {
+          return Response.Unauthorized(res)(info);
+        }
 
-      });
+        req.login(user, { session: false }, err2 => {
+          if (err2) {
+            return Response.InternalServerError(res)(err2);
+          }
 
-    })(req, res, next);
+          next();
+
+        });
+
+      })(req, res, next);
+    };
   },
 
-  login: function(req, res, next){
-    var user = req.user.toJSON();
-    return jwtRedisService.sign(user)
-    .then(function(token){
-      return {
-        message : 'Authentication successful!',
-        token   : token,
-        user    : user
-      };
-    })
-    .then(Response.Ok(res))
-    .catch(Response.InternalServerError(res));
-
+  login() {
+    return (req, res) => {
+      const user = req.user.toJSON();
+      return jwtRedisService.sign(user)
+      .then((token) => {
+        res.cookie(config.server.auth.cookieName, token, {
+          httpOnly : true,
+          secure   : true,
+          path     : '/',
+          maxAge   : 1000 * 60 * 24 // 24 hours
+        });
+        Response.Ok(res)('Authentication successful.');
+      })
+      .catch(Response.InternalServerError(res));
+    };
   },
 
-  logout: function(req, res, next){
-    if (!req.token){
-      return Response.NoContent(res)();
-    }
+  logout() {
+    return (req, res) => {
+      const token = req.cookies[config.server.auth.cookieName];
+      if (!token) {
+        return Response.NoContent(res)();
+      }
 
-    return jwtRedisService.expire(req.token)
-    .then(function(reply){
-      delete req.token;
-      delete req.session;
-      delete req.user;
-    })
-    .then(Response.NoContent(res))
-    .catch(Response.InternalServerError(res));
+      return jwtRedisService.expire(token)
+      .then(() => {
+        res.clearCookie(config.server.auth.cookieName);
+        Response.Ok(res)('Sucessfully signed out.');
+      })
+      .catch(Response.InternalServerError(res));
 
+    };
   }
 
 };

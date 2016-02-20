@@ -1,24 +1,29 @@
 'use strict';
 
-require('../server/run');
+require('../server/bin/context');
 
-var _        = require('lodash');
-var UserSeed = require('../seeds/user');
-var Log      = require('../server/utils/log');
-var DB       = require('../server/utils/db');
+const _          = require('lodash');
+const config     = require('config');
+const Mongootils = require('mongootils');
+const AdminSeed  = require('../seeds/admin');
+const Log        = require('../server/utils/log');
 
-DB.connect()
-.thenReturn(UserSeed.seed(process.argv[2]))
-.then(function(result){
-  Log.info('Finished seeding. Seeded users:');
+const adminsToSeed = process.argv[2] || 3;
+
+new Mongootils(config.mongo.uri, config.mongo.options)
+.connect()
+.then(() => AdminSeed.seed(adminsToSeed))
+.then((result) => {
+  Log.info('Finished seeding. Seeded admins:');
   _(result)
-  .forEach(function(user){
-    Log.info('  User { _id: ' + user._id + ', Email: ' + user.email + ' }');
-  });
+  .forEach((admin) => {
+    Log.info(`  Admin { _id: ${admin._id}, Email: ${admin.email} }`);
+  })
+  .value();
 
   process.exit(0);
 })
-.catch(function(err){
+.catch((err) => {
   console.log(JSON.stringify(err));
   process.exit(1);
 });

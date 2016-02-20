@@ -2,32 +2,28 @@ Seed AngularJS | ExpressJS | PassportJS
 =============================
 
 Some features included in this seed:
-* `AngularJS` Publicly-accessible web site.
+* `AngularJS` public web site.
 * `AngularJS` Admin dashboard.
-* `ExpressJS` API with cookie-based authentication.
+* `ExpressJS` API with JWT-based authentication.
 * All authentication over `HTTPS`.
 * `MongoDB` Persistent user model.
 * `CoffeeScript`, `Jade` and `LESS` on client.
 * `Bootstrap` base styles.
-* `Grunt` task runner
-* `Mocha` for server tests.
-* `Karma` for client tests.
+* Server and client tests using `Mocha` and `Karma`.
 
 Some ideas taken from [DaftMonk/generator-angular-fullstack](https://github.com/DaftMonk/generator-angular-fullstack)
 
 # Prerequisites
 * [MongoDB](http://www.mongodb.org/)
+* [Redis](http://http://redis.io/)
 * [NVM](https://github.com/creationix/nvm)
 
-## Pre-installation
-1. `cd` into project folder
-* `nvm install`
-* `sudo npm install -g grunt-cli bower`
-
 ## Installation
+### Pre
+* `nvm install` within project root directory
+
 ### Dependencies
 * `npm install`
-* `bower install`
 
 ### SSL certificate for local HTTPS server
 1. Create default certificate directory:<br />
@@ -56,18 +52,22 @@ Create a local config file under `server/config` and add the `ssl.passphrase` en
 Don't forget to add the `ssl.passphrase` entry with the passphrase you set.
 
 * As an alternative, you can also set the SSL_PASSPHRASE environment variable when running the app:<br />
-`SSL_PASSPHRASE=%PASSPHRASE% grunt serve`
+`SSL_PASSPHRASE=%PASSPHRASE% npm start`
 
 ## Development
 * Consistent coding style is ensured using:
 > Don't write a single line of code without any of this tools installed and running inside your editor.
   1. [EditorConfig](http://editorconfig.org/). Supported editors [plugins](http://editorconfig.org/#download)
-  2. [JSHint](http://jshint.com/). Supported editors [plugins](http://jshint.com/install/)
+  2. [ESLint](http://eslint.org/).
 
-* Start web server: `grunt serve`
+* Start web server: `npm start`
+* Seed database: `npm run seed`
 
 ## Production environments
-* Build project: `grunt build`
+* Build project: `npm run dist`
 
 # Test
-`grunt test:[ server | bo ]`
+`npm test`
+
+## Linting
+`npm run linter`

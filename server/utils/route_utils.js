@@ -2,30 +2,41 @@
 
 'use strict';
 
-var _         = require('lodash');
-var mongoose  = require('mongoose');
-var url       = require('url');
-var Response  = require('./response');
+const _         = require('lodash');
+const util      = require('util');
+const mongoose  = require('mongoose');
+const Bluebird  = require('bluebird');
 
-var _objectAccessor = function(object, accessor){
-  var keys = accessor.split('.');
-  var result = object;
+function InvalidIdError(message, extra) {
+  Error.captureStackTrace(this, this.constructor);
+  this.name = this.constructor.name;
+  this.message = message;
+  this.extra = extra;
+}
 
-  while (keys.length > 0) {
-    var key = keys.shift();
-    if (typeof result[key] !== 'undefined') {
-      result = result[key];
-    }
-    else {
-      result = null;
-      break;
-    }
-  }
+function DocumentNotFoundError(message, extra) {
+  Error.captureStackTrace(this, this.constructor);
+  this.name = this.constructor.name;
+  this.message = message;
+  this.extra = extra;
+}
 
-  return result;
-};
+function ForbiddenError(message, extra) {
+  Error.captureStackTrace(this, this.constructor);
+  this.name = this.constructor.name;
+  this.message = message;
+  this.extra = extra;
+}
+
+util.inherits(InvalidIdError, Error);
+util.inherits(DocumentNotFoundError, Error);
+util.inherits(ForbiddenError, Error);
 
 module.exports = {
+
+  InvalidIdError,
+  DocumentNotFoundError,
+  ForbiddenError,
 
   /**
    * validateId
@@ -36,17 +47,17 @@ module.exports = {
    * @param {function} [options.callback(req, res, next, error)=Sends a Bad Request response with error message] - Callback that is called in case of invalid ID.
    * @returns If ID is invalid, options.callback is called with error message. Else, control is passed to the next middleware.
    */
-  validateId: function(options){
+  validateId(options) {
     options = _.merge({
       param    : 'id',
       error    : 'Invalid ID',
-      callback : function(req, res, next, error){
-        Response.BadRequest(res)(error);
+      callback(req, res, next, error) {
+        throw new InvalidIdError(error);
       }
     }, options);
 
-    return function(req, res, next){
-      if (!mongoose.Types.ObjectId.isValid(req.params[options.param])){
+    return function(req, res, next) {
+      if (!mongoose.Types.ObjectId.isValid(req.params[options.param])) {
         return options.callback(req, res, next, options.error);
       }
       next();
@@ -54,38 +65,84 @@ module.exports = {
   },
 
   /**
-   * fetchByIdAndPopulateRequest
-   * @desc Fetchs a MongoDB Document by its ID and populate the request object with it.
-   * @param {string} modelName - The name of the model to query.
-   * @param {string} populateTo - The name of the field to populate in the request object.
+   * populateDocument
+   * @desc Fetchs a MongoDB Document by a specified property ('id' from request params by default) and populate the request object with it.
    * @param {object} options - Options.
-   * @param {string} [options.param='id'] The name of the request param that holds the ID.
-   * @param {string} [options.fields=null] Document fields to select.
-   * @param {string} [options.error='Resource not found'] Error message to display in case of finding no document.
-   * @param {function} [options.callback(req, res, next, error)=Sends a Not Found response with error message] - Callback that is called in case of finding no document.
-   * @returns If no document is found, options.callback is called with error message. Else, control is passed to the next middleware.
+   * @param {string|object} options.model - The Mongoose model to query. If its a string, then the actual model is obtained from the default connection using 'mongoose.model(options.model)'. This param is taking into account if and only if 'options.method' is a string.
+   * @param {string} [options.populateTo='document'] The name of the property to populate in the request object. Supports dot notation.
+   * @param {string|function|object} [options.param='params.id:_id'] The criteria for querying the model.
+   *   If string, it is parsed as 'src:dest', where 'src' is the property from the request object (dot notation supported) to extract the param and send it as 'dest' in side the query object.
+   *   If function, it gets invoked with the request object as argument and returns an object describing the criteria object for querying.
+   *   If object, it will be used as the criteria object for querying.
+   * @param {string|function} [options.method='findOneAsync'] Query function.
+   *   If string, it is assumed to be a property of the model.
+   *   If function, it is invoked with the request object as argument.
+   * @param {string} [options.projection=null] Query projection.
+   * @param {string} [options.error='Resource not found'] Error message to throw in case of document not found.
+   * @param {function} [options.onDocumentNotFound(req, res, next, options.error)=throws DocumentNotFoundError] - Callback that is called in case of document not found.
+   * @returns If no document is found, options.onDocumentNotFound is called with 'options.error'. Else, control is passed to the next middleware.
    */
-  fetchByIdAndPopulateRequest: function(modelName, populateTo, options){
+  populateDocument(options) {
     options = _.merge({
-      param    : 'id',
-      fields   : null,
-      error    : 'Resource not found',
-      callback : function(req, res, next, error){
-        Response.NotFound(res)(error);
+      model      : undefined,
+      populateTo : 'document',
+      param      : 'params.id:_id',
+      method     : 'findOneAsync',
+      projection : null,
+      error      : 'Resource not found',
+      onDocumentNotFound(req, res, next, error) {
+        throw new DocumentNotFoundError(error);
       }
     }, options);
 
-    return function(req, res, next){
-      mongoose.model(modelName)
-      .findByIdAsync(req.params[options.param], options.fields)
-      .then(function(doc){
-        if (_.isEmpty(doc)){
-          return options.callback(req, res, next, options.error);
+    let model;
+    if (_.isString(options.model)) {
+      model = mongoose.model(options.model);
+    } else {
+      model = options.model;
+    }
+
+    return function(req, res, next) {
+
+      Bluebird.try(() => {
+        function buildCriteria() {
+          let criteria;
+          if (_.isString(options.param)) {
+            const pairs = options.param.split(',');
+
+            criteria = {};
+            _.forEach(pairs, pair => {
+              const paramPath = pair.split(':')[0];
+              const propertyName = pair.split(':')[1];
+              criteria[propertyName] = _.get(req, paramPath);
+            });
+          } else if (_.isFunction(options.param)) {
+            criteria = options.param(req);
+          } else {
+            criteria = options.param;
+          }
+          return criteria;
         }
-        req[populateTo] = doc;
+
+        function buildMethod() {
+          if (_.isString(options.method)) {
+            return model[options.method].bind(model);
+          } else {
+            return options.method(req);
+          }
+        }
+
+        return buildMethod()(buildCriteria(), options.projection);
+      })
+      .then(function(doc) {
+        if (_.isEmpty(doc)) {
+          return options.onDocumentNotFound(req, res, next, options.error);
+        }
+        _.set(req, options.populateTo, doc);
         next();
       })
-      .catch(Response.InternalServerError(res));
+      .catch(next);
+
     };
   },
 
@@ -95,9 +152,9 @@ module.exports = {
    * @param {function} callback - Callback to execute on processed errors.
    * @returns Function that takes an error as argument and executes callback with processed errors.
    */
-  validationErrorCleaner: function(callback){
-    return function(err){
-      return callback(_.map(_.keys(err.errors), function(field){
+  validationErrorCleaner(callback) {
+    return function(err) {
+      return callback(_.map(_.keys(err.errors), function(field) {
         return err.errors[field].message;
       }));
     };
@@ -112,13 +169,13 @@ module.exports = {
    * @param {function} [options.property='invalid'] - Property in error messages object that points to the custom message.
    * @returns Function that takes an error as argument and executes callback with processed CastError.
    */
-  castErrorMapper: function(errors, callback, options){
+  castErrorMapper(errors, callback, options) {
     options = _.merge({
       property: 'invalid'
     }, options);
 
-    return function(err){
-      return callback(_objectAccessor(errors, err.path)[options.property]);
+    return function(err) {
+      return callback(_.get(errors, err.path)[options.property]);
     };
   },
 
@@ -128,23 +185,41 @@ module.exports = {
    * @param {object} options - Option.
    * @param {function} [options.port=443] - SSL port.
    * @returns Function that takes an error as argument and executes callback with processed CastError.
-   * @returns If request object is not secure, if method is GET then redirects to secured URL, else respond with 403. Else, control is passed to the next middleware.
+   * @returns If request is secure, passes control to the next middleware in chain. Else, if method is GET redirects to secured URL, otherwise throws a ForbiddenError.
    */
-  enforceSSL: function(options){
+  enforceSSL(options) {
     options = _.merge({
       port: 443
     }, options);
 
-    return function(req, res, next){
-      if (req.secure){
+    return function(req, res, next) {
+      if (req.secure) {
         return next();
       }
 
-      if (req.method === 'GET'){
-        return res.redirect(301, 'https://' + req.hostname + ':' + options.port + req.originalUrl);
+      if (req.method === 'GET') {
+        return res.redirect(301, `https://${req.hostname}:${options.port}${req.originalUrl}`);
       }
 
-      Response.Forbidden(res)('SSL Required.');
+      throw new ForbiddenError('SSL Required.');
+
+    };
+  },
+
+  /**
+   * handleError
+   * @desc Helper to write an error route handler for each error, instead of having to write only one with complex ifs and switches.
+   * @param {error} type - Error class to catch
+   * @param {function} cb - Error callback (err, req, res, next) to handle caught exception
+   * @returns Express error route handler function, with signature (err, req, res, next)
+   */
+  handleError(type, cb) {
+    return (err, req, res, next) => {
+      if (err.constructor.name === type.name) {
+        return cb(err, req, res, next);
+      } else {
+        return next(err);
+      }
     };
   }
 

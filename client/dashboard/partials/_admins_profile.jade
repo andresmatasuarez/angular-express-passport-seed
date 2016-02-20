@@ -1,0 +1,60 @@
+.page-header
+  h1 {{ editing ? 'Edit' : 'New' }} admin
+
+form.form-horizontal(name="form" role="form" novalidate)
+
+  .init(ng-init="extendForm(form)")
+
+  .form-group(ng-if="editing")
+    .col-md-2.text-right
+      label.control-label Email address *
+    .col-md-4
+      p.form-control-static {{ model.email }}
+
+  .form-group(ng-if="!editing" ng-class="{ 'has-error': form.hasError('email') }")
+    .col-md-2.text-right
+      label.control-label(for="email") Email address *
+    .col-md-4
+      input.form-control(type="email" name="email" ng-model="model.email" ng-model-options="{ updateOn: 'default blur', debounce: { default: 1000, blur: 0 } }" required)
+    .col-md-6
+      .help-block(ng-show="form.hasError('email')" ng-messages="form.email.$error")
+        i.fa.fa-warning &nbsp;
+        span(ng-message="required") Email cannot be empty.
+        span(ng-message="email") Email is not a valid email address.
+
+  h4.vertical-blank &nbsp;
+  h4 {{ editing ? 'Change password' : 'Password settings' }}
+  hr
+
+  .form-group(ng-class="{ 'has-error': form.hasError('password') }")
+    .col-md-2.text-right
+      label.control-label(for="password") {{ editing ? 'Current password' : 'Password *' }}
+    .col-md-4
+      input.form-control(type="password" name="password" ng-model="model.password" ng-model-options="{ updateOn: 'default blur', debounce: { default: 1000, blur: 0 } }" ng-required="!editing")
+    .help-block(ng-show="form.hasError('password')" ng-messages="form.password.$error")
+      i.fa.fa-warning &nbsp;
+      span(ng-message="required") Password cannot be empty.
+
+  .form-group(ng-if="editing" ng-class="{ 'has-error': form.hasError('newPassword') }")
+    .col-md-2.text-right
+      label.control-label(for="newPassword") New password
+    .col-md-4
+      input.form-control(type="password" name="newPassword" ng-model="model.newPassword" ng-model-options="{ updateOn: 'default blur', debounce: { default: 1000, blur: 0 } }")
+
+  .form-group(ng-class="{ 'has-error': form.hasError('confirmPassword') }")
+    .col-md-2.text-right
+      label.control-label(for="confirmPassword") Confirm password {{ editing ? '' : '*' }}
+    .col-md-4
+      input.form-control(type="password" name="confirmPassword" ng-model="model.confirmPassword" ng-model-options="{ updateOn: 'default blur', debounce: { default: 1000, blur: 0 } }" compare-to-model="editing ? model.newPassword : model.password")
+    .col-md-6
+      .help-block(ng-show="form.hasError('confirmPassword')" ng-messages="form.confirmPassword.$error")
+        i.fa.fa-warning &nbsp;
+        span(ng-message="compareToModel") Passwords do not match.
+
+  ul.col-md-offset-2.text-danger(ng-show="responseErrors")
+    li(ng-repeat="error in responseErrors track by $index") {{ error }}
+
+  .row
+    .col-md-4.col-md-offset-2
+      button.btn.btn-primary(type="submit" ng-click="save()" ng-disabled="!submittable()") Save
+      button.btn.btn-default.btn-margin-left(type="button" ng-click="cancel()") Cancel

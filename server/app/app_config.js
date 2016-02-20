@@ -1,40 +1,32 @@
 'use strict';
 
-var path        = require('path');
-var config      = require('config');
-var passport    = require('passport');
-var morgan      = require('morgan');
-var compression = require('compression');
-var bodyparser  = require('body-parser');
-var favicon     = require('serve-favicon');
-var Middlewares = require('../middlewares');
-var User        = require('../model/user');
+const config       = require('config');
+const cookieParser = require('cookie-parser');
+const passport     = require('passport');
+const morgan       = require('morgan');
+const compression  = require('compression');
+const bodyparser   = require('body-parser');
+const Middlewares  = require('../middlewares');
+const Admin        = require('../model/admin');
 
-exports.applyTo = function(app){
+module.exports = function(app) {
 
-  passport.use(User.createStrategy());
+  passport.use(Admin.createStrategy());
 
   app.enable('trust proxy');
 
-  if(config.env !== config.environments.test){
-    app.use(morgan('dev'));
-  }
+  app.set('view engine', 'jade');
+  app.set("views", config.app.views.path);
 
-  if (config.app.favicon){
-    app.use(favicon(path.join(__dirname, config.app.favicon)));
-  } else {
-    app.use('favicon.ico', function(req, res){
-      res.status(200);
-      res.type('image/x-icon');
-    });
+  if (config.env !== config.environments.test) {
+    app.use(morgan('dev'));
   }
 
   app.use(compression());
   app.use(bodyparser.urlencoded({ extended: true }));
   app.use(bodyparser.json());
-
+  app.use(cookieParser());
   app.use(passport.initialize());
-
   app.use(Middlewares.TokenExtractor);
 
 };

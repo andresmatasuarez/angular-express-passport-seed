@@ -1,17 +1,15 @@
 'use strict';
 
-var jit          = require('jit-grunt');
-var time         = require('time-grunt');
-var Environments = require('./server/config/environments');
+const jit          = require('jit-grunt');
+const time         = require('time-grunt');
+const Environments = require('./server/config/environments');
 
-module.exports = function(grunt){
+module.exports = function(grunt) {
 
   // Load grunt tasks automatically when needed.
   jit(grunt, {
-    injector      : 'grunt-asset-injector',
-    useminPrepare : 'grunt-usemin',
-    express       : 'grunt-express-server',
-    ngtemplates   : 'grunt-angular-templates'
+    express : 'grunt-express-server',
+    webpack : 'grunt-webpack-without-server'
   });
 
   // Time how long tasks take. Can help when optimizing build times.
@@ -21,27 +19,17 @@ module.exports = function(grunt){
   grunt.initConfig({
 
     paths: {
-      bower_components: 'bower_components',
-      client: {
-        root   : 'client',
-        assets : 'client/assets'
-      },
-      bo: {
-        root   : 'backoffice',
-        assets : 'backoffice/assets'
-      },
-      server: {
-        root   : 'server'
+      dev: {
+        assets: 'client',
+        server: 'server'
       },
       dist: {
         root   : 'dist',
-        client : 'dist/client',
-        bo     : 'dist/backoffice',
+        assets : 'dist/assets',
         server : 'dist/server'
       },
       tests: {
         client : 'tests/client',
-        bo     : 'tests/backoffice',
         server : 'tests/server'
       }
     },
@@ -53,23 +41,20 @@ module.exports = function(grunt){
 
   });
 
+  // Load tasks
+  grunt.loadTasks('grunt');
+
   // Used for delaying livereload until after server has restarted
-  grunt.registerTask('wait', function () {
+  grunt.registerTask('wait', function() {
     grunt.log.ok('Waiting for server reload...');
 
-    var done = this.async();
+    const done = this.async();
 
-    setTimeout(function () {
+    setTimeout(() => {
       grunt.log.writeln('Done waiting!');
       done();
     }, 1500);
   });
-
-  grunt.registerTask('express-keepalive', 'Keep grunt running', function(){
-    this.async();
-  });
-
-  grunt.loadTasks('grunt');
 
   grunt.registerTask('build', [ 'build:dist' ]);
   grunt.registerTask('serve', [ 'serve:dev' ]);

@@ -1,0 +1,21 @@
+nav.navbar.navbar-inverse.navbar-static-top(role="navigation")
+  .container
+    .navbar-header
+      a.navbar-brand(href="#" ui-sref="home") Dashboard
+
+    ul.nav.navbar-nav
+      li(ui-sref-active="active" ui-sref="admins.list")
+        a(href="") Admins
+
+    ul.nav.navbar-nav.pull-right
+
+      li(ng-if="_.isEmpty($storage.admin)" ui-sref-active="active" ui-sref="login")
+        a(href="") Login
+
+      p.navbar-text(ng-if="!_.isEmpty($storage.admin)")
+        | Logged as
+        | #{' '}
+        a(href="" ng-click="inspect()") {{ $storage.admin.email }}
+
+      li(ng-if="!_.isEmpty($storage.admin)")
+        a(href="" ng-click="logout()") Logout

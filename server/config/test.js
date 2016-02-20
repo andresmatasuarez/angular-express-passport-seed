@@ -1,12 +1,12 @@
 'use strict';
 
-var Environments = require('./environments');
+const Environments = require('./environments');
 
 module.exports = {
   env: Environments.test,
   server: {
     auth: {
-      token_secret: 'mercyfulfate'
+      tokenSecret: 'mercyfulfate'
     }
   },
   mongo: {

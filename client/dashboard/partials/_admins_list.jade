@@ -1,0 +1,25 @@
+.page-header
+  button.btn.btn-default.pull-right(ng-click="addAdmin()")
+    i.glyphicon.glyphicon-plus
+    | #{' '}
+    | New admin
+  h1 Admins
+
+ng-table-async.admins-list(options="tableOptions")
+  nta-column(header="'_id'"   content="item._id")
+  nta-column(header="'Email'" content="item.email")
+  nta-column(header="'Actions'")
+    nta-action(
+      label  = "View/Edit"
+      action = "inspect"
+      size   = "xs"
+      icon   = "glyphicon glyphicon-eye-open"
+    )
+    | &nbsp;
+    nta-action(
+      label  = "Remove"
+      action = "remove"
+      size   = "xs"
+      icon   = "glyphicon glyphicon-trash"
+      style  = "danger"
+    )

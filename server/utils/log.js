@@ -1,7 +1,7 @@
 'use strict';
 
-var config  = require('config');
-var winston = require('winston');
+const config  = require('config');
+const winston = require('winston');
 
 module.exports = new (winston.Logger)({
   transports: [

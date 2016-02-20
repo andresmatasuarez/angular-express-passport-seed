@@ -1,36 +1,37 @@
+/* eslint no-unused-vars: [2, { "args": "none" }] */
 'use strict';
 
-var config   = require('config');
-var Response = require('../utils/response');
+const config   = require('config');
+const Response = require('simple-response');
 
-exports.applyTo = function(app){
+module.exports = function(app) {
 
   // Since this is the last non-error-handling middleware,
   // we assume 404, as nothing else responded.
-  app.use(function(req, res, next){
-    var err = new Error();
+  app.use(function(req, res, next) {
+    const err = new Error();
     err.status = 404;
     next(err);
   });
 
-  if(config.env === config.environments.development){
+  if (config.env === config.environments.development) {
 
     app.use(require('errorhandler')());
 
   } else {
 
-    app.use(function(err, req, res, next){
+    app.use(function(err, req, res, next) {
       res.status(err.status || 500);
 
-      var message = err.status === 404 ? 'Page not found' : 'Internal server error';
+      const message = err.status === 404 ? 'Page not found' : 'Internal server error';
 
       // respond with HTML page
-      if (req.accepts('html')){
+      if (req.accepts('html')) {
         // TODO res.render con jade
-        return res.type('html').send('<div style="color: red;">' + message + '</div>');
+        return res.type('html').send(`<div style="color: red;">${message}</div>`);
 
       // respond with json
-      } else if (req.accepts('json')){
+      } else if (req.accepts('json')) {
         return Response.NotFound(res)(message);
 
       // default: respond with plain text

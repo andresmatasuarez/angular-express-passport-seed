@@ -1,52 +1,37 @@
 'use strict';
 
-require('../../server/run');
+require('../../server/bin/context');
 
-var request     = require('supertest');
-var mongoose    = require('mongoose');
-var App         = require('../../server/app');
+const request     = require('supertest');
+const mongoose    = require('mongoose');
+const App         = require('../../server/app');
 
-var server  = request(App.server.http);
+const server  = request(App.server.http);
 
-describe('/api API must be served over SSL', function(){
+describe('/api API must be served over SSL', function() {
 
-  it('GET /users should respond with 301 Redirect', function(done){
-    return server
-    .get('/api/users')
-    .expect(301)
-    .end(done);
+  it('GET /admins should respond with 301 Redirect', function() {
+    return server.get('/api/admins').expect(301).endAsync();
   });
 
-  it('GET /users/:id should respond with 301 Redirect', function(done){
-    return server
-    .get('/api/users/' + mongoose.Types.ObjectId())
-    .expect(301)
-    .end(done);
+  it('GET /admins/:id should respond with 301 Redirect', function() {
+    return server.get(`/api/admins/${mongoose.Types.ObjectId()}`).expect(301).endAsync();
   });
 
-  it('GET /users/total should respond with 301 Redirect', function(done){
-    return server
-    .get('/api/users/total')
-    .expect(301)
-    .end(done);
+  it('GET /admins/total should respond with 301 Redirect', function() {
+    return server.get('/api/admins/total').expect(301).endAsync();
   });
 
-  it('POST /users should respond with 301 Redirect', function(done){
-    return server
-    .post('/api/users')
-    .expect(403)
-    .end(done);
+  it('POST /admins should respond with 301 Redirect', function() {
+    return server.post('/api/admins').expect(403).endAsync();
   });
 
 });
 
-describe('/dashboard Dashboard must be served over SSL', function(){
+describe('/dashboard Dashboard must be served over SSL', function() {
 
-  it('should respond with 301 Redirect', function(done){
-    return server
-    .get('/dashboard')
-    .expect(301)
-    .end(done);
+  it('should respond with 301 Redirect', function() {
+    return server.get('/dashboard').expect(301).endAsync();
   });
 
 });
