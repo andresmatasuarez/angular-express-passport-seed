@@ -1,25 +1,27 @@
-form.form-signin(name="form" role="form" novalidate)
+.container
+  .row
+    form.form-signin(name="form" role="form" novalidate)
 
-  .init(ng-init="extendForm(form)")
+      .init(ng-init="extendForm(form)")
 
-  h2.form-signin-header Please sign in
+      h2.form-signin-header Please sign in
 
-  .form-group(ng-class="{ 'has-error': form.hasError('email') }")
-    label.sr-only.control-label(for="email") Email *
-    input.input-lg.form-control(type="email" name="email" placeholder="Email address" ng-model="model.email" ng-model-options="{ updateOn: 'blur' }" required)
-    p.help-block(ng-show="form.hasError('email')" ng-messages="form.email.$error")
-      i.fa.fa-warning &nbsp;
-      span(ng-message="required") Email cannot be empty.
-      span(ng-message="email") Email is not a valid email address.
+      .form-group(ng-class="{ 'has-error': form.hasError('email') }")
+        label.sr-only.control-label(for="email") Email *
+        input.input-lg.form-control(type="email" name="email" placeholder="Email address" ng-model="model.email" ng-model-options="{ updateOn: 'blur' }" required)
+        p.help-block(ng-show="form.hasError('email')" ng-messages="form.email.$error")
+          i.fa.fa-warning &nbsp;
+          span(ng-message="required") Email cannot be empty.
+          span(ng-message="email") Email is not a valid email address.
 
-  .form-group(ng-class="{ 'has-error': form.hasError('password') }")
-    label.sr-only.control-label(for="password") Password *
-    input.input-lg.form-control(type="password" name="password" placeholder="Password" ng-model="model.password" required)
-    p.help-block(ng-show="form.hasError('password')" ng-messages="form.password.$error")
-      i.fa.fa-warning &nbsp;
-      span(ng-message="required") Password cannot be empty.
+      .form-group(ng-class="{ 'has-error': form.hasError('password') }")
+        label.sr-only.control-label(for="password") Password *
+        input.input-lg.form-control(type="password" name="password" placeholder="Password" ng-model="model.password" required)
+        p.help-block(ng-show="form.hasError('password')" ng-messages="form.password.$error")
+          i.fa.fa-warning &nbsp;
+          span(ng-message="required") Password cannot be empty.
 
-  ul.text-danger(ng-show="responseErrors")
-    li(ng-repeat="error in responseErrors track by $index") {{ error }}
+      ul.text-danger(ng-show="responseErrors")
+        li(ng-repeat="error in responseErrors track by $index") {{ error }}
 
-  button.btn.btn-lg.btn-block.btn-primary(type="submit" ng-disabled="!submittable()" ng-click="login()") Login
+      button.btn.btn-lg.btn-block.btn-primary(type="submit" ng-disabled="!submittable()" ng-click="login()") Login
