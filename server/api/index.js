@@ -5,6 +5,8 @@ const config          = require('config');
 const express         = require('express');
 const Response        = require('simple-response');
 const BadRequestError = require('passport-local-mongoose/lib/badrequesterror');
+const ValidationError = require('mongoose/lib/error/validation');
+const CastError       = require('mongoose/lib/error/cast');
 const RouteUtils      = require('../utils/route_utils');
 const Middlewares     = require('../middlewares');
 
@@ -31,6 +33,14 @@ module.exports = function() {
   }));
 
   api.use(RouteUtils.handleError(BadRequestError, (err, req, res, next) => {
+    Response.BadRequest(res)(err);
+  }));
+
+  api.use(RouteUtils.handleError(ValidationError, (err, req, res, next) => {
+    Response.BadRequest(res)(err);
+  }));
+
+  api.use(RouteUtils.handleError(CastError, (err, req, res, next) => {
     Response.BadRequest(res)(err);
   }));
 
