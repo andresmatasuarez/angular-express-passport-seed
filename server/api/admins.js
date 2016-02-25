@@ -45,7 +45,8 @@ router.get('/:id', RouteUtils.validateId({ error: Settings.Admin.errors.invalidI
 });
 
 router.post('/', (req, res, next) => {
-  Admin.registerAsync(new Admin({ email: req.body.email }), req.body.password)
+  const admin = new Admin({ email: req.body.email });
+  Admin.registerAsync(admin, req.body.password)
   .then(Response.Ok(res))
   .catch(next);
 });

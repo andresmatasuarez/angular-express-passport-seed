@@ -35,7 +35,7 @@ describe('Authentication', function() {
   let admin;
   const randomId = '507f1f77bcf86cd799439011';
 
-  before(function() {
+  before(() => {
     return App.setup()
     .then(() => Admin.removeAsync())
     .then(() => AdminSeed.seed(adminsToSeed))

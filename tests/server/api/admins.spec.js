@@ -38,7 +38,7 @@ describe('/api/admins', function() {
 
     let seededAdmins;
 
-    before(function() {
+    before(() => {
       return App.setup()
       .then(() => Admin.removeAsync())
       .then(() => AdminSeed.seed(adminsToSeed))
@@ -149,16 +149,9 @@ describe('/api/admins', function() {
 
   describe('POST', function() {
 
-    const adminsToSeed = 1;
-    TestUtils.seedingTimeout(this, adminsToSeed, 3000);
+    TestUtils.seedingTimeout(this, 1, 3000);
 
-    before(function() {
-      return App.setup()
-      .then(() => Admin.removeAsync())
-      .then(() => AdminSeed.seed(adminsToSeed))
-      .then(_.partialRight(TestUtils.prepareSeededObjects, Settings.Admin.paths, (item) => item.email))
-      .then((seeded) => performLogin(_.first(seeded), 'test'));
-    });
+    before(() => App.setup().then(() => Admin.removeAsync()));
 
     after(() => Admin.removeAsync());
 
