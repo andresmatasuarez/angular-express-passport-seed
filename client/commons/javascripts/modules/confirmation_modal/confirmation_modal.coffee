@@ -1,6 +1,6 @@
 'use strict'
 
-templateErrorModal = require './_confirmation_modal.jade'
+confirmationModalTemplate = require './_confirmation_modal.jade'
 
 module.exports = ($rootScope, $uibModal) ->
   open: (options) ->
@@ -9,7 +9,7 @@ module.exports = ($rootScope, $uibModal) ->
     options.size = options.size || 'std';
 
     $uibModal.open
-      templateUrl : templateErrorModal
+      templateUrl : confirmationModalTemplate
       size        : options.size
       controller  : [ '$scope', ($scope) ->
         $scope.title       = options.title

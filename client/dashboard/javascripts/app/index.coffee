@@ -14,12 +14,14 @@ require 'ng-table-async'
 
 angular = require 'angular'
 
+# Commons
+connectionRefusedInterceptor = require '../../../commons/javascripts/modules/connection_refused_interceptor'
+errorModal                   = require '../../../commons/javascripts/modules/error_modal'
+confirmationModal            = require '../../../commons/javascripts/modules/confirmation_modal'
+authInterceptor              = require '../../../commons/javascripts/modules/auth_interceptor'
+
 # Modules
-authInterceptor              = require '../modules/auth_interceptor'
-connectionRefusedInterceptor = require '../modules/connection_refused_interceptor'
-api                          = require '../modules/api'
-errorModal                   = require '../modules/error_modal'
-confirmationModal            = require '../modules/confirmation_modal'
+api = require '../modules/api'
 
 # Services
 authService = require '../services/auth_service'
@@ -47,11 +49,11 @@ angular
   'ngMessages'
   'ngTableAsync'
   'ncy-angular-breadcrumb'
-  authInterceptor
   connectionRefusedInterceptor
-  api
   errorModal
   confirmationModal
+  authInterceptor
+  api
 ]
 
 .controller 'LoginController',         loginController
