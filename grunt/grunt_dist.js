@@ -39,6 +39,7 @@ module.exports = function(grunt) {
       src    : [
         'Procfile',
         'package.json',
+        'npm-shrinkwrap.json',
         'server/**/*',
         '!<%= paths.dev.server %>/config/ssl/**/*'
       ]
