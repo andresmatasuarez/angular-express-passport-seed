@@ -218,4 +218,66 @@ describe('/api/admins', function() {
 
   });
 
+  describe('DELETE', function() {
+
+    TestUtils.seedingTimeout(this, 1, 3000);
+    let myself, anotherAdmin;
+
+    before(() => {
+      return App.setup()
+      .then(() => Admin.removeAsync())
+      .then(() => AdminSeed.seed(2))
+      .then((seeded) => {
+        myself       = _.first(seeded);
+        anotherAdmin = _.last(seeded);
+        return performLogin(myself, 'test');
+      });
+    });
+
+    after(() => Admin.removeAsync());
+
+    it('/ should delete admin (different from myself)', function() {
+      return agentUtils.withCookies(server.delete(`/api/admins/${anotherAdmin._id}`))
+      .expect(200)
+      .expect('Content-Type', /json/)
+      .endAsync()
+      .then(() => Admin.findByIdAsync(anotherAdmin._id))
+      .then((foundAdmin) => expect(foundAdmin).to.be.null);
+    });
+
+    it('/ (:previously_deleted_admin_id) should respond 404', function() {
+      return agentUtils.withCookies(server.delete(`/api/admins/${anotherAdmin._id}`))
+      .expect(404)
+      .expect('Content-Type', /json/)
+      .endAsync()
+      .then((res) => {
+        expect(res.body).not.to.be.empty;
+        expect(res.body.message).to.eql(Settings.Admin.errors.notFound);
+      });
+    });
+
+    it('/ (:not_found_id) should respond 404', function() {
+      return agentUtils.withCookies(server.delete(`/api/admins/${mongoose.Types.ObjectId()}`))
+      .expect(404)
+      .expect('Content-Type', /json/)
+      .endAsync()
+      .then((res) => {
+        expect(res.body).not.to.be.empty;
+        expect(res.body.message).to.eql(Settings.Admin.errors.notFound);
+      });
+    });
+
+    it('/ (:myself) should respond 400', function() {
+      return agentUtils.withCookies(server.delete(`/api/admins/${myself._id}`))
+      .expect(400)
+      .expect('Content-Type', /json/)
+      .endAsync()
+      .then((res) => {
+        expect(res.body).not.to.be.empty;
+        expect(res.body.message).to.eql(Settings.Admin.errors.undeletable);
+      });
+    });
+
+  });
+
 });

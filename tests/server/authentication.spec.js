@@ -180,8 +180,12 @@ describe('Authentication', function() {
       return agentUtils.withCookies(server.put(`/api/admins/${randomId}`)).expect(404).endAsync();
     });
 
-    it('DELETE /api/admins/:id should respond 200', function() {
-      return agentUtils.withCookies(server.delete(`/api/admins/${randomId}`)).expect(200).endAsync();
+    it('DELETE /api/admins/:id should respond 404', function() {
+      return agentUtils.withCookies(server.delete(`/api/admins/${randomId}`)).expect(404).endAsync();
+    });
+
+    it('DELETE /api/admins/:logged_admin_id should respond 400', function() {
+      return agentUtils.withCookies(server.delete(`/api/admins/${admin._id}`)).expect(400).endAsync();
     });
 
   });

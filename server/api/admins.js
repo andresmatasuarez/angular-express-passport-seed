@@ -103,8 +103,13 @@ router.delete('/:id',
     })
     .catch(next);
   },
+  RouteUtils.populateDocument({
+    model      : Admin,
+    populateTo : 'fetchedAdmin',
+    error      : Settings.Admin.errors.notFound
+  }),
   (req, res, next) => {
-    Admin.findByIdAndRemoveAsync(req.params.id)
+    Bluebird.try(() => req.fetchedAdmin.removeAsync())
     .then(Response.Ok(res))
     .catch(next);
   }
