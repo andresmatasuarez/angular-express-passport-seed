@@ -11,18 +11,26 @@ module.exports = ($rootScope, $state, AuthService, $templateCache, errorModal) -
 
   # State utils
   $rootScope.goBack = ->
-    prev = $rootScope.previousState
+    prev    = $rootScope.previousState
+    current = $rootScope.currentState
 
-    if prev
-      $state.go prev.name, prev.params
+    # If previous state is defined, then go to previous state
+    if prev && prev.state && prev.state.name
+      $state.go prev.state.name, prev.params
+
+    # If not, deduce parent state from ncyBreadcrumb if that information is available
+    else if current.state && current.state.ncyBreadcrumb && current.state.ncyBreadcrumb.parent
+      $state.go current.state.ncyBreadcrumb.parent, current.params
+
+    # Else, go to 'home'
     else
       $state.go 'home'
 
   $rootScope.goToNextState = ->
     next = $rootScope.nextState
 
-    if next
-      $state.go next.name, next.params
+    if next && next.state && next.state.name
+      $state.go next.state.name, next.params
     else
       $state.go 'home'
 
@@ -45,7 +53,6 @@ module.exports = ($rootScope, $state, AuthService, $templateCache, errorModal) -
     $state.go 'login'
 
   $rootScope.$on 'auth:already_logged', (msg, data) ->
-    prev = $rootScope.previousState
     $state.go 'home'
 
   $rootScope.$on 'connection_refused', (msg, data) ->
@@ -54,11 +61,11 @@ module.exports = ($rootScope, $state, AuthService, $templateCache, errorModal) -
   # Keep track of previous and current states.
   $rootScope.$on '$stateChangeSuccess', (ev, to, toParams, from, fromParams) ->
     $rootScope.previousState =
-      name   : from.name
+      state  : from
       params : fromParams
 
     $rootScope.currentState =
-      name   : to.name
+      state  : to
       params : toParams
 
     $rootScope.nextState = undefined
@@ -67,7 +74,7 @@ module.exports = ($rootScope, $state, AuthService, $templateCache, errorModal) -
   $rootScope.$on '$stateChangeStart', (ev, to, toParams, from, fromParams) ->
     if to.name != 'login'
       $rootScope.nextState =
-        name   : to.name
+        state  : to
         params : toParams
 
   # TODO improve client-side error handling
