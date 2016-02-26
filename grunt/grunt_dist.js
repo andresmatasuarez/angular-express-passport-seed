@@ -1,7 +1,8 @@
 'use strict';
 
-// const webpack          = require('webpack');
-const NgAnnotatePlugin = require('ng-annotate-webpack-plugin');
+const webpack             = require('webpack');
+const AssetsWebpackPlugin = require('assets-webpack-plugin');
+const NgAnnotatePlugin    = require('ng-annotate-webpack-plugin');
 
 module.exports = function(grunt) {
 
@@ -17,10 +18,15 @@ module.exports = function(grunt) {
       path: '<%= paths.dist.assets %>'
     },
     plugins: [
-
-      // new webpack.optimize.UglifyJsPlugin(),
-      // new webpack.optimize.OccurenceOrderPlugin(),
-      // new webpack.optimize.DedupePlugin(),
+      new webpack.optimize.UglifyJsPlugin({
+        compressor: {
+          warnings: false
+        },
+        mangle: false
+      }),
+      new webpack.optimize.OccurenceOrderPlugin(),
+      new webpack.optimize.DedupePlugin(),
+      new AssetsWebpackPlugin({ path: './dist/assets' }),
       new NgAnnotatePlugin()
     ]
   });
