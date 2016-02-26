@@ -9,8 +9,6 @@ const RouteUtils  = require('../utils/route_utils');
 const Settings    = require('../settings');
 const Middlewares = require('../middlewares');
 
-const AdminErrors = Settings.Admin.errors;
-
 const router = express.Router();
 
 router.get('/',
@@ -60,7 +58,7 @@ router.put('/:id', RouteUtils.populateDocument({
   let editionPromise = Bluebird.resolve();
   if (req.body.newPassword) {
     if (!_.isEqual(req.body.newPassword, req.body.confirmPassword)) {
-      return Response.BadRequest(res)(AdminErrors.passwordsNotConfirmed);
+      return Response.BadRequest(res)(Settings.Admin.errors.passwordsNotConfirmed);
     }
 
     editionPromise = editionPromise.then(() => {
@@ -85,7 +83,7 @@ router.put('/:id', RouteUtils.populateDocument({
   })
   .then(Response.Ok(res))
   .catch((err) => {
-    if (_.isEqual(err.message, AdminErrors.incorrectPassword)) {
+    if (_.isEqual(err.message, Settings.Admin.errors.incorrectPassword)) {
       Response.BadRequest(res)(err.message);
     } else {
       Response.InternalServerError(res)(err);
@@ -93,10 +91,23 @@ router.put('/:id', RouteUtils.populateDocument({
   });
 });
 
-router.delete('/:id', RouteUtils.validateId({ error: Settings.Admin.errors.invalidId }), (req, res, next) => {
-  Admin.findByIdAndRemoveAsync(req.params.id)
-  .then(Response.Ok(res))
-  .catch(next);
-});
+router.delete('/:id',
+  RouteUtils.validateId({ error: Settings.Admin.errors.invalidId }),
+  (req, res, next) => {
+    Bluebird.try(() => {
+      if (_.isEqual(req.params.id.toString(), req.auth.user._id.toString())) {
+        return Response.BadRequest(res)(Settings.Admin.errors.undeletable);
+      } else {
+        return next();
+      }
+    })
+    .catch(next);
+  },
+  (req, res, next) => {
+    Admin.findByIdAndRemoveAsync(req.params.id)
+    .then(Response.Ok(res))
+    .catch(next);
+  }
+);
 
 module.exports = router;

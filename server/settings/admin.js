@@ -6,8 +6,9 @@ module.exports = {
     email: 'asc'
   },
   errors : {
-    invalidId : 'Invalid admin ID',
-    notFound  : 'Admin not found',
+    invalidId   : 'Invalid admin ID',
+    notFound    : 'Admin not found',
+    undeletable : 'This Admin cannot be deleted (you are currently logged in as him/her or you are not allowed to do so)',
     email     : {
       required : 'Admin "%s" cannot be empty',                   // '%s' appears to adapt to passport-local-mongoose error format which depends on util.format
       invalid  : 'Admin "email" is not a valid email address',
