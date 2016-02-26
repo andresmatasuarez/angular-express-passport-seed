@@ -21,7 +21,7 @@ module.exports = ($scope, $q, $state, API, confirmationModal) ->
         method : (admin) ->
           confirmationModal.open
             title       : 'Delete admin'
-            message     : "Do you wish to delete admin #{admin.username}?"
+            message     : "Do you wish to delete admin #{admin.email}?"
             closeLabel  : 'Cancel'
             acceptLabel : 'Delete'
           .result
