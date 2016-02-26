@@ -7,8 +7,14 @@ const Response        = require('simple-response');
 const BadRequestError = require('passport-local-mongoose/lib/badrequesterror');
 const ValidationError = require('mongoose/lib/error/validation');
 const CastError       = require('mongoose/lib/error/cast');
+const Log             = require('../utils/log');
 const RouteUtils      = require('../utils/route_utils');
 const Middlewares     = require('../middlewares');
+
+// http://stackoverflow.com/questions/18391212/is-it-not-possible-to-stringify-an-error-using-json-stringify
+function objectifyError(err) {
+  return JSON.parse(JSON.stringify(err, Object.getOwnPropertyNames(err)));
+}
 
 module.exports = function() {
 
@@ -19,6 +25,12 @@ module.exports = function() {
   api.use('/settings', require('./settings'));
   api.use('/auth',     require('./auth'));
   api.use('/admins',   Middlewares.Auth.ensureAuthenticated(), require('./admins'));
+
+  // Log errors
+  api.use((err, req, res, next) => {
+    Log.error(objectifyError(err));
+    next(err);
+  });
 
   api.use(RouteUtils.handleError(RouteUtils.InvalidIdError, (err, req, res, next) => {
     Response.BadRequest(res)(err);
@@ -46,7 +58,7 @@ module.exports = function() {
 
   // Default error handler
   api.use((err, req, res, next) => {
-    Response.InternalServerError(res)(err);
+    Response.InternalServerError(res)(objectifyError(err));
   });
 
   return api;
