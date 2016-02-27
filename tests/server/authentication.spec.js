@@ -13,18 +13,12 @@ const SuperAgentUtils = require('./superagent_utils');
 
 const server     = request(App.server.https);
 const agent      = request.agent(App.server.https);
-const agentUtils = new SuperAgentUtils(agent);
-
-function performLogin(admin, password) {
-  return server
-  .post('/api/auth/login')
-  .send({
-    email: admin.email,
-    password
-  })
-  .endAsync()
-  .then(agentUtils.saveCookies.bind(agentUtils));
-}
+const agentUtils = new SuperAgentUtils(agent, {
+  login: {
+    url: '/api/auth/login',
+    usernameField: 'email'
+  }
+});
 
 describe('Authentication', function() {
 
@@ -158,7 +152,7 @@ describe('Authentication', function() {
 
   describe('Authenticated', function() {
 
-    before(() => performLogin(admin, 'test'));
+    before(() => agentUtils.performLogin(admin.email, 'test'));
 
     it('GET /api/admins should respond 200', function() {
       return agentUtils.withCookies(server.get('/api/admins')).expect(200).endAsync();
