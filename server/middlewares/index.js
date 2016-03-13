@@ -1,7 +1,5 @@
-'use strict';
+import Auth           from './auth';
+import TokenExtractor from './token_extractor';
+import Normalize      from './normalize';
 
-module.exports = {
-  Auth           : require('./auth'),
-  TokenExtractor : require('./token_extractor'),
-  Normalize      : require('./normalize')
-};
+export { Auth, TokenExtractor, Normalize };

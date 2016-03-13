@@ -1,16 +1,42 @@
 root: true
 
-extends: flowics
+extends: airbnb/base
 
 ecmaFeatures:
   modules: false
 
 rules:
-  func-names: 0 # revert later
+  # From eslint-config-flowics
+  no-process-env       : 1
+  comma-dangle         : 0
+  constructor-super    : 2
+  no-class-assign      : 2
+  no-this-before-super : 2
+  prefer-spread        : 2
+  prefer-template      : 1
+  require-yield        : 2
+  new-cap:
+    - 2
+    -
+      newIsCap: true
+      capIsNew: false
+  space-before-function-paren:
+    - 2
+    -
+      anonymous : never
+      named     : never
 
-  # Own override
+  # Own overrides
+  no-param-reassign:
+    - 2
+    -
+      props: false
   array-bracket-spacing:
     - 2
     - always
     -
       objectsInArrays: false
+  key-spacing      : 0
+  no-multi-spaces  : 0
+  arrow-body-style : 0
+

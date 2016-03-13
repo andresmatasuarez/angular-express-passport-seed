@@ -1,13 +1,9 @@
-'use strict';
-
-const _           = require('lodash');
-const expect      = require('chai').expect;
-const APISettings = require('../../../server/settings');
+import _ from 'lodash';
+import { expect } from 'chai';
+import APISettings from '../../../server/settings';
 
 describe('API settings', function() {
-
   describe('Admin', function() {
-
     it('Exposed paths should be "_id" and "email"', function() {
       const adminPaths = [ '_id', 'email' ];
       expect(_.difference(APISettings.Admin.paths, adminPaths)).to.be.empty;
@@ -18,7 +14,5 @@ describe('API settings', function() {
       expect(APISettings.Admin.sort).to.have.keys([ 'email' ]);
       expect(APISettings.Admin.sort.email).and.equal('asc');
     });
-
   });
-
 });

@@ -1,42 +1,31 @@
 /** @module RouteUtils */
 
-'use strict';
+import _         from 'lodash';
+import mongoose  from 'mongoose';
+import Bluebird  from 'bluebird';
 
-const _         = require('lodash');
-const util      = require('util');
-const mongoose  = require('mongoose');
-const Bluebird  = require('bluebird');
-
-function InvalidIdError(message, extra) {
-  Error.captureStackTrace(this, this.constructor);
-  this.name = this.constructor.name;
-  this.message = message;
-  this.extra = extra;
+export class InvalidIdError extends Error {
+  constructor(...args) {
+    super(...args);
+    this.name = this.constructor.name;
+  }
 }
 
-function DocumentNotFoundError(message, extra) {
-  Error.captureStackTrace(this, this.constructor);
-  this.name = this.constructor.name;
-  this.message = message;
-  this.extra = extra;
+export class DocumentNotFoundError extends Error {
+  constructor(...args) {
+    super(...args);
+    this.name = this.constructor.name;
+  }
 }
 
-function ForbiddenError(message, extra) {
-  Error.captureStackTrace(this, this.constructor);
-  this.name = this.constructor.name;
-  this.message = message;
-  this.extra = extra;
+export class ForbiddenError extends Error {
+  constructor(...args) {
+    super(...args);
+    this.name = this.constructor.name;
+  }
 }
 
-util.inherits(InvalidIdError, Error);
-util.inherits(DocumentNotFoundError, Error);
-util.inherits(ForbiddenError, Error);
-
-module.exports = {
-
-  InvalidIdError,
-  DocumentNotFoundError,
-  ForbiddenError,
+export default {
 
   /**
    * validateId
@@ -48,7 +37,7 @@ module.exports = {
    * @returns If ID is invalid, options.callback is called with error message. Else, control is passed to the next middleware.
    */
   validateId(options) {
-    options = _.merge({
+    const opts = _.merge({
       param    : 'id',
       error    : 'Invalid ID',
       callback(req, res, next, error) {
@@ -56,11 +45,11 @@ module.exports = {
       }
     }, options);
 
-    return function(req, res, next) {
-      if (!mongoose.Types.ObjectId.isValid(req.params[options.param])) {
-        return options.callback(req, res, next, options.error);
+    return (req, res, next) => {
+      if (!mongoose.Types.ObjectId.isValid(req.params[opts.param])) {
+        return opts.callback(req, res, next, opts.error);
       }
-      next();
+      return next();
     };
   },
 
@@ -83,7 +72,7 @@ module.exports = {
    * @returns If no document is found, options.onDocumentNotFound is called with 'options.error'. Else, control is passed to the next middleware.
    */
   populateDocument(options) {
-    options = _.merge({
+    const opts = _.merge({
       model      : undefined,
       populateTo : 'document',
       param      : 'params.id:_id',
@@ -96,19 +85,18 @@ module.exports = {
     }, options);
 
     let model;
-    if (_.isString(options.model)) {
-      model = mongoose.model(options.model);
+    if (_.isString(opts.model)) {
+      model = mongoose.model(opts.model);
     } else {
-      model = options.model;
+      model = opts.model;
     }
 
-    return function(req, res, next) {
-
+    return (req, res, next) => {
       Bluebird.try(() => {
         function buildCriteria() {
           let criteria;
-          if (_.isString(options.param)) {
-            const pairs = options.param.split(',');
+          if (_.isString(opts.param)) {
+            const pairs = opts.param.split(',');
 
             criteria = {};
             _.forEach(pairs, pair => {
@@ -116,33 +104,31 @@ module.exports = {
               const propertyName = pair.split(':')[1];
               criteria[propertyName] = _.get(req, paramPath);
             });
-          } else if (_.isFunction(options.param)) {
-            criteria = options.param(req);
+          } else if (_.isFunction(opts.param)) {
+            criteria = opts.param(req);
           } else {
-            criteria = options.param;
+            criteria = opts.param;
           }
           return criteria;
         }
 
         function buildMethod() {
-          if (_.isString(options.method)) {
-            return model[options.method].bind(model);
-          } else {
-            return options.method(req);
+          if (_.isString(opts.method)) {
+            return model[opts.method].bind(model);
           }
+          return opts.method(req);
         }
 
-        return buildMethod()(buildCriteria(), options.projection);
+        return buildMethod()(buildCriteria(), opts.projection);
       })
-      .then(function(doc) {
+      .then((doc) => {
         if (_.isEmpty(doc)) {
-          return options.onDocumentNotFound(req, res, next, options.error);
+          return opts.onDocumentNotFound(req, res, next, opts.error);
         }
-        _.set(req, options.populateTo, doc);
-        next();
+        _.set(req, opts.populateTo, doc);
+        return next();
       })
       .catch(next);
-
     };
   },
 
@@ -153,11 +139,8 @@ module.exports = {
    * @returns Function that takes an error as argument and executes callback with processed errors.
    */
   validationErrorCleaner(callback) {
-    return function(err) {
-      return callback(_.map(_.keys(err.errors), function(field) {
-        return err.errors[field].message;
-      }));
-    };
+    const messageExtractor = (err) => (field) => err.errors[field].message;
+    return (err) => callback(_.map(_.keys(err.errors), messageExtractor(err)));
   },
 
   /**
@@ -170,13 +153,11 @@ module.exports = {
    * @returns Function that takes an error as argument and executes callback with processed CastError.
    */
   castErrorMapper(errors, callback, options) {
-    options = _.merge({
+    const opts = _.merge({
       property: 'invalid'
     }, options);
 
-    return function(err) {
-      return callback(_.get(errors, err.path)[options.property]);
-    };
+    return (err) => callback(_.get(errors, err.path)[opts.property]);
   },
 
   /**
@@ -188,21 +169,20 @@ module.exports = {
    * @returns If request is secure, passes control to the next middleware in chain. Else, if method is GET redirects to secured URL, otherwise throws a ForbiddenError.
    */
   enforceSSL(options) {
-    options = _.merge({
+    const opts = _.merge({
       port: 443
     }, options);
 
-    return function(req, res, next) {
+    return (req, res, next) => {
       if (req.secure) {
         return next();
       }
 
       if (req.method === 'GET') {
-        return res.redirect(301, `https://${req.hostname}:${options.port}${req.originalUrl}`);
+        return res.redirect(301, `https://${req.hostname}:${opts.port}${req.originalUrl}`);
       }
 
       throw new ForbiddenError('SSL Required.');
-
     };
   },
 
@@ -217,9 +197,8 @@ module.exports = {
     return (err, req, res, next) => {
       if (err.constructor.name === type.name) {
         return cb(err, req, res, next);
-      } else {
-        return next(err);
       }
+      return next(err);
     };
   }
 

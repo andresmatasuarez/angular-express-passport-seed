@@ -1,11 +1,9 @@
-'use strict';
-
-const redis = require('redis');
+import redis from 'redis';
 
 const DEFAULT_REDIS_PORT = 6379;
 const DEFAULT_REDIS_HOST = 'localhost';
 
-module.exports = {
+export default {
 
   createClient(config) {
     const port = config.port || DEFAULT_REDIS_PORT;

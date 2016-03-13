@@ -1,10 +1,11 @@
-'use strict';
+import _ from 'lodash';
 
-const _ = require('lodash');
-
-module.exports = function(req, res, next) {
+export default function tokenExtractor(req, res, next) {
   // Check header or URL parameters or POST parameters for token
-  let token = req.headers.authorization || req.body.token || req.query.token || req.headers['x-access-token'];
+  let token = req.headers.authorization;
+  token = token || req.body.token;
+  token = token || req.query.token;
+  token = token || req.headers['x-access-token'];
 
   if (!_.isEmpty(token)) {
     token = token.replace('Bearer ', '');
@@ -12,4 +13,4 @@ module.exports = function(req, res, next) {
 
   req.token = token;
   next();
-};
+}

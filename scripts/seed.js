@@ -1,12 +1,10 @@
-'use strict';
+import '../server/bin/context';
 
-require('../server/bin/context');
-
-const _          = require('lodash');
-const config     = require('config');
-const Mongootils = require('mongootils');
-const AdminSeed  = require('../seeds/admin');
-const Log        = require('../server/utils/log');
+import _          from 'lodash';
+import config     from 'config';
+import Mongootils from 'mongootils';
+import AdminSeed  from '../seeds/admin';
+import Log        from '../server/utils/log';
 
 const adminsToSeed = process.argv[2] || 3;
 

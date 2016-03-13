@@ -1,5 +1,3 @@
-'use strict';
+import Admin from './admin';
 
-module.exports = {
-  Admin: require('./admin')
-};
+export default { Admin };

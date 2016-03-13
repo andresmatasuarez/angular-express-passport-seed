@@ -1,52 +1,15 @@
-'use strict';
+import express   from 'express';
+import appConfig from './app_config';
+import appErrors from './app_errors';
+import appRoutes from './app_routes';
 
-const _          = require('lodash');
-const config     = require('config');
-const fs         = require('fs');
-const https      = require('https');
-const express    = require('express');
-const Mongootils = require('mongootils');
-const appConfig  = require('./app_config');
-const appErrors  = require('./app_errors');
-const appRoutes  = require('./app_routes');
+export default function app() {
+  const application = express();
 
-const serverHttp = express(); // HTTP server object
-let serverHttps;              // HTTPS server object
-let setupPromise;             // Setup singleton promise
+  appConfig(application);
+  appRoutes(application);
+  appErrors(application);
 
-// SSL support
-if (config.server && config.server.ssl && config.server.ssl.enable) {
-  const sslOptions = {
-    key  : fs.readFileSync(config.server.ssl.key),
-    cert : fs.readFileSync(config.server.ssl.certificate)
-  };
-
-  if (!_.isEmpty(config.server.ssl.passphrase)) {
-    sslOptions.passphrase = config.server.ssl.passphrase;
-  }
-
-  serverHttps = https.createServer(sslOptions, serverHttp);
+  return application;
 }
 
-// Promise that is resolved when app has been successfully setup and rejected otherwise.
-function setup() {
-  if (!setupPromise) {
-    setupPromise = new Mongootils(config.mongo.uri, config.mongo.options)
-    .connect()
-    .then(() => {
-      appConfig(serverHttp);
-      appRoutes(serverHttp);
-      appErrors(serverHttp);
-    });
-  }
-
-  return setupPromise;
-}
-
-module.exports = {
-  server: {
-    http  : serverHttp,
-    https : serverHttps
-  },
-  setup
-};

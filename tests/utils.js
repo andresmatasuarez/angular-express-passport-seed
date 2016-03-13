@@ -1,17 +1,15 @@
-'use strict';
-
-const _        = require('lodash');
-const expect   = require('chai').expect;
-const mongoose = require('mongoose');
+import _        from 'lodash';
+import mongoose from 'mongoose';
+import { expect } from 'chai';
 
 const DEFAULT_SEEDING_TIMEOUT_PER_DOCUMENT = 1000;
 
-exports.prepareSeededObjects = function(seeded, paths, sortBy) {
+export function prepareSeededObjects(seeded, paths, sortBy) {
   let op = _(seeded)
-  .map(function(item) {
-    item = _.pick(item.toJSON(), paths);
-    item._id = item._id.toString();
-    return item;
+  .map((item) => {
+    const i = _.pick(item.toJSON(), paths);
+    i._id = i._id.toString();
+    return i;
   });
 
   if (_.isFunction(sortBy)) {
@@ -19,33 +17,32 @@ exports.prepareSeededObjects = function(seeded, paths, sortBy) {
   }
 
   return op.value();
-};
+}
 
-exports.seedingTimeout = function(testSuite, quantityToSeed, timeoutPerDocument) {
-  timeoutPerDocument = timeoutPerDocument || DEFAULT_SEEDING_TIMEOUT_PER_DOCUMENT;
-  testSuite.timeout(quantityToSeed * timeoutPerDocument);
-};
+export function seedingTimeout(testSuite, quantityToSeed, timeoutPerDocument) {
+  testSuite.timeout(quantityToSeed * (timeoutPerDocument || DEFAULT_SEEDING_TIMEOUT_PER_DOCUMENT));
+}
 
-exports.assertUnorderedArrays = function(anArray, anotherArray) {
+export function assertUnorderedArrays(anArray, anotherArray) {
   if (_.isUndefined(anArray) || _.isNull(anArray)) {
-    return expect(anotherArray).to.not.exist;
+    expect(anotherArray).to.not.exist;
+  } else {
+    expect(anArray).to.be.instanceof(Array);
+    expect(anotherArray).to.be.instanceof(Array);
+    expect(anArray).to.have.length(anotherArray.length);
+
+    _.forEach(anArray, (item) => {
+      expect(anotherArray).to.include(item);
+    });
+
+    _.forEach(anotherArray, (item) => {
+      expect(anArray).to.include(item);
+    });
   }
+}
 
-  expect(anArray).to.be.instanceof(Array);
-  expect(anotherArray).to.be.instanceof(Array);
-  expect(anArray).to.have.length(anotherArray.length);
-
-  _.forEach(anArray, function(item) {
-    expect(anotherArray).to.include(item);
-  });
-
-  _.forEach(anotherArray, function(item) {
-    expect(anArray).to.include(item);
-  });
-};
-
-exports.assertObjectIds = function(anId, anotherId) {
+export function assertObjectIds(anId, anotherId) {
   expect(mongoose.Types.ObjectId.isValid(anId));
   expect(mongoose.Types.ObjectId.isValid(anotherId));
   expect(anId.toString()).to.be.eql(anotherId.toString());
-};
+}

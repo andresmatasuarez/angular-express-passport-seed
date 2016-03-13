@@ -1,22 +1,19 @@
-'use strict';
+import config       from 'config';
+import cookieParser from 'cookie-parser';
+import passport     from 'passport';
+import morgan       from 'morgan';
+import compression  from 'compression';
+import bodyparser   from 'body-parser';
+import Admin        from '../model/admin';
+import { TokenExtractor } from '../middlewares';
 
-const config       = require('config');
-const cookieParser = require('cookie-parser');
-const passport     = require('passport');
-const morgan       = require('morgan');
-const compression  = require('compression');
-const bodyparser   = require('body-parser');
-const Middlewares  = require('../middlewares');
-const Admin        = require('../model/admin');
-
-module.exports = function(app) {
-
+export default function appConfig(app) {
   passport.use(Admin.createStrategy());
 
   app.enable('trust proxy');
 
   app.set('view engine', 'jade');
-  app.set("views", config.app.views.path);
+  app.set('views', config.app.views.path);
 
   if (config.env !== config.environments.test) {
     app.use(morgan('dev'));
@@ -27,6 +24,5 @@ module.exports = function(app) {
   app.use(bodyparser.json());
   app.use(cookieParser());
   app.use(passport.initialize());
-  app.use(Middlewares.TokenExtractor);
-
-};
+  app.use(TokenExtractor);
+}

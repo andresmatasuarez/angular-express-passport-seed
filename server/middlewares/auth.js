@@ -1,9 +1,7 @@
-'use strict';
-
-const config          = require('config');
-const passport        = require('passport');
-const Response        = require('simple-response');
-const JWTRedisService = require('../services/jwt_redis_service');
+import config   from 'config';
+import passport from 'passport';
+import Response from 'simple-response';
+import JWTRedisService, * as JWTRedisServiceErrors from '../services/jwt_redis_service';
 
 const jwtRedisService = new JWTRedisService({
   host       : config.redis.host,
@@ -14,7 +12,7 @@ const jwtRedisService = new JWTRedisService({
   expiration : config.server.auth.expiration
 });
 
-module.exports = {
+export default {
 
   ensureAuthenticated() {
     return (req, res, next) => {
@@ -27,9 +25,9 @@ module.exports = {
         };
         next();
       })
-      .catch(JWTRedisService.NoTokenProvidedError, JWTRedisService.UnauthorizedAccessError, Response.Unauthorized(res))
+      .catch(JWTRedisServiceErrors.NoTokenProvidedError, Response.Unauthorized(res))
+      .catch(JWTRedisServiceErrors.UnauthorizedAccessError, Response.Unauthorized(res))
       .catch(Response.InternalServerError(res));
-
     };
   },
 
@@ -44,15 +42,12 @@ module.exports = {
           return Response.Unauthorized(res)(info);
         }
 
-        req.login(user, { session: false }, err2 => {
+        return req.login(user, { session: false }, err2 => {
           if (err2) {
             return Response.InternalServerError(res)(err2);
           }
-
-          next();
-
+          return next();
         });
-
       })(req, res, next);
     };
   },
@@ -87,7 +82,6 @@ module.exports = {
         Response.Ok(res)('Sucessfully signed out.');
       })
       .catch(Response.InternalServerError(res));
-
     };
   }
 

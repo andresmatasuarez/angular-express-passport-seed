@@ -1,48 +1,53 @@
-'use strict';
+import '../../../server/bin/context';
+import '../../../server/bin/promisify';
 
-require('../../../server/bin/context');
+import _        from 'lodash';
+import mongoose from 'mongoose';
+import request  from 'supertest';
+import { expect } from 'chai';
 
-const _               = require('lodash');
-const mongoose        = require('mongoose');
-const request         = require('supertest');
-const expect          = require('chai').expect;
-const App             = require('../../../server/app');
-const Admin           = require('../../../server/model/admin');
-const AdminSeed       = require('../../../seeds/admin');
-const Settings        = require('../../../server/settings');
-const TestUtils       = require('../../../tests/utils');
-const SuperAgentUtils = require('../superagent_utils');
-
-const server     = request(App.server.https);
-const agent      = request.agent(App.server.https);
-const agentUtils = new SuperAgentUtils(agent, {
-  login: {
-    url: '/api/auth/login',
-    usernameField: 'email'
-  }
-});
+import App             from '../../../server/app';
+import Admin           from '../../../server/model/admin';
+import AdminSeed       from '../../../seeds/admin';
+import Settings        from '../../../server/settings';
+import SuperAgentUtils from '../superagent_utils';
+import * as TestUtils  from '../../../tests/utils';
 
 describe('/api/admins', function() {
 
-  describe('GET', function() {
+  let server;
+  let agentUtils;
 
+  after(() => Admin.removeAsync());
+
+  describe('GET', function() {
     const adminsToSeed = 10;
     TestUtils.seedingTimeout(this, adminsToSeed);
 
     let seededAdmins;
 
+    before(() => App.setup());
+
     before(() => {
-      return App.setup()
-      .then(() => Admin.removeAsync())
-      .then(() => AdminSeed.seed(adminsToSeed))
+      server     = request(App.server.https);
+      agentUtils = new SuperAgentUtils(request.agent(App.server.https), {
+        login: {
+          url: '/api/auth/login',
+          usernameField: 'email'
+        }
+      });
+    });
+
+    before(() => Admin.removeAsync());
+
+    before(() => {
+      return AdminSeed.seed(adminsToSeed)
       .then(_.partialRight(TestUtils.prepareSeededObjects, Settings.Admin.paths, (item) => item.email))
       .then((seeded) => {
         seededAdmins = seeded;
         return agentUtils.performLogin(_.first(seeded).email, 'test');
       });
     });
-
-    after(() => Admin.removeAsync());
 
     it('/ should return admin list', function() {
       return agentUtils.withCookies(server.get('/api/admins'))
@@ -137,16 +142,31 @@ describe('/api/admins', function() {
         expect(res.body.message).to.eql(Settings.Admin.errors.invalidId);
       });
     });
-
   });
 
   describe('POST', function() {
-
     TestUtils.seedingTimeout(this, 1, 3000);
 
-    before(() => App.setup().then(() => Admin.removeAsync()));
+    before(() => App.setup());
 
-    after(() => Admin.removeAsync());
+    before(() => {
+      server     = request(App.server.https);
+      agentUtils = new SuperAgentUtils(request.agent(App.server.https), {
+        login: {
+          url: '/api/auth/login',
+          usernameField: 'email'
+        }
+      });
+    });
+
+    before(() => Admin.removeAsync());
+
+    before(() => {
+      return AdminSeed.seed(1)
+      .then(_.partialRight(TestUtils.prepareSeededObjects, Settings.Admin.paths, (item) => item.email))
+      .then(_.first)
+      .then((seeded) => agentUtils.performLogin(seeded.email, 'test'));
+    });
 
     it('/ should create a new admin', function() {
       return agentUtils.withCookies(server.post('/api/admins'))
@@ -208,26 +228,36 @@ describe('/api/admins', function() {
         expect(res.body.message).to.be.eql(Settings.Admin.errors.passwordMissing);
       });
     });
-
   });
 
   describe('DELETE', function() {
 
     TestUtils.seedingTimeout(this, 1, 3000);
-    let myself, anotherAdmin;
+    let myself;
+    let anotherAdmin;
+
+    before(() => App.setup());
 
     before(() => {
-      return App.setup()
-      .then(() => Admin.removeAsync())
-      .then(() => AdminSeed.seed(2))
+      server     = request(App.server.https);
+      agentUtils = new SuperAgentUtils(request.agent(App.server.https), {
+        login: {
+          url: '/api/auth/login',
+          usernameField: 'email'
+        }
+      });
+    });
+
+    before(() => Admin.removeAsync());
+
+    before(() => {
+      return AdminSeed.seed(2)
       .then((seeded) => {
         myself       = _.first(seeded);
         anotherAdmin = _.last(seeded);
         return agentUtils.performLogin(myself.email, 'test');
       });
     });
-
-    after(() => Admin.removeAsync());
 
     it('/ should delete admin (different from myself)', function() {
       return agentUtils.withCookies(server.delete(`/api/admins/${anotherAdmin._id}`))
@@ -270,7 +300,5 @@ describe('/api/admins', function() {
         expect(res.body.message).to.eql(Settings.Admin.errors.undeletable);
       });
     });
-
   });
-
 });

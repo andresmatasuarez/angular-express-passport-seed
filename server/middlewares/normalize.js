@@ -1,20 +1,17 @@
-'use strict';
-
-const _ = require('lodash');
+import _ from 'lodash';
 
 const normalizers = {
   integer(value, options) {
-    options = options || {};
-    const valueAsInt = parseInt(value);
-    if (!_.isNaN(valueAsInt) || !_.has(options.defaultsTo)) {
+    const opts = options || {};
+    const valueAsInt = parseInt(value, 10);
+    if (!_.isNaN(valueAsInt) || !_.has(opts.defaultsTo)) {
       return valueAsInt;
-    } else {
-      return options.defaultsTo;
     }
+    return opts.defaultsTo;
   }
 };
 
-module.exports = function(path) {
+export default function normalize(path) {
   return {
     as(type, options) {
       const normalizer = normalizers[type];
@@ -28,4 +25,4 @@ module.exports = function(path) {
       };
     }
   };
-};
+}

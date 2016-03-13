@@ -1,26 +1,20 @@
 /* eslint no-unused-vars: [2, { "args": "none" }] */
-'use strict';
+import config   from 'config';
+import Response from 'simple-response';
 
-const config   = require('config');
-const Response = require('simple-response');
-
-module.exports = function(app) {
-
+export default function appErrors(app) {
   // Since this is the last non-error-handling middleware,
   // we assume 404, as nothing else responded.
-  app.use(function(req, res, next) {
+  app.use((req, res, next) => {
     const err = new Error();
     err.status = 404;
     next(err);
   });
 
   if (config.env === config.environments.development) {
-
     app.use(require('errorhandler')());
-
   } else {
-
-    app.use(function(err, req, res, next) {
+    app.use((err, req, res, next) => {
       res.status(err.status || 500);
 
       const message = err.status === 404 ? 'Page not found' : 'Internal server error';
@@ -35,11 +29,9 @@ module.exports = function(app) {
         return Response.NotFound(res)(message);
 
       // default: respond with plain text
-      } else {
-        return res.type('text').send(message);
       }
+
+      return res.type('text').send(message);
     });
-
   }
-
-};
+}

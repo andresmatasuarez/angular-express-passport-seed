@@ -1,17 +1,18 @@
-'use strict';
+import express  from 'express';
+import Response from 'simple-response';
+import { Auth } from '../middlewares';
 
-const express  = require('express');
-const Response = require('simple-response');
-const Auth     = require('../middlewares').Auth;
+export default function authRouter() {
+  const router = express.Router();
 
-const router = express.Router();
+  router.get('/me', Auth.ensureAuthenticated(), (req, res) => {
+    Response.Ok(res)(req.auth.user);
+  });
 
-router.get('/me', Auth.ensureAuthenticated(), (req, res) => {
-  Response.Ok(res)(req.auth.user);
-});
+  router.post('/login', Auth.authenticate(), Auth.login());
 
-router.post('/login', Auth.authenticate(), Auth.login());
+  router.post('/logout', Auth.logout());
 
-router.post('/logout', Auth.logout());
+  return router;
+}
 
-module.exports = router;

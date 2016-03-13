@@ -1,13 +1,13 @@
-'use strict';
+import express  from 'express';
+import Response from 'simple-response';
+import Settings from '../settings';
 
-const express  = require('express');
-const Response = require('simple-response');
-const Settings = require('../settings');
+export default function settingsRouter() {
+  const router = express.Router();
 
-const router = express.Router();
+  router.get('/', (req, res) => {
+    Response.Ok(res)(Settings);
+  });
 
-router.get('/', (req, res) => {
-  Response.Ok(res)(Settings);
-});
-
-module.exports = router;
+  return router;
+}

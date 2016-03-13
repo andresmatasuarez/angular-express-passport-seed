@@ -1,18 +1,15 @@
-'use strict';
-
-const _                     = require('lodash');
-const Bluebird              = require('bluebird');
-const mongoose              = require('mongoose');
-const passportLocalMongoose = require('passport-local-mongoose');
-const Settings              = require('../../settings');
-const validations           = require('./validations');
+import _                     from 'lodash';
+import Bluebird              from 'bluebird';
+import mongoose              from 'mongoose';
+import passportLocalMongoose from 'passport-local-mongoose';
+import Settings              from '../../settings';
+import validations           from './validations';
 
 const schema = new mongoose.Schema({
   email: {
     type      : String,
     lowercase : true
-
-    //unique    : AdminErrors.email.unique,
+    // unique    : AdminErrors.email.unique,
   }
 });
 
@@ -38,4 +35,4 @@ schema.set('toObject', { transform });
 Bluebird.promisifyAll(schema.statics);
 Bluebird.promisifyAll(schema.methods);
 
-module.exports = schema;
+export default schema;

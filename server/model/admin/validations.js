@@ -1,12 +1,7 @@
-'use strict';
+import validator from 'validator';
+import Settings  from '../../settings';
 
-const validator = require('validator');
-const Settings = require('../../settings');
-
-module.exports = function(schema) {
-
-  // Validations
+export default function validations(schema) {
   schema.path('email').required(true, Settings.Admin.errors.email.required);
   schema.path('email').validate(validator.isEmail, Settings.Admin.errors.email.invalid);
-
-};
+}

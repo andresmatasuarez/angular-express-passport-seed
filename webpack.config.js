@@ -22,9 +22,9 @@ module.exports = {
   },
   module: {
     loaders: [
-      { test: /\.coffee$/, loader: 'coffee' },
-      { test: /\.less$/,   loader: 'style!css!less' },
-      { test: /\.css$/,    loader: 'style!css' },
+      { test: /\.js$/,   loader: 'babel-loader' },
+      { test: /\.less$/, loader: 'style!css!less' },
+      { test: /\.css$/,  loader: 'style!css' },
 
       // ngtemplate loader only for path whose filename begins with "_"
       // Examples:

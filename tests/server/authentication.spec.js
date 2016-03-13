@@ -1,15 +1,14 @@
-'use strict';
+import '../../server/bin/context';
+import '../../server/bin/promisify';
 
-require('../../server/bin/context');
-
-const _               = require('lodash');
-const request         = require('supertest');
-const expect          = require('chai').expect;
-const App             = require('../../server/app');
-const Admin           = require('../../server/model/admin');
-const AdminSeed       = require('../../seeds/admin');
-const TestUtils       = require('../../tests/utils');
-const SuperAgentUtils = require('./superagent_utils');
+import _               from 'lodash';
+import request         from 'supertest';
+import { expect }      from 'chai';
+import App             from '../../server/app';
+import Admin           from '../../server/model/admin';
+import AdminSeed       from '../../seeds/admin';
+import SuperAgentUtils from './superagent_utils';
+import * as TestUtils from '../../tests/utils';
 
 const server     = request(App.server.https);
 const agent      = request.agent(App.server.https);
@@ -21,7 +20,6 @@ const agentUtils = new SuperAgentUtils(agent, {
 });
 
 describe('Authentication', function() {
-
   // Increase default timeout to let admin seed do its work.
   const adminsToSeed = 1;
   TestUtils.seedingTimeout(this, adminsToSeed, 2000);
@@ -42,9 +40,7 @@ describe('Authentication', function() {
   after(() => Admin.removeAsync());
 
   describe('Unauthenticated', function() {
-
     describe('POST /api/auth/login', function() {
-
       it('(missing credentials) should respond 401', function() {
         return server.post('/api/auth/login')
         .expect(401)
@@ -85,7 +81,6 @@ describe('Authentication', function() {
           expect(res.body.message).to.be.equals('Incorrect password');
         });
       });
-
     });
 
     it('POST /api/auth/logout should respond 204', function() {
@@ -109,7 +104,8 @@ describe('Authentication', function() {
     });
 
     it('GET /api/admins/:id should respond 401', function() {
-      return server.get(`/api/admins/${randomId}`).expect(401).expect('Content-Type', /json/).endAsync()
+      return server.get(`/api/admins/${randomId}`)
+      .expect(401).expect('Content-Type', /json/).endAsync()
       .then((res) => {
         expect(res.body).not.to.be.empty;
         expect(res.body.message).to.be.equals('No token provided.');
@@ -133,7 +129,8 @@ describe('Authentication', function() {
     });
 
     it('PUT /api/admins/:id should respond 401', function() {
-      return server.put(`/api/admins/${randomId}`).expect(401).expect('Content-Type', /json/).endAsync()
+      return server.put(`/api/admins/${randomId}`)
+      .expect(401).expect('Content-Type', /json/).endAsync()
       .then((res) => {
         expect(res.body).not.to.be.empty;
         expect(res.body.message).to.be.equals('No token provided.');
@@ -141,17 +138,16 @@ describe('Authentication', function() {
     });
 
     it('DELETE /api/admins/:id should respond 401', function() {
-      return server.delete(`/api/admins/${randomId}`).expect(401).expect('Content-Type', /json/).endAsync()
+      return server.delete(`/api/admins/${randomId}`)
+      .expect(401).expect('Content-Type', /json/).endAsync()
       .then((res) => {
         expect(res.body).not.to.be.empty;
         expect(res.body.message).to.be.equals('No token provided.');
       });
     });
-
   });
 
   describe('Authenticated', function() {
-
     before(() => agentUtils.performLogin(admin.email, 'test'));
 
     it('GET /api/admins should respond 200', function() {
@@ -175,13 +171,13 @@ describe('Authentication', function() {
     });
 
     it('DELETE /api/admins/:id should respond 404', function() {
-      return agentUtils.withCookies(server.delete(`/api/admins/${randomId}`)).expect(404).endAsync();
+      return agentUtils.withCookies(server.delete(`/api/admins/${randomId}`))
+      .expect(404).endAsync();
     });
 
     it('DELETE /api/admins/:logged_admin_id should respond 400', function() {
-      return agentUtils.withCookies(server.delete(`/api/admins/${admin._id}`)).expect(400).endAsync();
+      return agentUtils.withCookies(server.delete(`/api/admins/${admin._id}`))
+      .expect(400).endAsync();
     });
-
   });
-
 });

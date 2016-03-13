@@ -1,15 +1,15 @@
 'use strict';
 
-require('../../server/bin/context');
+import '../../server/bin/context';
+import '../../server/bin/promisify';
 
-const request     = require('supertest');
-const mongoose    = require('mongoose');
-const App         = require('../../server/app');
+import request     from 'supertest';
+import mongoose    from 'mongoose';
+import App         from '../../server/app';
 
 const server  = request(App.server.http);
 
 describe('/api API must be served over SSL', function() {
-
   it('GET /admins should respond with 301 Redirect', function() {
     return server.get('/api/admins').expect(301).endAsync();
   });
@@ -25,14 +25,11 @@ describe('/api API must be served over SSL', function() {
   it('POST /admins should respond with 301 Redirect', function() {
     return server.post('/api/admins').expect(403).endAsync();
   });
-
 });
 
 describe('/dashboard Dashboard must be served over SSL', function() {
-
   it('should respond with 301 Redirect', function() {
     return server.get('/dashboard').expect(301).endAsync();
   });
-
 });
 

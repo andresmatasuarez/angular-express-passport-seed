@@ -1,7 +1,5 @@
 /* eslint no-process-env:0 */
-'use strict';
-
-const Environments = require('../config/environments');
+import Environments from '../config/environments';
 
 process.env.NODE_ENV        = process.env.NODE_ENV || Environments.development;
 process.env.NODE_CONFIG_DIR = process.env.NODE_CONFIG_DIR || './server/config';
@@ -9,5 +7,3 @@ process.env.NODE_CONFIG_DIR = process.env.NODE_CONFIG_DIR || './server/config';
 if (process.env.NODE_ENV === Environments.test) {
   process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 }
-
-require('./promisify');

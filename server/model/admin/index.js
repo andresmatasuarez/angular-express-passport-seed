@@ -1,6 +1,4 @@
-'use strict';
+import mongoose from 'mongoose';
+import schema   from './schema';
 
-const mongoose = require('mongoose');
-const schema   = require('./schema');
-
-module.exports = mongoose.model('Admin', schema);
+export default mongoose.model('Admin', schema);
