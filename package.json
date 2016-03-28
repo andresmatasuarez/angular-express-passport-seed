@@ -17,7 +17,7 @@
     "copy:server": "copyfiles package.json npm-shrinkwrap.json Procfile dist/server",
     "build:server": "npm run clean:build && npm run copy:server && babel server -d dist/server",
     "build:client": "",
-    "build": "npm run build:server && build:client"
+    "build": "npm run build:server && npm run build:client"
   },
   "repository": {
     "type": "git",
@@ -97,7 +97,6 @@
     "html-loader": "^0.3.0",
     "image-webpack-loader": "^1.6.1",
     "imagemin": "^3.2.1",
-    "jade": "^1.11.0",
     "jade-html-loader": "0.0.2",
     "karma": "^0.13.11",
     "karma-chrome-launcher": "^0.2.1",
